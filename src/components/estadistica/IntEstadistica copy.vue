@@ -199,7 +199,7 @@
       </v-row>
     </v-sheet>
     
-<!--     <p>{{ partida }}</p> -->
+    <p>{{ partida }}</p>
   </v-container>
 </template>
 
@@ -215,15 +215,7 @@ export default {
       temporizador: false,
       interval: null,
       duradaMin: 0,
-      duradaSec: 0,
-      /* partida: null */
-
-
-
-
-
-
-
+      duradaSec: 0
       
     }
   },
@@ -267,50 +259,38 @@ export default {
 
   },
   methods: {
-    cargarPartida() {
-      this.partida = this.$store.getters.partida
-    },
     colps(i, est) {
       est.colps += i
-      this.update()
     },
     errades(i, est) {
       est.errades += i
-      this.update()
     },
     tretes(i, est) {
       est.directes += i
-      this.update()
     },
     erradaTreta(i, est) {
       est.faltes += i
-      this.update()
     },
     caigudes(i, est) {
       est.total += 1
       est.quinzes += i
-      this.update()
     },
     canviPilota(equip) {  
       if(equip == 'roig') {
         this.equip_roig.canvi_pilota += 1
-        this.update()
       } else if (equip == 'blau') {
         this.equip_blau.canvi_pilota += 1
-        this.update()
       }
     },
     travesa(str) {
-      this.partida.travesses = 'DONEN ' + str.toUpperCase()
-      this.update()
-      //console.log(str)
+      /* this.partida.travesses = 'DONEN ' + str.toUpperCase() */
+      console.log(str)
     },
     tiempo() {
       this.temporizador = !this.temporizador
       if(this.temporizador) {
         if(this.partida.durades.length > 0 && this.durada != 0) {
           this.partida.durades.pop()
-          this.update()
         }
           this.interval = setInterval(() => {
           this.durada += 1
@@ -319,7 +299,6 @@ export default {
         }, 1000)
       } else {
         this.partida.durades.push(this.durada)
-        this.update()
         clearInterval(this.interval)
       }     
     },
@@ -327,29 +306,20 @@ export default {
       this.durada = 0
       this.duradaMin = 0
       this.duradaSec = 0
-    },
-    update() {
-      this.$store.dispatch('updatePartida', this.partida)
-      //this.cargarPartida()
     }
-  },/*
-  created() {
-    this.cargarPartida()
-  } ,
+  },
   watch: {
     partida:  {
       handler(val) {
         if(!this.$store.carregant) {
         this.$store.dispatch('updatePartida', val)
-        console.log(val)
-       
+        console.log('val')
         }
       },
-      deep: true,
-      inmediate:false
+      deep: true
     }
-  } */
-  
+
+  }
 
 }
 </script>

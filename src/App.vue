@@ -23,7 +23,7 @@ export default {
     //
   }),
   created() {
-    this.$store.dispatch('cargarListado')
+    /* this.$store.dispatch('cargarListado') */
     this.$store.dispatch('actualizarListado')
   }
 };

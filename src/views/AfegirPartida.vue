@@ -401,8 +401,11 @@ export default {
           canvi_pilota: 0
         }, */
       }
-      this.$store.dispatch('addPartida', partida)
-      this.$router.push('/')        
+      if(partida.equip_roig.jugadors[0].nom != null && partida.equip_blau.jugadors[0].nom != null && partida.equip_roig.jugadors[0].nom != '' && partida.equip_blau.jugadors[0].nom != '' ) {
+        this.$store.dispatch('addPartida', partida)
+        this.$router.push('/')  
+      }
+            
     }
 
     

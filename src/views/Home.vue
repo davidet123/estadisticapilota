@@ -26,7 +26,7 @@
       </div>
       <div v-if="partidaCargada">
         
-        <IntEstadistica :partida="partida" />
+        <IntEstadistica />
         <!-- <p>
           {{ partida }}
         </p> -->      
@@ -64,12 +64,12 @@ export default {
     partidaCargada() {
       return this.$store.getters.partida
     },
-    partida() {
+    /* partida() {
       return this.$store.getters.partida
     },
     jugadors_blau() {
       return this.partida.equip_blau.jugadors
-    },
+    }, */
   },
   methods: {
     goto(link) {

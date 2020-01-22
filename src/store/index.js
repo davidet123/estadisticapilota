@@ -168,7 +168,7 @@ export default new Vuex.Store({
         let id = data._key.path.segments[1]
         payload.id = id
         //console.log(data._key.path.segments[1])
-        commit('addPartidas', payload)
+        /* commit('addPartidas', payload) */
         commit('carregant', false) 
       })
     },
@@ -190,6 +190,7 @@ export default new Vuex.Store({
     updatePartida: ({commit}, payload) => {
       commit('carregant', true)
       const part = db.collection('partides').doc(payload.id)
+      console.log('update')
       part.update(payload)
       commit('carregant', false)
     },
@@ -200,6 +201,8 @@ export default new Vuex.Store({
           partida.id = change.doc.id
           if (change.type === 'modified') {
             commit('actualizarPartida', partida)
+          } else if(change.type === 'added') {
+            commit('addPartidas', partida)
           }
         })
       })

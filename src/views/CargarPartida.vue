@@ -25,17 +25,19 @@
     </div>
     <div v-if="!cargando">
       <div v-for="partida in partides" :key="partida.id">
-        <v-row>
-          <v-col cols="8">
-            <h4>{{ partida.data }}</h4>
-            <h3>{{ partida.equip_roig.nom_equip }} vs {{ partida.equip_blau.nom_equip }}</h3>
-            <p>{{ partida.tipo }}</p>
-          </v-col>
-          <v-col cols="4">
-            <v-btn color="success" @click="cargarPartida(partida.id)">Carregar Partida</v-btn>
-          </v-col>
-          
-        </v-row>
+        <v-sheet elevation="4" class="my-2 pa-2">
+          <v-row class="pl-2">
+            <v-col cols="6" sm="8">
+              <h4>{{ partida.data }}</h4>
+              <h3>{{ partida.equip_roig.nom_equip }} vs {{ partida.equip_blau.nom_equip }}</h3>
+              <p>{{ partida.tipo }}</p>
+            </v-col>
+            <v-col cols="6" sm="3" align-self="center">
+              <v-btn small color="success" @click="cargarPartida(partida.id)">Carregar Partida</v-btn>
+            </v-col>
+          </v-row>
+        </v-sheet>
+        
       </div>
     </div>
   </v-container>
