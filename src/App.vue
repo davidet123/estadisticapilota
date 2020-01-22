@@ -22,5 +22,9 @@ export default {
   data: () => ({
     //
   }),
+  created() {
+    this.$store.dispatch('cargarListado')
+    this.$store.dispatch('actualizarListado')
+  }
 };
 </script>

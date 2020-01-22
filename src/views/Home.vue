@@ -1,69 +1,53 @@
 <template>
 
   <v-container>
-    <v-row>
-      <v-col>
-        <h2 class="text-center">Estadística Pilota</h2>
-      </v-col>
-    </v-row>
-      <div class="botones_inicio" v-if="partidaCargada == null">
+    <div v-if="cargando" class="text-center mt-5">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
+    </div>
+    <div v-if="!cargando">
       <v-row>
-        <v-col class="text-center">
-          <v-btn class="mb-5"
-          @click="goto('/afegirPartida')">Afegir Partida</v-btn>
-          <br>
-          <v-btn
-          @click="goto('/cargarPartida')">Cargar Partida</v-btn>
+        <v-col>
+          <h2 class="text-center">Estadística Pilota</h2>
         </v-col>
       </v-row>
-    </div>
-    <div v-if="partidaCargada">
-      <p>
-        {{ partida }}
-      </p>
-
+        <div class="botones_inicio" v-if="partidaCargada == null">
+        <v-row>
+          <v-col class="text-center">
+            <v-btn class="mb-5"
+            @click="goto('/afegirPartida')">Afegir Partida</v-btn>
+            <br>
+            <v-btn
+            @click="goto('/cargarPartida')">Cargar Partida</v-btn>
+          </v-col>
+        </v-row>
+      </div>
+      <div v-if="partidaCargada">
+        
+        <IntEstadistica :partida="partida" />
+        <!-- <p>
+          {{ partida }}
+        </p> -->      
+           
+      </div>
     </div>
     
   </v-container>
-  <!-- <div class="home">
-
-
-
-
-
-
-
-
-    <h1>Home</h1>
-    <ul>
-      <li>
-        <p>Equip Roig</p>
-        <p v-for="jugador in partida.equip_roig.jugadors" :key="jugador.num">
-          {{ jugador.nom }}
-        </p>
-        <p> {{ partida.equip_roig.treta.nom }}</p>
-      </li>
-      <li>
-        <p>Equip Blau</p>
-        <p v-for="jugador in partida.equip_blau.jugadors" :key="jugador.num">
-          {{ jugador.nom }}
-        </p>
-        <p> {{ partida.equip_blau.treta.nom }}</p>
-      </li>
-    </ul>
-    <p>{{ partida }}</p>
-    <p>{{ duradaMin }}min : {{ duradaSec }}seg</p>
-    <v-btn @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
-    <v-btn @click="reset" :disabled="temporizador">Reset crono</v-btn>
-  </div> -->
+  
 </template>
 
 <script>
 // @ is an alias to /src
+import IntEstadistica from '@/components/estadistica/IntEstadistica'
 
 
 export default {
   name: 'home',
+  components: {
+    IntEstadistica
+  },
   data() {
     return{
       durada: 0,
@@ -74,8 +58,11 @@ export default {
     }
   },
   computed: {
+    cargando() {
+      return this.$store.getters.cargando
+    },
     partidaCargada() {
-      return this.$store.getters.partidaCargada
+      return this.$store.getters.partida
     },
     partida() {
       return this.$store.getters.partida

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import AfegirPartida from '../views/AfegirPartida.vue'
 import CargarPartida from '../views/CargarPartida.vue'
+import Resum from '../views/Resum.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/cargarpartida',
     name: 'cargarpartida',
     component: CargarPartida
+  },
+  {
+    path: '/resum',
+    name: 'resum',
+    component: Resum
   },
   {
     path: '/about',
