@@ -1,14 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import users from './users.js'
 import db from '@/firebase/init.js'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  modules: {
+    users
+  },
   state: {
     carregant: false,
-    partidaCargada: null,
+    partidaMemoria: null,
     listado_id: [],
     partides: [],
     partida: null
@@ -127,7 +130,7 @@ export default new Vuex.Store({
       return state.partida
     },
     partidaCargada: state=> {
-      return state.partida != null
+      return state.partidaMemoria
     },
     partides: state=> {
       return state.partides
@@ -152,13 +155,28 @@ export default new Vuex.Store({
       context.partides.push(payload)
     },
     cargarPartida: (context, payload) => {
-      const item = context.partides.find(partida => {
-        return partida.id === payload
-      })
-      context.partida = item
+      console.log(payload)
+      if(payload == null) {
+        context.partida = null
+      } else {
+        const item = context.partides.find(partida => {
+          return partida.id === payload
+        })
+        //console.log(payload)
+        context.partida = item
+      }
     },
     actualizarPartida: (context, payload) => {
       context.partida = payload
+    },
+    eliminarPartida: (context, payload) => {
+      context.partides = context.partides.filter(partida => {
+        return partida.id !== payload
+      })
+    },
+    partidaCargada: (context, payload) => {
+      //console.log(payload)
+      context.partidaMemoria = payload
     }
   },
   actions: {
@@ -173,7 +191,7 @@ export default new Vuex.Store({
       })
     },
     cargarListado: ({commit}) => {
-      console.log('cargando...')
+      //console.log('cargando...')
       commit('carregant', true)
       db.collection('partides').get()
       .then (data => {
@@ -190,24 +208,50 @@ export default new Vuex.Store({
     updatePartida: ({commit}, payload) => {
       commit('carregant', true)
       const part = db.collection('partides').doc(payload.id)
-      console.log('update')
+      //console.log('update')
       part.update(payload)
       commit('carregant', false)
     },
-    actualizarListado: ({commit}) => {
+    actualizarListado: ({commit, state}) => {
       db.collection('partides').onSnapshot(snapshot=> {
         snapshot.docChanges().forEach(change => {
           let partida = change.doc.data()
           partida.id = change.doc.id
           if (change.type === 'modified') {
             commit('actualizarPartida', partida)
-          } else if(change.type === 'added') {
+          } else if(change.type === 'added' && state.carregant) {
+            console.log('addPartida')
             commit('addPartidas', partida)
           }
         })
       })
+    },
+    eliminarPartida: ({commit}, payload) => {
+      db.collection('partides').doc(payload).delete()
+      .then(() => {
+        commit('eliminarPartida', payload)
+      })
+    },
+    cargarPartida: ({commit}, payload) => {
+      db.collection('partida_cargada').doc('UzBxIXYsndS4Ze3DizHd').update({id:payload})
+      .then(() => {
+          commit('partidaCargada', payload)
+          commit('cargarPartida', payload)
+      })
+        
+    },
+    partidaCargada: ({commit}) => {
+      commit('carregant', true)
+      db.collection('partida_cargada').doc('UzBxIXYsndS4Ze3DizHd').get()
+      .then(doc => {
+        commit('partidaCargada', doc.data().id)
+        commit('cargarPartida', doc.data().id)
+        commit('carregant', false)
+        //console.log(doc.data().id)
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
-  },
-  modules: {
   }
 })

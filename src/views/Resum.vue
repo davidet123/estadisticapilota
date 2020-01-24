@@ -5,7 +5,7 @@
         <h3 class="text-center">RESUM PARTIDA</h3>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="partidaCargada">
       <v-col class="caja" cols="12" sm="6">
         <v-card >
           <v-card-title class="red">
@@ -69,12 +69,22 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col align="center">
+        <v-btn @click="netejar()">Netejar cache partida</v-btn>
+
+      </v-col>
+    </v-row>
+    
   </v-container>
 </template>
 
 <script>
 export default {
   computed: {
+    partidaCargada() {
+      return this.$store.getters.partidaCargada
+    },
     partida() {
       return this.$store.getters.partida
     },
@@ -131,6 +141,12 @@ export default {
       return this.equip_blau.canvi_pilota
     }
     
+  },
+  methods: {
+    netejar() {
+      this.$store.dispatch('cargarPartida', null)
+      this.$router.push('/')
+    }
   }
 }
 

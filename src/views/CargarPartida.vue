@@ -32,13 +32,41 @@
               <h3>{{ partida.equip_roig.nom_equip }} vs {{ partida.equip_blau.nom_equip }}</h3>
               <p>{{ partida.tipo }}</p>
             </v-col>
-            <v-col cols="6" sm="3" align-self="center">
-              <v-btn small color="success" @click="cargarPartida(partida.id)">Carregar Partida</v-btn>
+            <v-col cols="6" sm="4" align-self="center">
+              <v-btn small class="mb-2" color="success" @click="cargarPartida(partida.id)">CARREGAR</v-btn>
+              <br>
+              <v-btn small class="mb-2" color="error" @click="abrirDialog(partida.id)">ELIMINAR</v-btn>
             </v-col>
           </v-row>
         </v-sheet>
         
       </div>
+      <v-dialog
+        v-model="dialog" max-width="290">
+        <v-card>
+          <v-card-title class="headline">ELIMINAR PARTIDA</v-card-title>
+            <v-card-text>
+              Estàs a punt d'eliminar una partida. Estàs segur?
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="dialog = false"
+              >
+                Cancelar
+              </v-btn>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="eliminarPartida"
+              >
+                Eliminar
+              </v-btn>
+            </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -47,7 +75,9 @@
 export default {
   data() {
     return {
-      partidas: []
+      partidas: [],
+      dialog: false,
+      id: null
     }
   },
   computed: {
@@ -61,8 +91,16 @@ export default {
   },
   methods: {
     cargarPartida(id) {
-      this.$store.commit('cargarPartida', id)
-      this.$router.push('/')
+      this.$store.dispatch('cargarPartida', id)
+      this.$router.push('/Estadistica')
+    },
+    eliminarPartida() {
+      this.$store.dispatch('eliminarPartida', this.id)
+      this.dialog = false
+    },
+    abrirDialog(id) {
+      this.id = id
+      this.dialog = true
     }
   }
 

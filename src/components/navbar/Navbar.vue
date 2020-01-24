@@ -1,7 +1,7 @@
 <template>
   <div class="nav">
     <v-toolbar color="deep-purple accent-4" dark>
-      <v-app-bar-nav-icon @click="drawer = !drawer" class="d-flex d-sm-none"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="drawer = !drawer" ></v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to='/' tag='span' style='cursor: pointer'>
           <span>ESTADÍSTICA</span>
@@ -9,16 +9,16 @@
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="d-none d-sm-flex">
+      <!-- <v-toolbar-items class="d-none d-sm-flex">
         <v-btn text
         v-for="item in links"
         :key="item.titulo"
         @click="goTo(item.link)"
         class="white--text"
         >
-          <p>{{ item.titulo }}</p>
+          <v-icon left>{{ item.icon }}</v-icon>{{ item.titulo }}
         </v-btn>
-      </v-toolbar-items>
+      </v-toolbar-items> -->
     </v-toolbar>
     <v-navigation-drawer
       v-model="drawer"
@@ -54,28 +54,35 @@
 </template>
 
 <script>
+import firebase from 'firebase/app'
+import 'firebase/auth'
+
 export default {
 
 data() {
     return {
       drawer: false,
-      user: 'davidet'
+      user: null
     }
   },
   computed: {
     cargando() {
-      return this.$store.getters.loading
+      return this.$store.getters.carregant
+    },
+    rolUser() {
+      return this.$store.getters.rolUser
     },
     links() {
-      let menuItems = [{icon: 'lock_open', titulo: 'log In', link: '/login'}]
+      let menuItems = [{icon: 'mdi-lock-open-variant', titulo: 'LOG IN', link: '/login'},
+      {icon: 'mdi-cloud-download', titulo: 'CARREGAR PARTIDA', link: '/cargarpartida'}]
       if(this.user) {
         menuItems = [
-        {icon: 'control_point', titulo: 'Afegir Partida', link: '/afegirpartida'},
-        {icon: 'control_point', titulo: 'Carregar partida', link: '/cargarpartida'},
-        {icon: 'control_point', titulo: 'Resum', link: '/resum'},
-        /* {icon: 'exit_to_app', titulo: 'log Out', link: 'logout'} */]
+        {icon: 'mdi-tennis-ball', titulo: 'Afegir partida', link: '/afegirpartida'},
+        {icon: 'mdi-cloud-download', titulo: 'Carregar partida', link: '/cargarpartida'},
+        {icon: 'mdi-account-group', titulo: 'Resum', link: '/resum'},
+        {icon: 'mdi-logout', titulo: 'LOG OUT', link: 'logout'}]
         if(this.rolUser === 'admin') {
-          menuItems.push({icon: 'how_to_reg', titulo: 'Crear Usuario', link: '/signin'})
+          menuItems.push({icon: 'mdi-account-plus', titulo: 'Crear Usuario', link: '/signin'})
         }
       } 
       return menuItems
@@ -92,7 +99,7 @@ data() {
       this.drawer = false
     }
   },
-  /* created() {
+  created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.user = firebase.auth().currentUser
@@ -100,7 +107,7 @@ data() {
         this.user = null
       }
     })
-  } */
+  }
 
 }
 </script>

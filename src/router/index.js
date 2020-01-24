@@ -3,7 +3,14 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import AfegirPartida from '../views/AfegirPartida.vue'
 import CargarPartida from '../views/CargarPartida.vue'
+import Estadistica from '../views/Estadistica.vue'
 import Resum from '../views/Resum.vue'
+import LogIn from '../views/users/LogIn.vue'
+import SignIn from '../views/users/SignIn.vue'
+import Test from '../views/test/Test.vue'
+
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
 Vue.use(VueRouter)
 
@@ -16,7 +23,18 @@ const routes = [
   {
     path: '/afegirpartida',
     name: 'afegirpartida',
-    component: AfegirPartida
+    component: AfegirPartida,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/estadistica',
+    name: 'estadistica',
+    component: Estadistica,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/cargarpartida',
@@ -26,7 +44,28 @@ const routes = [
   {
     path: '/resum',
     name: 'resum',
-    component: Resum
+    component: Resum,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LogIn
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: Test
+  },
+  {
+    path: '/signin',
+    name: 'signin',
+    component: SignIn,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/about',
@@ -42,6 +81,19 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(rec => rec.meta.requiresAuth)) {
+    let user = firebase.auth().currentUser
+    if(user) {
+      next()
+    } else {
+      next({name: 'home'})
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

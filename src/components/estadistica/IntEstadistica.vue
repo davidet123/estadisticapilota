@@ -1,17 +1,88 @@
 <template>
   <v-container fluid class="pa-0">
     <v-row>
-      <v-col cols="6" class="mx-auto" align="center">
+      <v-col cols="1" class="mx-auto pa-0">
+        <v-switch
+        v-model="mostrar"
+        v-if="user == 'admin'"
+      ></v-switch>
+      </v-col>
+      
+    </v-row>
+    <v-row>
+      <v-col v-if="mostrar" cols="6" class="mx-auto" align="center">
         <p>{{ duradaMin }} min : {{ duradaSec }} seg</p>
         <v-btn @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
         <v-btn @click="reset" :disabled="temporizador">Reset crono</v-btn> 
       </v-col>
       <v-col cols="6" align="center">
-        <p>DURADA ÚLTIM JOC</p>
-        <h3>{{ temps }}</h3>
-
+        <span>DURADA ÚLTIM JOC:</span>
+        <span class="font-weight-bold ml-2"> {{ temps }}</span>
+        <br>
+        <v-btn class="mt-2" @click="dialog = true">MOSTRAR DURADES</v-btn>
       </v-col>
     </v-row>
+    <v-dialog
+        v-model="dialog" max-width="490">
+        <v-card>
+          <v-card-title class="headline">DURADES DELS JOCS</v-card-title>
+          <v-card-subtitle class="mt-1">
+            Llistat de todes les durades de la partida
+          </v-card-subtitle>
+          <v-card-text>
+            <v-simple-table>
+              <div align="center">
+                <thead  >
+                  <tr>
+                    <th width="80px" class="text-center">Joc</th>
+                    <th width="280px" class="text-center">Durada</th>
+                    <th width="80px" class="text-center" v-if="mostrar">Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(index, durada) in partida.durades" :key="durada">
+                    <td>{{ durada + 1 }} </td>
+                    <td>{{ formatDurada(index) }}</td>
+                    <td v-if="mostrar"> 
+                      <v-btn color="error" fab x-small @click="deleteDurada(durada)">
+                        <v-icon>mdi-delete</v-icon>  
+                      </v-btn> </td>
+                  </tr>
+                </tbody>
+              </div>
+              <v-sheet color="deep-orange darken-1">
+                <v-sparkline
+                class="my-4"
+                color="white"
+                :value="partida.durades"
+                line-width="1"
+                padding="16"
+                radius="0"
+                :labels="numJocs"></v-sparkline>
+              </v-sheet>
+              
+            </v-simple-table>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="dialog = false"
+            >
+              Tancar
+            </v-btn>
+            <v-btn
+            v-if="user == 'admin'"
+              color="green darken-1"
+              text
+              @click="netejarDurades"
+            >
+              Netejar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 <!-- EQUIP ROIG -->
     <v-row>
       <v-col class="pa-0" cols="6" :sm="cajas"
@@ -27,14 +98,14 @@
               <v-col cols="6" align="center">
                 <p>COLPS</p>
                 <p class="text-center">{{ jugador.est_ind.colps }}</p>
-                <v-btn small @click="colps(1, jugador.est_ind)">+</v-btn>
-                <v-btn small @click="colps(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(1, jugador.est_ind)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(-1, jugador.est_ind)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
                 <p class="text-center">{{ jugador.est_ind.errades }}</p>
-                <v-btn small @click="errades(1, jugador.est_ind)">+</v-btn>
-                <v-btn small @click="errades(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(1, jugador.est_ind)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(-1, jugador.est_ind)">-</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -51,14 +122,14 @@
               <v-col cols="6" align="center">
                 <p>DIRECTA</p>
                 <p class="text-center">{{ treta_roig.tretes.directes }}</p>
-                <v-btn small @click="tretes(1, treta_roig.tretes)">+</v-btn>
-                <v-btn small @click="tretes(-1, treta_roig.tretes)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="tretes(1, treta_roig.tretes)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="tretes(-1, treta_roig.tretes)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
                 <p class="text-center">{{ treta_roig.tretes.faltes }}</p>
-                <v-btn small @click="erradaTreta(1, treta_roig.tretes)">+</v-btn>
-                <v-btn small @click="erradaTreta(-1, treta_roig.tretes)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="erradaTreta(1, treta_roig.tretes)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="erradaTreta(-1, treta_roig.tretes)">-</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -81,14 +152,14 @@
               <v-col cols="6" align="center">
                 <p>COLPS</p>
                 <p class="text-center">{{ jugador.est_ind.colps }}</p>
-                <v-btn small @click="colps(1, jugador.est_ind)">+</v-btn>
-                <v-btn small @click="colps(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(1, jugador.est_ind)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(-1, jugador.est_ind)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
                 <p class="text-center">{{ jugador.est_ind.errades }}</p>
-                <v-btn small @click="errades(1, jugador.est_ind)">+</v-btn>
-                <v-btn small @click="errades(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(1, jugador.est_ind)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(-1, jugador.est_ind)">-</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -105,14 +176,14 @@
               <v-col cols="6" align="center">
                 <p>DIRECTA</p>
                 <p class="text-center">{{ treta_blau.tretes.directes }}</p>
-                <v-btn small @click="tretes(1, treta_blau.tretes)">+</v-btn>
-                <v-btn small @click="tretes(-1, treta_blau.tretes)">-</v-btn>
+                <v-btn small v-if="mostrar" @click="tretes(1, treta_blau.tretes)">+</v-btn>
+                <v-btn small v-if="mostrar" @click="tretes(-1, treta_blau.tretes)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
-                <p class="text-center">{{ treta_roig.tretes.faltes }}</p>
-                <v-btn small @click="erradaTreta(1, treta_blau.tretes)">+</v-btn>
-                <v-btn small @click="erradaTreta(-1, treta_blau.tretes)">-</v-btn>
+                <p class="text-center">{{ treta_blau.tretes.faltes }}</p>
+                <v-btn small v-if="mostrar" @click="erradaTreta(1, treta_blau.tretes)">+</v-btn>
+                <v-btn small v-if="mostrar" @click="erradaTreta(-1, treta_blau.tretes)">-</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -130,8 +201,8 @@
             <v-row >
               <v-col cols="12" align="center">
                 <h3 class="text-center mb-3">{{ jugadors_rojos[0].caigudes.quinzes }}/{{ jugadors_rojos[0].caigudes.total }}</h3>
-                <v-btn small @click="caigudes(0, jugadors_rojos[0].caigudes)">CAIGUDA</v-btn>
-                <v-btn small @click="caigudes(1, jugadors_rojos[0].caigudes)">QUINZE</v-btn>
+                <v-btn v-if="mostrar" small @click="caigudes(0, jugadors_rojos[0].caigudes)">CAIGUDA</v-btn>
+                <v-btn v-if="mostrar" small @click="caigudes(1, jugadors_rojos[0].caigudes)">QUINZE</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -147,8 +218,8 @@
             <v-row >
               <v-col cols="12" align="center">
                 <h3 class="text-center mb-3">{{ jugadors_blaus[0].caigudes.quinzes }}/{{ jugadors_blaus[0].caigudes.total }}</h3>
-                <v-btn small @click="caigudes(0, jugadors_blaus[0].caigudes)">CAIGUDA</v-btn>
-                <v-btn small @click="caigudes(1, jugadors_blaus[0].caigudes)">QUINZE</v-btn>
+                <v-btn v-if="mostrar" small @click="caigudes(0, jugadors_blaus[0].caigudes)">CAIGUDA</v-btn>
+                <v-btn v-if="mostrar" small @click="caigudes(1, jugadors_blaus[0].caigudes)">QUINZE</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -161,12 +232,12 @@
           <h3>CANVIS DE PILOTA</h3>
           <v-row>
             <v-col>
-              <h3>{{ this.equip_roig.canvi_pilota }}</h3>
-              <v-btn dark color="red" @click="canviPilota('roig')">CANVI PIL ROIG</v-btn>
+              <h3 class="red--text">EQUIP ROIG  {{ this.equip_roig.canvi_pilota }}</h3>
+              <v-btn v-if="mostrar" dark color="red" @click="canviPilota('roig')">CANVI PIL ROIG</v-btn>
             </v-col>
             <v-col>
-              <h3>{{ this.equip_blau.canvi_pilota }}</h3>
-              <v-btn dark color="blue" @click="canviPilota('blau')">CANVI PIL BLAU</v-btn> 
+              <h3 class="blue--text">EQUIP BLAU {{ this.equip_blau.canvi_pilota }}</h3>
+              <v-btn v-if="mostrar" dark color="blue" @click="canviPilota('blau')">CANVI PIL BLAU</v-btn> 
             </v-col>
           </v-row>
         </v-col>
@@ -177,8 +248,11 @@
         <v-col cols="12" class="mx-auto" align="center">
           <h3>TRAVESSES</h3>
           <v-row>
-            <v-col class="mb-0 pb-0">
+            <v-col  cols="12" class="mb-0 pb-0">
               <P>{{ this.partida.travesses }}</P>
+              
+            </v-col>
+            <v-col class="mb-0 pb-0" v-if="mostrar">
               <v-btn small dark color="red" @click="travesa('als rojos')">ROJOS</v-btn>
               <v-btn small dark color="red" @click="travesa('de 5 als rojos')">5</v-btn>
               <v-btn small dark color="red" @click="travesa('de 10 als rojos')">10</v-btn>
@@ -187,7 +261,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col class="mt-0 pt-0">
+            <v-col class="mt-0 pt-0" v-if="mostrar">
               <v-btn small dark color="blue" @click="travesa('als blaus')">BLAUS</v-btn>
               <v-btn small dark color="blue" @click="travesa('de 5 als blaus')">5</v-btn>
               <v-btn small dark color="blue" @click="travesa('de 10 als blaus')">10</v-btn>
@@ -198,6 +272,11 @@
         </v-col>
       </v-row>
     </v-sheet>
+    <v-row v-if="mostrar">
+      <v-col cols="12" align="center">
+        <v-btn @click="irEstadistica()">ESTADÍSTICA FINAL</v-btn>
+      </v-col>
+    </v-row>
     
 <!--     <p>{{ partida }}</p> -->
   </v-container>
@@ -216,20 +295,18 @@ export default {
       interval: null,
       duradaMin: 0,
       duradaSec: 0,
-      /* partida: null */
-
-
-
-
-
-
-
-      
+      mostrar: true,
+      dialog: false,
+      user: null
     }
   },
   computed: {
     partida() {
+      let user = this.$store.getters.rolUser
+      this.setUser(user)
       return this.$store.getters.partida
+      
+      
     },
     jugadors_rojos() {
       const jugadors = this.equip_roig.jugadors.filter(item => {
@@ -259,16 +336,29 @@ export default {
       return Math.round(12 / (this.jugadors_rojos.length +1))
     },
     temps() {
-      let joc = this.partida.durades[this.partida.durades.length-1]
+      /* let joc = this.partida.durades[this.partida.durades.length-1]
       let min = Math.round(joc / 60)
-      let sec = joc - (min*60)
-      return this.partida.durades.length > 0 ? min + "' " + sec + '"' : 0
+      let sec = joc - (min*60) */
+      return this.partida.durades.length > 0 ? this.formatDurada(this.partida.durades[this.partida.durades.length-1]) : 0
+    },
+    numJocs() {
+      let i = 1
+      let jocs = []
+      this.partida.durades.forEach( () => {
+        jocs.push(i)
+        i++
+      })
+      return jocs
     }
 
   },
   methods: {
     cargarPartida() {
       this.partida = this.$store.getters.partida
+    },
+    deleteDurada(item) {
+      this.partida.durades.splice(item, 1)
+      this.update()
     },
     colps(i, est) {
       est.colps += i
@@ -319,18 +409,45 @@ export default {
         }, 1000)
       } else {
         this.partida.durades.push(this.durada)
+        //console.log(this.partida.durades)
         this.update()
         clearInterval(this.interval)
-      }     
+        }
+    },
+    netejarDurades() {
+      this.partida.durades = []
+      this.update
     },
     reset() {
       this.durada = 0
       this.duradaMin = 0
       this.duradaSec = 0
     },
+    formatDurada(item) {
+      let joc = item
+      let min = Math.floor(joc / 60)
+      let sec = joc - (min*60)
+      return min + ' min ' + sec + ' seg'
+    },
     update() {
       this.$store.dispatch('updatePartida', this.partida)
       //this.cargarPartida()
+    },
+    setUser(user) {
+      this.user = user
+      //console.log(user)
+      if(user == 'admin') {
+        this.mostrar = true
+      }
+      if(user == 'editor') {
+        this.mostrar = true
+      }
+      if (user == null || user == 'miembro') {
+        this.mostrar = false
+      }
+    },
+    irEstadistica() {
+      this.$router.push('/resum')
     }
   },/*
   created() {

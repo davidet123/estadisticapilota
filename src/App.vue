@@ -1,8 +1,6 @@
 <template>
-  <v-app>
+  <v-app class="clearBg">
     <Navbar/>
-    
-
     <v-content>
       <router-view/>
     </v-content>
@@ -11,6 +9,9 @@
 
 <script>
 import Navbar from './components/navbar/Navbar.vue';
+
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
 export default {
   name: 'App',
@@ -23,8 +24,21 @@ export default {
     //
   }),
   created() {
-    /* this.$store.dispatch('cargarListado') */
+    this.$store.dispatch('cargarListado')
+    this.$store.dispatch('partidaCargada')
     this.$store.dispatch('actualizarListado')
+
+    let user = firebase.auth().currentUser
+    /* console.log(user) */
+    if(user) {
+      this.$store.dispatch('setUser', user.uid)
+    }
   }
 };
 </script>
+<style>
+  .clearBg {
+    background: none;
+  }
+
+</style>

@@ -14,33 +14,22 @@
             <h2 class="text-center">ESTADÍSTICA PILOTA</h2>
           </v-col>
         </v-row>
-        <div class="botones_inicio" v-if="partidaCargada == null">
-          <v-row>
-            <v-col class="text-center">
-              <v-btn class="mb-5"
-              @click="goto('/afegirPartida')"
-              v-if="user">Afegir Partida</v-btn>
-              <br>
-              <v-btn class="mb-5"
-              @click="goto('/cargarPartida')">Carregar Partida</v-btn>
-              <br>
-              <v-btn
-              @click="goto('/login')"
-              v-if="user == null">Log in</v-btn>
-            </v-col>
-          </v-row>
-        </div>
       <div v-if="partidaCargada">
         
-        <v-row>
-          <v-col align="center">
-            <h3 class="mb-3">N'hi ha una partida carregara</h3>
-            <v-btn @click="goto('/estadistica')">Anar a la partida</v-btn>
-            <br>
-            <v-btn class="mt-3" @click="goto('/cargarpartida')">Carregar altra partida</v-btn>
-          </v-col>
-        </v-row>      
+        <IntEstadistica />
+        <!-- <p>
+          {{ partida }}
+        </p> -->      
            
+      </div>
+      <div v-if="!partidaCargada">  
+        <v-row>
+          <v-col>
+            <h3>Has de carregar una partida</h3>
+            <v-btn @click="goto('/cargarpartida')">Carregar Partida</v-btn>
+          </v-col>
+        </v-row>
+
       </div>
     </div>
 <!--     </v-parallax> -->
@@ -51,12 +40,14 @@
 
 <script>
 // @ is an alias to /src
-
+import IntEstadistica from '@/components/estadistica/IntEstadistica'
 
 
 export default {
   name: 'home',
-  
+  components: {
+    IntEstadistica
+  },
   data() {
     return{
       durada: 0,
@@ -75,8 +66,7 @@ export default {
     },
     user() {
       return this.$store.getters.userStatus
-    },
-
+    }
     /* partida() {
       return this.$store.getters.partida
     },
@@ -86,12 +76,7 @@ export default {
   },
   methods: {
     goto(link) {
-      if(this.user) {
-        this.$router.push(link)
-      } else {
-        this.$router.push('/login')
-      }
-      
+      this.$router.push(link)
     },
     tiempo() {
       this.temporizador = !this.temporizador
