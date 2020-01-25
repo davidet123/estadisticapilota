@@ -9,17 +9,23 @@
       </v-col>
       
     </v-row>
-    <v-row>
+    <v-row> 
+      <v-col cols="12" align="center">
+        <v-btn v-if="user == 'admin' || user == 'editor'" :disabled="temporizador_partida" @click="iniciPartida(true)">INICI PARTIDA</v-btn>
+        <v-btn v-if="user == 'admin' || user == 'editor'" @click="iniciPartida(false)">FINAL PARTIDA</v-btn>
+        <p>TEMPS TOTAL: {{ durada_total_str }}</p>
+      </v-col>
       <v-col v-if="mostrar" cols="6" class="mx-auto" align="center">
         <p>{{ duradaMin }} min : {{ duradaSec }} seg</p>
         <v-btn @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
         <v-btn @click="reset" :disabled="temporizador">Reset crono</v-btn> 
       </v-col>
-      <v-col cols="6" align="center">
+      <v-col cols="6" align="center" class="mx-auto">
         <span>DURADA ÚLTIM JOC:</span>
         <span class="font-weight-bold ml-2"> {{ temps }}</span>
         <br>
         <v-btn class="mt-2" @click="dialog = true">MOSTRAR DURADES</v-btn>
+        <v-btn class="mt-2" @click="actualizar_durada()">ACTUALIZAR DURADA TOTAL</v-btn>
       </v-col>
     </v-row>
     <v-dialog
@@ -272,7 +278,7 @@
         </v-col>
       </v-row>
     </v-sheet>
-    <v-row v-if="mostrar">
+    <v-row>
       <v-col cols="12" align="center">
         <v-btn @click="irEstadistica()">ESTADÍSTICA FINAL</v-btn>
       </v-col>
@@ -297,7 +303,12 @@ export default {
       duradaSec: 0,
       mostrar: true,
       dialog: false,
-      user: null
+      user: null,
+      temporizador_partida: false,
+      temps_total: null,
+      durada_total_str: null,
+      hora_final_partida: null,
+      hora_actual_partida: null
     }
   },
   computed: {
@@ -305,8 +316,6 @@ export default {
       let user = this.$store.getters.rolUser
       this.setUser(user)
       return this.$store.getters.partida
-      
-      
     },
     jugadors_rojos() {
       const jugadors = this.equip_roig.jugadors.filter(item => {
@@ -341,6 +350,20 @@ export default {
       let sec = joc - (min*60) */
       return this.partida.durades.length > 0 ? this.formatDurada(this.partida.durades[this.partida.durades.length-1]) : 0
     },
+    /* temps_total() {
+      let tiempo_actual = Date.now() / 1000
+      let tiempo_inicio = this.hora_inici / 1000
+
+      let tiempo = Math.round(tiempo_actual - tiempo_inicio) 
+      let tiempo_min = Math.floor(tiempo / 60)
+      let tiempo_sec = tiempo - (tiempo_min * 60)
+    
+      
+      return tiempo_min.toString() + ' min : ' + tiempo_sec.toString() + ' seg'
+    }, */
+    hora_inici() {
+      return this.partida.hora_inici
+    },
     numJocs() {
       let i = 1
       let jocs = []
@@ -349,6 +372,9 @@ export default {
         i++
       })
       return jocs
+    },
+    temporizador_partida_flag() {
+      return this.partida.temporizador_partida
     }
 
   },
@@ -429,16 +455,51 @@ export default {
       let sec = joc - (min*60)
       return min + ' min ' + sec + ' seg'
     },
+    iniciPartida(activo) {
+      if(this.partida.hora_inici == null) {
+        this.partida.hora_inici = Date.now()
+        
+      }
+      this.temporizador_partida = activo
+      /* this.update() */
+      //console.log(this.partida.temporizador)
+      if(activo) {
+        this.temps_total = setInterval(() => {
+          this.partida.hora_final = null
+          this.update()
+          this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+        }, 1000)
+      } else {
+          this.partida.hora_final = Date.now()
+          this.update() 
+          clearInterval(this.temps_total)
+      }
+      
+    },
+    actualizar_durada() {
+      let actual = this.partida.hora_final == null ? Date.now() : this.partida.hora_final
+      
+      this.durada_total_str = this.calcular_tiempo(actual, this.partida.hora_inici)
+    },
+    calcular_tiempo(actual, inicio) {
+      let tiempo_actual = actual / 1000
+      let tiempo_inicio = inicio / 1000
+      let tiempo = Math.round(tiempo_actual - tiempo_inicio) 
+      let tiempo_min = Math.floor(tiempo / 60)
+      let tiempo_sec = tiempo - (tiempo_min * 60)
+      return tiempo_min.toString() + ' min : ' + tiempo_sec.toString() + ' seg'
+    },
     update() {
       this.$store.dispatch('updatePartida', this.partida)
-      //this.cargarPartida()
     },
     setUser(user) {
       this.user = user
       //console.log(user)
-      if(user == 'admin') {
-        this.mostrar = true
-      }
+      if(this.user == null) {
+        if(user == 'admin') {
+          this.mostrar = true
+        }
+      }      
       if(user == 'editor') {
         this.mostrar = true
       }
@@ -449,7 +510,28 @@ export default {
     irEstadistica() {
       this.$router.push('/resum')
     }
-  },/*
+  },
+  mounted() {
+    /* if(this.hora_inici != null) {
+      this.partida.temporizador = false
+      this.temps_total = setInterval(() => {
+          //this.hora_final_partida = null
+          this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+        }, 1000)
+    } */
+  },
+  watch: {
+    temporizador_partida_flag() {
+      if(this.temporizador_partida == false) {
+        console.log('stop')
+        //clearInterval(this.temps_total)
+      }
+    }
+  }
+  
+  
+  
+  /*
   created() {
     this.cargarPartida()
   } ,

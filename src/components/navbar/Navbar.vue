@@ -29,6 +29,7 @@
     >
       <p class="font-weight-black white--text mx-auto px-2 pt-2">Estadistica voley</p>
       <v-divider color="white"></v-divider>
+      <!-- <h4 class="pa-4 white--text">{{ userCargado.user }}</h4> -->
       <v-list>
         <v-list-item
         v-for="item in links"
@@ -68,6 +69,9 @@ data() {
   computed: {
     cargando() {
       return this.$store.getters.carregant
+    },
+    userCargado() {
+      return this.$store.getters.userStatus
     },
     rolUser() {
       return this.$store.getters.rolUser

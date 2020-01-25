@@ -55,6 +55,7 @@ export default {
     setUser: (context, payload) => {
       /*   */
       context.user = payload
+
     }
   },
   actions: {

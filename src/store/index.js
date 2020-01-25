@@ -155,7 +155,7 @@ export default new Vuex.Store({
       context.partides.push(payload)
     },
     cargarPartida: (context, payload) => {
-      console.log(payload)
+      //console.log(payload)
       if(payload == null) {
         context.partida = null
       } else {
@@ -220,7 +220,7 @@ export default new Vuex.Store({
           if (change.type === 'modified') {
             commit('actualizarPartida', partida)
           } else if(change.type === 'added' && state.carregant) {
-            console.log('addPartida')
+            //console.log('addPartida')
             commit('addPartidas', partida)
           }
         })
@@ -233,10 +233,12 @@ export default new Vuex.Store({
       })
     },
     cargarPartida: ({commit}, payload) => {
+      commit('carregant', true)
       db.collection('partida_cargada').doc('UzBxIXYsndS4Ze3DizHd').update({id:payload})
       .then(() => {
           commit('partidaCargada', payload)
           commit('cargarPartida', payload)
+          commit('carregant', false)
       })
         
     },

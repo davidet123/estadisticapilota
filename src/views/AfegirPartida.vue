@@ -189,7 +189,10 @@ export default {
         tipo: this.tipo,
         data: this.date,
         lloc: this.lloc,
+        hora_inici: null,
+        hora_final: null,
         travesses: null,
+        temporizador: false,
         durades: [],
         equip_roig: {
           nom_equip: this.nom_rojos || this.equip_roig[0],
