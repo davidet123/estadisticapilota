@@ -7,14 +7,33 @@
       ></v-progress-circular>
     </div>
     <div v-if="!cargando">
-
-    
       <v-row>
         <v-col cols="12">
           <h3 class="text-center">RESUM PARTIDA</h3>
         </v-col>
       </v-row>
       <v-row v-if="partidaCargada">
+          <v-col cols="12">
+            <v-sheet elevation="4" width="300px" class="mx-auto">
+              <v-col cols="12" align="center">
+                <v-row>
+                  <v-col cols="3" class="pa-0">
+                    <h3 class="red--text py-1"> {{  marcador.jocs_rojos * 5 }}</h3>
+                  </v-col>
+                  <v-col cols="3" class="pa-0">
+                    <h3 class="red white--text py-1"> {{ punto_str[marcador.punts_rojos] }}</h3>
+                  </v-col>
+                  <v-col cols="3" class="pa-0">
+                    <h3 class="blue white--text py-1"> {{ punto_str[marcador.punts_blaus] }}</h3>
+                  </v-col>
+                  <v-col cols="3" class="pa-0">
+                    <h3 class="blue--text py-1"> {{  marcador.jocs_blaus * 5 }}</h3>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-sheet>
+          </v-col>
+
         <v-col class="caja" cols="12" sm="6">
           <v-card >
             <v-card-title class="red">
@@ -94,9 +113,9 @@
                   </thead>
                   <tbody>
                     <tr v-for="(jugador) in partida.equip_roig.jugadors" :key="jugador.nom">
-                      <td>{{ jugador.nom }} </td>
-                      <td>{{ jugador.est_ind.colps }}</td>
-                      <td>{{ jugador.est_ind.errades }}</td>
+                      <td v-if="jugador.nom != null || jugador.nom == ''">{{ jugador.nom }} </td>
+                      <td v-if="jugador.nom != null || jugador.nom == ''">{{ jugador.est_ind.colps }}</td>
+                      <td v-if="jugador.nom != null || jugador.nom == ''">{{ jugador.est_ind.errades }}</td>
                     </tr>
                   </tbody>
                   <v-divider></v-divider>
@@ -132,16 +151,6 @@
                     </tr>
                   </tbody>
                 </div>
-                <!-- <v-sheet color="deep-orange darken-1">
-                  <v-sparkline
-                  class="my-4"
-                  color="white"
-                  :value="partida.durades"
-                  line-width="1"
-                  padding="16"
-                  radius="0"
-                  :labels="numJocs"></v-sparkline>
-                </v-sheet> -->
               </v-simple-table>
         </v-col>
         <v-col cols="12" sm="6" class="mx-0 px-0">
@@ -158,9 +167,9 @@
                   </thead>
                   <tbody>
                     <tr v-for="(jugador) in partida.equip_blau.jugadors" :key="jugador.nom">
-                      <td>{{ jugador.nom }} </td>
-                      <td>{{ jugador.est_ind.colps }}</td>
-                      <td>{{ jugador.est_ind.errades }}</td>
+                      <td v-if="jugador.nom != null || jugador.nom == ''">{{ jugador.nom }} </td>
+                      <td v-if="jugador.nom != null || jugador.nom == ''">{{ jugador.est_ind.colps }}</td>
+                      <td v-if="jugador.nom != null || jugador.nom == ''">{{ jugador.est_ind.errades }}</td>
                     </tr>
                   </tbody>
                   <v-divider></v-divider>
@@ -195,29 +204,15 @@
                       <td>{{ partida.equip_blau.jugadors[0].caigudes.quinzes }} / {{ partida.equip_blau.jugadors[0].caigudes.total }}</td>
                     </tr>
                   </tbody>
-                </div>
-                <!-- <v-sheet color="deep-orange darken-1">
-                  <v-sparkline
-                  class="my-4"
-                  color="white"
-                  :value="partida.durades"
-                  line-width="1"
-                  padding="16"
-                  radius="0"
-                  :labels="numJocs"></v-sparkline>
-                </v-sheet> -->
+                </div>                
               </v-simple-table>
         </v-col>
       </v-row>
-
-
-
-
-
       <v-row>
         <v-col align="center">
           <v-btn v-if="this.user == 'admin'" @click="netejar()">Netejar cache partida</v-btn>
-          <v-btn @click="goto('/estadistica')">Tornar a la partida</v-btn>
+          <v-btn v-if="user" @click="goto('/estadistica')">Tornar a la partida</v-btn>
+          <v-btn v-if="!user" @click="goto('/')">Tornar al inici</v-btn>
         </v-col>
       </v-row>
     </div>
@@ -226,15 +221,26 @@
 
 <script>
 export default {
+  props: [
+    'id'
+  ],
+  data() {
+    return {
+      punto_str: ['NET', '15', '30', 'VAL'],
+    }
+  },
   computed: {
     cargando() {
       return this.$store.getters.cargando
     },
     partidaCargada() {
-      return this.$store.getters.partidaCargada
+      return this.$store.getters.buscarPartida(this.$route.params.id)
     },
     partida() {
-      return this.$store.getters.partida
+      return this.$store.getters.buscarPartida(this.$route.params.id)
+    },
+    marcador() {
+      return this.partida.marcador
     },
     equip_roig() {
       return this.partida.equip_roig
@@ -289,7 +295,6 @@ export default {
       return this.equip_blau.canvi_pilota
     },
     user() {
-      console.log(this.$store.getters.rolUser)
       return this.$store.getters.rolUser
     }
     

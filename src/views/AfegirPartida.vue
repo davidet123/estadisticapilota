@@ -157,6 +157,8 @@
         </v-col>
       </v-row>
     </v-form>
+    {{ date }}
+    
   </v-container>
 </template>
 
@@ -185,7 +187,15 @@ export default {
     },
     validar() {
       let partida = {
+        feedback: '',
         partidaa: this.partidaa,
+        marcador: {punts_rojos: 0, jocs_rojos: this.tanteig_inicial, punts_blaus: 0, jocs_blaus: this.tanteig_inicial},
+        parcials: {
+          jocs: [],
+          punts: {joc1:[]},
+          joc_actual: 1,
+          parcial_actual:[]
+        },
         tipo: this.tipo,
         data: this.date,
         lloc: this.lloc,
@@ -295,114 +305,6 @@ export default {
           punts: parseInt(this.tanteig_inicial),
           canvi_pilota: 0
         },
-      /* let partida = {
-        partidaa: this.partidaa,
-        tipo: this.tipo,
-        data: this.date,
-        lloc: this.lloc,
-        durades: [],
-        equip_roig: {
-          nom_equip: this.nom_rojos || this.equip_roig[0],
-          jugadors: {
-            jug1: {
-              num: 1,
-              nom: this.equip_roig[0],
-              est_ind: {
-                colps: 0,
-                errades: 0
-              },
-              caigudes: {
-                total: 0,
-                quinzes: 0
-              }
-            },
-            jug2: {
-              num: 2,
-              nom: this.equip_roig[1],
-              est_ind: {
-                colps: 0,
-                errades: 0
-              },
-              caigudes: {
-                total: 0,
-                quinzes: 0
-              }
-            },
-            jug3: {
-              num: 3,
-              nom: this.equip_roig[2],
-              est_ind: {
-                colps: 5,
-                errades: 0
-              },
-              caigudes: {
-                total: 0,
-                quinzes: 0
-              }
-            },
-          },
-          treta: {
-              num: 4,
-              nom: this.equip_roig[3],
-              tretes: {
-                directes: 0,
-                faltes: 0
-              }
-          },
-          punts: parseInt(this.tanteig_inicial),
-          canvi_pilota: 0
-        },
-        equip_blau: {
-          nom_equip: this.nom_blaus || this.equip_blau[0],
-          jugadors: {
-            jug1: {
-              num: 1,
-              nom: this.equip_blau[0],
-              est_ind: {
-                colps: 5,
-                errades: 0
-              },
-              caigudes: {
-                total: 0,
-                quinzes: 0
-              }
-            },
-            jug2: {
-              num: 2,
-              nom: this.equip_blau[1],
-              est_ind: {
-                colps: 5,
-                errades: 0
-              },
-              caigudes: {
-                total: 0,
-                quinzes: 0
-              }
-            },
-            jug3: {
-              num: 3,
-              nom: this.equip_blau[2],
-              est_ind: {
-                colps: 5,
-                errades: 0
-              },
-              caigudes: {
-                total: 0,
-                quinzes: 0
-              }
-            },
-          },
-          treta: {
-              num: 4,
-              nom: this.equip_blau[3],
-              tretes: {
-                directes: 2,
-                faltes: 0
-              }
-          },
-          punts: parseInt(this.tanteig_inicial),
-          canvi_pilota: 0
-        }, */
       }
       if(partida.equip_roig.jugadors[0].nom != null && partida.equip_blau.jugadors[0].nom != null && partida.equip_roig.jugadors[0].nom != '' && partida.equip_blau.jugadors[0].nom != '' ) {
         this.$store.commit('carregant', true)

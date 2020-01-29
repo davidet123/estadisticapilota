@@ -27,7 +27,7 @@
       color="deep-purple accent-4"
       dark
     >
-      <p class="font-weight-black white--text mx-auto px-2 pt-2">Estadistica voley</p>
+      <p class="font-weight-black white--text mx-auto px-2 pt-2">Estadistica pilota</p>
       <v-divider color="white"></v-divider>
       <!-- <h4 class="pa-4 white--text">{{ userCargado.user }}</h4> -->
       <v-list>

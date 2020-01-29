@@ -7,13 +7,13 @@ import router from '@/router'
 export default {
   state: {
     user: null,
-    feedback: null,
+    feedback_user: null,
     roles: ['admin', 'editor', 'miembro'],
    
   },
   getters: {
-    feedback: state=> {
-      return state.feedback
+    feedback_user: state=> {
+      return state.feedback_user
     },
     roles: state=> {
       return state.roles
@@ -34,7 +34,7 @@ export default {
     
   },
   mutations: {
-    feedback: (context, payload) => {
+    feedback_user: (context, payload) => {
       let err = payload
       let error
       if (err == 'auth/invalid-email') {
@@ -47,7 +47,7 @@ export default {
       } else {
         error = payload
       }
-      context.feedback = error
+      context.feedback_user = error
     },
     logOut(context) {
       context.user = null
@@ -64,7 +64,7 @@ export default {
       let ref = db.collection('users').doc(payload.user)
       ref.get().then(doc=> {
         if(doc.exists) {
-          commit('feedback', 'El usuari ja existeix')
+          commit('feedback_user', 'El usuari ja existeix')
         } else {
           firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
           .then(cred=> {
@@ -80,10 +80,10 @@ export default {
             })
           })
           .catch(err=> {
-            commit('feedback', err.code)
+            commit('feedback_user', err.code)
           })
           //console.log(doc)
-          //commit('feedback', 'Nom de usuari valid')
+          //commit('feedback_user', 'Nom de usuari valid')
         }
       })
     },
@@ -104,7 +104,7 @@ export default {
         })
       })
       .catch(err => {
-        commit('feedback', err.code)
+        commit('feedback_user', err.code)
       })
     },
     logOut({commit}) {

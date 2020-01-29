@@ -15,112 +15,6 @@ export default new Vuex.Store({
     listado_id: [],
     partides: [],
     partida: null
-    /* partida: {
-      id_partida: '001',
-      
-      equip_roig: {
-        nom_equip: 'barxeta',
-        jugadors: {
-          jug1: {
-            num: 1,
-            nom: 'molto',
-            est_ind: {
-              colps: 5,
-              errades: 0
-            },
-            caigudes: {
-              total: 0,
-              quinzes: 0
-            }
-          },
-          jug2: {
-            num: 2,
-            nom: 'sanchis',
-            est_ind: {
-              colps: 5,
-              errades: 0
-            },
-            caigudes: {
-              total: 0,
-              quinzes: 0
-            }
-          },
-          jug3: {
-            num: 3,
-            nom: 'vercher',
-            est_ind: {
-              colps: 5,
-              errades: 0
-            },
-            caigudes: {
-              total: 0,
-              quinzes: 0
-            }
-          },
-        },
-        treta: {
-            num: 4,
-            nom: 'molto',
-            tretes: {
-              directes: 2,
-              faltes: 0
-            }
-        },
-        punts: 0,
-        canvi_pilota: 0
-      },
-      equip_blau: {
-        nom_equip: 'xeraco',
-        jugadors: {
-          jug1: {
-            num: 1,
-            nom: 'ian',
-            est_ind: {
-              colps: 5,
-              errades: 0
-            },
-            caigudes: {
-              total: 0,
-              quinzes: 0
-            }
-          },
-          jug2: {
-            num: 2,
-            nom: 'marrahi',
-            est_ind: {
-              colps: 5,
-              errades: 0
-            },
-            caigudes: {
-              total: 0,
-              quinzes: 0
-            }
-          },
-          jug3: {
-            num: 3,
-            nom: 'pablo',
-            est_ind: {
-              colps: 5,
-              errades: 0
-            },
-            caigudes: {
-              total: 0,
-              quinzes: 0
-            }
-          },
-        },
-        treta: {
-            num: 4,
-            nom: 'ian',
-            tretes: {
-              directes: 2,
-              faltes: 0
-            }
-        },
-        punts: 0,
-        canvi_pilota: 0
-      }, 
-    }*/
   },
   getters: {
     cargando: state=> {
@@ -137,14 +31,24 @@ export default new Vuex.Store({
     },
     buscarPartida: state => {
       return id => {
-        return state.partida.find(partida => {
-          return partida.id_partida === id
+        return state.partides.find(partida => {
+          return partida.id === id
         })
       }
+    },
+    marcador: state => {
+      return state.partida.marcador
+    },
+    getFeedback: state => {
+      return state.partida.feedback
     }
 
   },
   mutations: {
+    /* feedback: (context, payload) => {
+      console.log(payload)
+      context.feedback = payload
+    },  */ 
     carregant: (context, payload) => {
       context.carregant = payload
     },
@@ -162,12 +66,21 @@ export default new Vuex.Store({
         const item = context.partides.find(partida => {
           return partida.id === payload
         })
-        //console.log(payload)
         context.partida = item
       }
     },
     actualizarPartida: (context, payload) => {
       context.partida = payload
+      let lista = context.partides.find(partida => {
+        return partida.id == payload.id
+      })
+      //console.log(lista)
+      lista.marcador = payload.marcador
+      lista.parcials = payload.parcials
+      lista.travesses = payload.travesses
+      lista.durades = payload.durades
+      lista.equip_roig = payload.equip_roig
+      lista.equip_blau = payload.equip_blau
     },
     eliminarPartida: (context, payload) => {
       context.partides = context.partides.filter(partida => {
@@ -176,12 +89,12 @@ export default new Vuex.Store({
     },
     partidaCargada: (context, payload) => {
       //console.log(payload)
-      context.partidaMemoria = payload
+      context.partida = payload
     }
   },
   actions: {
     addPartida: ({commit}, payload) => {
-      db.collection('partides').add(payload)
+      db.collection('partides_ok').add(payload)
       .then((data) => {
         let id = data._key.path.segments[1]
         payload.id = id
@@ -193,13 +106,14 @@ export default new Vuex.Store({
     cargarListado: ({commit}) => {
       //console.log('cargando...')
       commit('carregant', true)
-      db.collection('partides').get()
+      db.collection('partides_ok').get()
       .then (data => {
         data.forEach(doc=> {
           let partida = doc.data()
           partida.id = doc.id
           commit('addLista', partida.id)
           commit('addPartidas', partida)
+          //console.log(partida)
 
         })
         commit('carregant', false)
@@ -207,13 +121,13 @@ export default new Vuex.Store({
     },
     updatePartida: ({commit}, payload) => {
       commit('carregant', true)
-      const part = db.collection('partides').doc(payload.id)
+      const part = db.collection('partides_ok').doc(payload.id)
       //console.log('update')
       part.update(payload)
       commit('carregant', false)
     },
     actualizarListado: ({commit, state}) => {
-      db.collection('partides').onSnapshot(snapshot=> {
+      db.collection('partides_ok').onSnapshot(snapshot=> {
         snapshot.docChanges().forEach(change => {
           let partida = change.doc.data()
           partida.id = change.doc.id
@@ -226,8 +140,18 @@ export default new Vuex.Store({
         })
       })
     },
+    actualizarPartidaCargada: ({commit}) => {
+      db.collection('partida_cargada').onSnapshot(snapshot=> {
+        snapshot.docChanges().forEach(change => {
+          let partida = change.doc.data()
+          if (change.type === 'modified') {
+            commit('cargarPartida', partida.id)
+          }
+        })
+      })
+    },
     eliminarPartida: ({commit}, payload) => {
-      db.collection('partides').doc(payload).delete()
+      db.collection('partides_ok').doc(payload).delete()
       .then(() => {
         commit('eliminarPartida', payload)
       })

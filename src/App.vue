@@ -27,9 +27,10 @@ export default {
     this.$store.dispatch('cargarListado')
     this.$store.dispatch('partidaCargada')
     this.$store.dispatch('actualizarListado')
+    this.$store.dispatch('actualizarPartidaCargada')
+    
 
     let user = firebase.auth().currentUser
-    /* console.log(user) */
     if(user) {
       this.$store.dispatch('setUser', user.uid)
     }

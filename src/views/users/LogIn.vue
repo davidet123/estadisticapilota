@@ -6,14 +6,6 @@
         ref="form"
         v-model="valid"
         lazy-validation>
-        <!-- <v-text-field
-          v-model="name"
-          :counter="10"
-          :rules="nameRules"
-          label="Name"
-          required
-        ></v-text-field> -->
-
         <v-text-field
           v-model="email"
           :rules="emailRules"
@@ -22,6 +14,7 @@
         ></v-text-field>
         <v-text-field
           v-model="password"
+          :rules="passRules"
           type="password"
           label="Password"
           required
@@ -34,7 +27,7 @@
         >
           Acceptar
         </v-btn>
-      <p class="red--text mt-2">{{ feedback }}</p>
+      <p class="red--text mt-2">{{ feedback_user }}</p>
 
       </v-form>
     </v-sheet>
@@ -56,13 +49,17 @@ export default {
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
-      password: null
+      password: null,
+      passRules: [
+        v => !!v || 'Es requereix una contrasenya',
+        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+      ],
       
       
     }),
     computed: {
-      feedback() {
-        return this.$store.getters.feedback
+      feedback_user() {
+        return this.$store.getters.feedback_user
       }
     },
     methods: {

@@ -15,16 +15,22 @@
           </v-col>
         </v-row>
       <div v-if="partidaCargada">
-        
+        <Marcador />
         <IntEstadistica />
+        <Rotulos />
         <!-- <p>
           {{ partida }}
         </p> -->      
+        <v-row>
+          <v-col cols="12" align="center">
+            <v-btn @click="goto('/resum/' + partidaCargada.id)">ESTADÍSTICA FINAL</v-btn>
+          </v-col>
+        </v-row>
            
       </div>
       <div v-if="!partidaCargada">  
         <v-row>
-          <v-col>
+          <v-col align="center">
             <h3>Has de carregar una partida</h3>
             <v-btn @click="goto('/cargarpartida')">Carregar Partida</v-btn>
           </v-col>
@@ -32,6 +38,7 @@
 
       </div>
     </div>
+    
 <!--     </v-parallax> -->
     
   </v-container>
@@ -41,12 +48,16 @@
 <script>
 // @ is an alias to /src
 import IntEstadistica from '@/components/estadistica/IntEstadistica'
+import Marcador from '@/components/marcador/Marcador'
+import Rotulos from '@/components/rotulos/Rotulos'
 
 
 export default {
   name: 'home',
   components: {
-    IntEstadistica
+    IntEstadistica,
+    Marcador,
+    Rotulos
   },
   data() {
     return{
@@ -54,7 +65,9 @@ export default {
       temporizador: false,
       interval: null,
       duradaMin: 0,
-      duradaSec: 0
+      duradaSec: 0,
+      snackbar: false,
+      top: true
     }
   },
   computed: {
@@ -66,13 +79,10 @@ export default {
     },
     user() {
       return this.$store.getters.userStatus
-    }
-    /* partida() {
-      return this.$store.getters.partida
     },
-    jugadors_blau() {
-      return this.partida.equip_blau.jugadors
-    }, */
+    feedback() {
+      return this.$store.getters.getFeedback
+    }
   },
   methods: {
     goto(link) {
@@ -95,6 +105,12 @@ export default {
       this.duradaMin = 0
       this.duradaSec = 0
     }
+  },
+  watch: {
+    /* feedback: function(val) {
+      console.log(val)
+      this.snackbar = true
+    } */
   }
 }
 </script>

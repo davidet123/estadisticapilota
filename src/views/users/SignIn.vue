@@ -40,7 +40,7 @@
         >
           Acceptar
         </v-btn>
-      <p class="red--text mt-2">{{ feedback }}</p>
+      <p class="red--text mt-2">{{ feedback_user_user }}</p>
 
       </v-form>
     </v-sheet>
@@ -76,8 +76,8 @@ export default {
       
     }),
     computed: {
-      feedback() {
-        return this.$store.getters.feedback
+      feedback_user() {
+        return this.$store.getters.feedback_user
       },
       rol() {
         return this.$store.getters.rolUser

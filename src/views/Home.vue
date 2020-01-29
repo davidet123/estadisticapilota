@@ -9,53 +9,56 @@
       ></v-progress-circular>
     </div>
     <div v-if="!cargando">
-        <v-row>
-          <v-col>
-            <h2 class="text-center">ESTADÍSTICA PILOTA</h2>
-          </v-col>
-        </v-row>
-        <div class="botones_inicio" v-if="partidaCargada == null">
+      <div class="botones_inicio" v-if="user">
+        <v-sheet elevation="4" width="500px" class="mx-auto">
           <v-row>
-            <v-col class="text-center">
-              <v-btn class="mb-5"
-              @click="goto('/afegirPartida')"
-              v-if="user">Afegir Partida</v-btn>
-              <br>
-              <v-btn class="mb-5"
-              @click="goto('/cargarPartida')">Carregar Partida</v-btn>
-              <br>
-              <v-btn
-              @click="goto('/login')"
-              v-if="user == null">Log in</v-btn>
+            <v-col cols="12" class="text-center">
+              <h3 v-if="partidaCargada">PARTIDA CARREGADA</h3>
+              <h3 v-if="!partidaCargada">CAP PARTIDA CARREGADA</h3>
+            </v-col>
+            <v-divider></v-divider>
+            <v-col v-if="partidaCargada" cols="4" offset="2" align="center">
+              <h4>{{ partidaCargada.equip_roig.nom_equip }} vs {{ partidaCargada.equip_blau.nom_equip }}</h4>
+            </v-col>
+            <v-col v-if="partidaCargada" cols="4" align="center">
+              <v-btn small color="success" @click="goto('/estadistica')">ESTADISTICA</v-btn>
+            </v-col>
+            <v-col v-if="!partidaCargada" cols="12" align="center">
+              <v-btn small color="success" @click="goto('/cargarpartida')">CARREGAR PARTIDA</v-btn>
             </v-col>
           </v-row>
-        </div>
-      <div v-if="partidaCargada">
-        
+        </v-sheet>
+      </div>
+      <div>
+        <LlistaPartides />    
         <v-row>
           <v-col align="center">
-            <h3 class="mb-3">N'hi ha una partida carregara</h3>
-            <v-btn @click="goto('/estadistica')">Anar a la partida</v-btn>
-            <br>
-            <v-btn class="mt-3" @click="goto('/cargarpartida')">Carregar altra partida</v-btn>
+            <v-btn v-if="!user" @click="goto('/login')">Log in</v-btn>
+            <v-btn v-if="user" @click="goto('/cargarpartida')">Carregar Partida</v-btn>
           </v-col>
-        </v-row>      
+        </v-row>
            
       </div>
+      
     </div>
 <!--     </v-parallax> -->
+    
     
   </v-container>
   
 </template>
 
 <script>
+import LlistaPartides from '@/components/partidas/LlistaPartides'
 // @ is an alias to /src
 
 
 
 export default {
   name: 'home',
+  components: {
+    LlistaPartides
+  },
   
   data() {
     return{
@@ -75,14 +78,7 @@ export default {
     },
     user() {
       return this.$store.getters.userStatus
-    },
-
-    /* partida() {
-      return this.$store.getters.partida
-    },
-    jugadors_blau() {
-      return this.partida.equip_blau.jugadors
-    }, */
+    }
   },
   methods: {
     goto(link) {
@@ -111,6 +107,7 @@ export default {
       this.duradaSec = 0
     }
   }
+  
 }
 </script>
 <style>

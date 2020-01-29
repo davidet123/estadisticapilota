@@ -10,22 +10,21 @@
       
     </v-row>
     <v-row> 
-      <v-col cols="12" align="center">
-        <v-btn v-if="user == 'admin' || user == 'editor'" :disabled="temporizador_partida" @click="iniciPartida(true)">INICI PARTIDA</v-btn>
-        <v-btn v-if="user == 'admin' || user == 'editor'" @click="iniciPartida(false)">FINAL PARTIDA</v-btn>
-        <p>TEMPS TOTAL: {{ durada_total_str }}</p>
+      <v-col cols="4" align="center">
+        <h5>TEMPS TOTAL: {{ durada_total_str }}</h5>
+        <v-btn x-small v-if="user == 'admin' || user == 'editor'" :disabled="temporizador_partida" @click="iniciPartida(true)">INICI PARTIDA</v-btn>
+        <v-btn x-small v-if="user == 'admin' || user == 'editor'" @click="iniciPartida(false)">FINAL PARTIDA</v-btn>
+        
       </v-col>
-      <v-col v-if="mostrar" cols="6" class="mx-auto" align="center">
-        <p>{{ duradaMin }} min : {{ duradaSec }} seg</p>
-        <v-btn @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
-        <v-btn @click="reset" :disabled="temporizador">Reset crono</v-btn> 
+      <v-col v-if="mostrar" cols="4" class="mx-auto" align="center">
+        <h5>{{ duradaMin }} min : {{ duradaSec }} seg</h5>
+        <v-btn x-small @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
+        <v-btn x-small @click="reset" :disabled="temporizador">Reset crono</v-btn> 
       </v-col>
-      <v-col cols="6" align="center" class="mx-auto">
-        <span>DURADA ÚLTIM JOC:</span>
-        <span class="font-weight-bold ml-2"> {{ temps }}</span>
-        <br>
-        <v-btn class="mt-2" @click="dialog = true">MOSTRAR DURADES</v-btn>
-        <v-btn class="mt-2" @click="actualizar_durada()">ACTUALIZAR DURADA TOTAL</v-btn>
+      <v-col cols="4" align="center" class="mx-auto">
+        <h5>DURADA ÚLTIM JOC: {{ temps }}</h5>
+        <v-btn x-small class="mt-2" @click="dialog = true">MOSTRAR DURADES</v-btn>
+        <v-btn x-small class="mt-2" @click="actualizar_durada()">DURADA TOTAL</v-btn>
       </v-col>
     </v-row>
     <v-dialog
@@ -232,57 +231,74 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-sheet elevation="4" >
-      <v-row class="caja">
-        <v-col cols="6" class="mx-auto" align="center">
-          <h3>CANVIS DE PILOTA</h3>
-          <v-row>
-            <v-col>
-              <h3 class="red--text">EQUIP ROIG  {{ this.equip_roig.canvi_pilota }}</h3>
-              <v-btn v-if="mostrar" dark color="red" @click="canviPilota('roig')">CANVI PIL ROIG</v-btn>
-            </v-col>
-            <v-col>
-              <h3 class="blue--text">EQUIP BLAU {{ this.equip_blau.canvi_pilota }}</h3>
-              <v-btn v-if="mostrar" dark color="blue" @click="canviPilota('blau')">CANVI PIL BLAU</v-btn> 
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-sheet>
-    <v-sheet elevation="4" >
-      <v-row class="caja">
-        <v-col cols="12" class="mx-auto" align="center">
-          <h3>TRAVESSES</h3>
-          <v-row>
-            <v-col  cols="12" class="mb-0 pb-0">
-              <P>{{ this.partida.travesses }}</P>
-              
-            </v-col>
-            <v-col class="mb-0 pb-0" v-if="mostrar">
-              <v-btn small dark color="red" @click="travesa('als rojos')">ROJOS</v-btn>
-              <v-btn small dark color="red" @click="travesa('de 5 als rojos')">5</v-btn>
-              <v-btn small dark color="red" @click="travesa('de 10 als rojos')">10</v-btn>
-              <v-btn small dark color="red" @click="travesa('de 15 als rojos')">15</v-btn>
-              <v-btn small dark color="red" @click="travesa('de 20 als rojos')">20</v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col class="mt-0 pt-0" v-if="mostrar">
-              <v-btn small dark color="blue" @click="travesa('als blaus')">BLAUS</v-btn>
-              <v-btn small dark color="blue" @click="travesa('de 5 als blaus')">5</v-btn>
-              <v-btn small dark color="blue" @click="travesa('de 10 als blaus')">10</v-btn>
-              <v-btn small dark color="blue" @click="travesa('de 15 als blaus')">15</v-btn>
-              <v-btn small dark color="blue" @click="travesa('de 20 als blaus')">20</v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-sheet>
+
     <v-row>
-      <v-col cols="12" align="center">
-        <v-btn @click="irEstadistica()">ESTADÍSTICA FINAL</v-btn>
+      <v-col cols="12" sm="6" class="mx-0 pa-0">
+        <v-sheet elevation="4" class="my-1">
+          <v-row class="caja">
+            <v-col cols="12" class="mx-auto" align="center">
+              <h3>CANVIS DE PILOTA</h3>
+              <v-row>
+                <v-col cols="6" align="center">
+                  <h3 class="red--text">EQUIP ROIG  {{ this.equip_roig.canvi_pilota }}</h3>
+                  <v-btn v-if="mostrar" small dark color="red" @click="canviPilota('roig')">CANVI PIL ROIG</v-btn>
+                </v-col>
+                <v-col cols="6" align="center">
+                  <h3 class="blue--text">EQUIP BLAU {{ this.equip_blau.canvi_pilota }}</h3>
+                  <v-btn v-if="mostrar" small dark color="blue" @click="canviPilota('blau')">CANVI PIL BLAU</v-btn> 
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-sheet>
+      </v-col>
+      <v-col cols="12" sm="6"  class="mx-0 pa-0">
+        <v-sheet elevation="4" >
+          <v-row class="caja">
+            <v-col cols="12" class="mx-auto" align="center">
+              <h3>TRAVESSES</h3>
+              <v-row>
+                <v-col  cols="12" class="mb-0 pb-0">
+                  <P>{{ this.travessaStr }}</P>
+                </v-col>
+                <v-col class="mb-0 pb-0" v-if="mostrar">
+                  <v-btn small dark color="red" @click="travesa('als rojos')">ROJOS</v-btn>
+                  <v-btn small dark color="red" @click="travesa('de 5 als rojos')">5</v-btn>
+                  <v-btn small dark color="red" @click="travesa('de 10 als rojos')">10</v-btn>
+                  <v-btn small dark color="red" @click="travesa('de 15 als rojos')">15</v-btn>
+                  <v-btn small dark color="red" @click="travesa('de 20 als rojos')">20</v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="mt-0 pt-0" v-if="mostrar">
+                  <v-btn small dark color="blue" @click="travesa('als blaus')">BLAUS</v-btn>
+                  <v-btn small dark color="blue" @click="travesa('de 5 als blaus')">5</v-btn>
+                  <v-btn small dark color="blue" @click="travesa('de 10 als blaus')">10</v-btn>
+                  <v-btn small dark color="blue" @click="travesa('de 15 als blaus')">15</v-btn>
+                  <v-btn small dark color="blue" @click="travesa('de 20 als blaus')">20</v-btn>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-sheet>
+
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      top="top"
+      :timeout="timeout"
+      color="lime accent-2"
+    >
+      <h4 class="black--text">{{ feedback }}</h4>
+      <v-btn
+        color="black"
+        text
+        @click="snackbar = false"
+      >
+        X
+      </v-btn>
+    </v-snackbar>
     
 <!--     <p>{{ partida }}</p> -->
   </v-container>
@@ -290,10 +306,6 @@
 
 <script>
 export default {
-  /* props: ['partida'], */
-  /* props: {
-    partida: Object
-  }, */
   data() {
     return {
       durada: 0,
@@ -308,7 +320,10 @@ export default {
       temps_total: null,
       durada_total_str: null,
       hora_final_partida: null,
-      hora_actual_partida: null
+      hora_actual_partida: null,
+      snackbar:false,
+      timeout: 10000,
+      top: true
     }
   },
   computed: {
@@ -345,22 +360,8 @@ export default {
       return Math.round(12 / (this.jugadors_rojos.length +1))
     },
     temps() {
-      /* let joc = this.partida.durades[this.partida.durades.length-1]
-      let min = Math.round(joc / 60)
-      let sec = joc - (min*60) */
       return this.partida.durades.length > 0 ? this.formatDurada(this.partida.durades[this.partida.durades.length-1]) : 0
     },
-    /* temps_total() {
-      let tiempo_actual = Date.now() / 1000
-      let tiempo_inicio = this.hora_inici / 1000
-
-      let tiempo = Math.round(tiempo_actual - tiempo_inicio) 
-      let tiempo_min = Math.floor(tiempo / 60)
-      let tiempo_sec = tiempo - (tiempo_min * 60)
-    
-      
-      return tiempo_min.toString() + ' min : ' + tiempo_sec.toString() + ' seg'
-    }, */
     hora_inici() {
       return this.partida.hora_inici
     },
@@ -375,6 +376,15 @@ export default {
     },
     temporizador_partida_flag() {
       return this.partida.temporizador_partida
+    },
+    travessaStr() {
+      return this.partida.travesses 
+    },
+    feedback() {
+      return this.$store.getters.getFeedback
+    },
+    canviPilotaRoig() {
+      return this.partida.equip_roig.canvi_pilota
     }
 
   },
@@ -407,19 +417,23 @@ export default {
       est.quinzes += i
       this.update()
     },
-    canviPilota(equip) {  
+    canviPilota(equip) {
+      let str = ''
       if(equip == 'roig') {
         this.equip_roig.canvi_pilota += 1
-        this.update()
+        str = 'CANVI PILOTA ROJOS: ' + this.equip_roig.canvi_pilota + ' CANVIS'
       } else if (equip == 'blau') {
         this.equip_blau.canvi_pilota += 1
-        this.update()
+        str = 'CANVI PILOTA BLAUS: ' + this.equip_blau.canvi_pilota + ' CANVIS'
       }
+      this.partida.feedback = str
+      this.update()      
+
     },
     travesa(str) {
       this.partida.travesses = 'DONEN ' + str.toUpperCase()
+      this.partida.feedback = this.partida.travesses
       this.update()
-      //console.log(str)
     },
     tiempo() {
       this.temporizador = !this.temporizador
@@ -435,7 +449,7 @@ export default {
         }, 1000)
       } else {
         this.partida.durades.push(this.durada)
-        //console.log(this.partida.durades)
+        this.partida.feedback = 'Durada del joc ' + this.formatDurada(this.durada)
         this.update()
         clearInterval(this.interval)
         }
@@ -461,8 +475,6 @@ export default {
         
       }
       this.temporizador_partida = activo
-      /* this.update() */
-      //console.log(this.partida.temporizador)
       if(activo) {
         this.temps_total = setInterval(() => {
           this.partida.hora_final = null
@@ -471,6 +483,7 @@ export default {
         }, 1000)
       } else {
           this.partida.hora_final = Date.now()
+          this.partida.travesses = ''
           this.update() 
           clearInterval(this.temps_total)
       }
@@ -494,7 +507,6 @@ export default {
     },
     setUser(user) {
       this.user = user
-      //console.log(user)
       if(this.user == null) {
         if(user == 'admin') {
           this.mostrar = true
@@ -507,9 +519,7 @@ export default {
         this.mostrar = false
       }
     },
-    irEstadistica() {
-      this.$router.push('/resum')
-    }
+    
   },
   mounted() {
     /* if(this.hora_inici != null) {
@@ -523,9 +533,22 @@ export default {
   watch: {
     temporizador_partida_flag() {
       if(this.temporizador_partida == false) {
-        console.log('stop')
+        //console.log('stop')
         //clearInterval(this.temps_total)
       }
+    },
+    /* travessaStr: function() {
+      this.partida.feedback = this.travessaStr
+      this.snackbar = true
+    },
+    canviPilotaRoig: function(val) {
+      this.partida.feedback = 'Canvi pilota roig: ' + val + ' canvis'
+      console.log(this.partida.feedback)
+      this.snackbar = true
+    }, */
+    feedback: function() {
+      //console.log('feedback')
+      this.snackbar = true
     }
   }
   

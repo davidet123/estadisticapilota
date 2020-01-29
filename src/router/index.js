@@ -42,12 +42,10 @@ const routes = [
     component: CargarPartida
   },
   {
-    path: '/resum',
+    path: '/resum/:id',
     name: 'resum',
-    component: Resum,
-    meta: {
-      requiresAuth: true
-    }
+    props:true,
+    component: Resum
   },
   {
     path: '/login',
@@ -89,7 +87,7 @@ router.beforeEach((to, from, next) => {
     if(user) {
       next()
     } else {
-      next({name: 'home'})
+      next({name: 'login'})
     }
   } else {
     next()
