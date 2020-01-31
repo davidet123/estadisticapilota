@@ -1,7 +1,8 @@
 <template>
-  <v-container fluid class="px-0 py-1">
-    <v-sheet elevation="4" class="px-3 ma-0">
-      <v-row>
+  <v-container fluid class="pa-0">
+    
+    <v-row>
+      <v-sheet elevation="4" width="100%" class="px-3 ma-0">
         <v-col cols="12">
           <h4>Rótul per entrevista</h4>
           <v-form
@@ -27,24 +28,29 @@
               </v-row>
               <v-btn
                 :disabled="!valid"
-                color="success"
+                color="#317f5c"
+                dark
                 class="mr-4"
                 @click="validate"
               >
-                Acceptar
+                Enviar
               </v-btn>
             </v-form>
         </v-col>
-        <v-col cols="3"  offset="3" align="center">
-          <h4>Títol</h4>
-          <h4>{{ titulo }}</h4>
-        </v-col>
-        <v-col cols="3" align="center">
-          <h4>Subtítol</h4>
-          <h4>{{ subtitulo }}</h4>
-        </v-col>
-      </v-row>
-    </v-sheet>
+        <v-row>
+          <v-col cols="3"  offset="3" align="center">
+            <h4>Títol</h4>
+            <h4>{{ partida.rotulo.titulo }}</h4>
+          </v-col>
+          <v-col cols="3"  align="center">
+            <h4>Subtítol</h4>
+            <h4>{{ partida.rotulo.subtitulo }}</h4>
+          </v-col>
+        </v-row>
+        
+      </v-sheet>
+    </v-row>
+    
   </v-container>
 </template>
 
@@ -54,7 +60,7 @@ export default {
       valid: true,
       titulo: '',
       tituloRules: [
-        v => !!v || 'Es requereix una títol'
+        v => !!v || 'Es requereix un títol'
        /*  v => (v && v.length <= 10) || 'Name must be less than 10 characters', */
       ],
       subtitulo: ''
@@ -71,6 +77,9 @@ export default {
     validate () {
       if (this.$refs.form.validate()) {
         const str = 'ENTREVISTA'
+        this.partida.rotulo.titulo = this.titulo
+        this.partida.rotulo.subtitulo = this.subtitulo
+
         this.partida.feedback = str
         this.update()
       }

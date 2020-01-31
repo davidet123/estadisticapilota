@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0">
     <v-row>
-      <v-col cols="1" class="mx-auto pa-0">
+      <v-col cols="1" class="mx-auto pa-0 my-0">
         <v-switch
         v-model="mostrar"
         v-if="user == 'admin'"
@@ -11,20 +11,22 @@
     </v-row>
     <v-row> 
       <v-col cols="4" align="center">
-        <h5>TEMPS TOTAL: {{ durada_total_str }}</h5>
+        <h5 class="white--text">TEMPS TOTAL</h5>
+        <h4 class="white--text">{{ durada_total_str }}</h4>
         <v-btn x-small v-if="user == 'admin' || user == 'editor'" :disabled="temporizador_partida" @click="iniciPartida(true)">INICI PARTIDA</v-btn>
         <v-btn x-small v-if="user == 'admin' || user == 'editor'" @click="iniciPartida(false)">FINAL PARTIDA</v-btn>
+        <v-btn x-small v-if="user == 'admin' || user == 'editor'" :disabled="temporizador_partida" @click="resetPartidaTemps()">RESET</v-btn>
         
       </v-col>
       <v-col v-if="mostrar" cols="4" class="mx-auto" align="center">
-        <h5>{{ duradaMin }} min : {{ duradaSec }} seg</h5>
+        <h5 class="white--text">{{ duradaMin }} min : {{ duradaSec }} seg</h5>
         <v-btn x-small @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
         <v-btn x-small @click="reset" :disabled="temporizador">Reset crono</v-btn> 
       </v-col>
       <v-col cols="4" align="center" class="mx-auto">
-        <h5>DURADA ÚLTIM JOC: {{ temps }}</h5>
-        <v-btn x-small class="mt-2" @click="dialog = true">MOSTRAR DURADES</v-btn>
-        <v-btn x-small class="mt-2" @click="actualizar_durada()">DURADA TOTAL</v-btn>
+        <h5 class="white--text">DURADA ÚLTIM JOC: {{ temps }}</h5>
+        <v-btn x-small class="mt-2" @click="dialog = true">DURADES</v-btn>
+        <!-- <v-btn x-small class="mt-2" @click="actualizar_durada()">DURADA TOTAL</v-btn> -->
       </v-col>
     </v-row>
     <v-dialog
@@ -234,7 +236,7 @@
 
     <v-row>
       <v-col cols="12" sm="6" class="mx-0 pa-0">
-        <v-sheet elevation="4" class="my-1">
+        <v-sheet elevation="4" class="my-0" height="185px">
           <v-row class="caja">
             <v-col cols="12" class="mx-auto" align="center">
               <h3>CANVIS DE PILOTA</h3>
@@ -253,13 +255,16 @@
         </v-sheet>
       </v-col>
       <v-col cols="12" sm="6"  class="mx-0 pa-0">
-        <v-sheet elevation="4" >
+        <v-sheet elevation="4" height="185px">
           <v-row class="caja">
             <v-col cols="12" class="mx-auto" align="center">
               <h3>TRAVESSES</h3>
               <v-row>
                 <v-col  cols="12" class="mb-0 pb-0">
-                  <P>{{ this.travessaStr }}</P>
+                  <P>{{ this.travessaStr }} 
+                    <span v-if="partida.travesses != null">
+                    <v-icon v-if="user == 'admin' || user == 'editor'" @click="borrarTravessa()">mdi-close-circle-outline</v-icon>
+                    </span></P> 
                 </v-col>
                 <v-col class="mb-0 pb-0" v-if="mostrar">
                   <v-btn small dark color="red" @click="travesa('als rojos')">ROJOS</v-btn>
@@ -301,6 +306,7 @@
     </v-snackbar>
     
 <!--     <p>{{ partida }}</p> -->
+{{ timer }}
   </v-container>
 </template>
 
@@ -322,8 +328,9 @@ export default {
       hora_final_partida: null,
       hora_actual_partida: null,
       snackbar:false,
-      timeout: 10000,
-      top: true
+      timeout: 0,
+      top: true,
+      timer: null
     }
   },
   computed: {
@@ -375,10 +382,10 @@ export default {
       return jocs
     },
     temporizador_partida_flag() {
-      return this.partida.temporizador_partida
+      return this.partida.temporizador
     },
     travessaStr() {
-      return this.partida.travesses 
+      return this.partida.travesses == null ? '--' : this.partida.travesses
     },
     feedback() {
       return this.$store.getters.getFeedback
@@ -435,6 +442,11 @@ export default {
       this.partida.feedback = this.partida.travesses
       this.update()
     },
+    borrarTravessa() {
+      this.partida.travesses = null
+      this.partida.feedback = 'NO HI HA TRAVESSA'
+      this.update()
+    },
     tiempo() {
       this.temporizador = !this.temporizador
       if(this.temporizador) {
@@ -463,44 +475,62 @@ export default {
       this.duradaMin = 0
       this.duradaSec = 0
     },
+    resetPartidaTemps() {
+      this.partida.hora_inici = null
+      this.partida.hora_final = null
+      this.durada_total_str = '--'
+      this.update()
+    },
     formatDurada(item) {
       let joc = item
-      let min = Math.floor(joc / 60)
-      let sec = joc - (min*60)
-      return min + ' min ' + sec + ' seg'
+      let hr = Math.floor(joc / 3600)
+      let resto = (joc % 3600)
+      let min = Math.floor(resto / 60)
+      let sec = Math.floor(joc % 60)
+      let str = ''
+      if (hr > 0) {
+        str = hr.toString() + ' hores'
+      }
+      return str + ' ' + min.toString() + ' min ' + sec.toString() + ' seg'
     },
     iniciPartida(activo) {
+
       if(this.partida.hora_inici == null) {
         this.partida.hora_inici = Date.now()
-        
       }
       this.temporizador_partida = activo
+      this.partida.temporizador = activo
       if(activo) {
+        this.partida.hora_final = null
         this.temps_total = setInterval(() => {
-          this.partida.hora_final = null
-          this.update()
           this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
         }, 1000)
-      } else {
+      } else if (!activo) {
           this.partida.hora_final = Date.now()
           this.partida.travesses = ''
-          this.update() 
+          this.partida.feedback = 'Durada de la partida ' + this.durada_total_str
           clearInterval(this.temps_total)
       }
+      this.update()
       
     },
     actualizar_durada() {
       let actual = this.partida.hora_final == null ? Date.now() : this.partida.hora_final
       
-      this.durada_total_str = this.calcular_tiempo(actual, this.partida.hora_inici)
+      if (this.partida.hora_inici) {
+        this.durada_total_str = this.calcular_tiempo(actual, this.partida.hora_inici)
+      } else {
+        this.furada_total_str = '--'
+      }
     },
     calcular_tiempo(actual, inicio) {
       let tiempo_actual = actual / 1000
       let tiempo_inicio = inicio / 1000
-      let tiempo = Math.round(tiempo_actual - tiempo_inicio) 
+      /* let tiempo = Math.round(tiempo_actual - tiempo_inicio) 
       let tiempo_min = Math.floor(tiempo / 60)
       let tiempo_sec = tiempo - (tiempo_min * 60)
-      return tiempo_min.toString() + ' min : ' + tiempo_sec.toString() + ' seg'
+      return tiempo_min.toString() + ' min : ' + tiempo_sec.toString() + ' seg' */
+      return this.formatDurada(tiempo_actual - tiempo_inicio)
     },
     update() {
       this.$store.dispatch('updatePartida', this.partida)
@@ -531,12 +561,40 @@ export default {
     } */
   },
   watch: {
-    temporizador_partida_flag() {
-      if(this.temporizador_partida == false) {
-        //console.log('stop')
-        //clearInterval(this.temps_total)
+    temporizador_partida_flag(val) {
+      if (val) {
+        if (!this.temporizador_partida) {
+          this.temporizador_partida = val
+          this.temps_total = setInterval(() => {
+            this.partida.hora_final = null
+            this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+          }, 1000)
+        }
+      } else {
+        if(this.temporizador_partida) {
+          this.temporizador_partida = val
+          clearInterval(this.temps_total)
+          console.log('stop')
+        }
       }
     },
+    feedback: function() {
+      //console.log('feedback')
+      if (this.partida.feedback != null) {
+        this.snackbar = false
+        clearTimeout(this.timer)
+        this.snackbar = true
+        this.timer = setTimeout( () => {
+          this.partida.feedback = null
+          this.update()
+        }, 10000)
+      } else {
+        this.snackbar = false
+      } 
+
+      
+    }
+  },
     /* travessaStr: function() {
       this.partida.feedback = this.travessaStr
       this.snackbar = true
@@ -546,32 +604,23 @@ export default {
       console.log(this.partida.feedback)
       this.snackbar = true
     }, */
-    feedback: function() {
-      //console.log('feedback')
-      this.snackbar = true
-    }
-  }
+    
   
   
   
-  /*
+  
   created() {
-    this.cargarPartida()
-  } ,
-  watch: {
-    partida:  {
-      handler(val) {
-        if(!this.$store.carregant) {
-        this.$store.dispatch('updatePartida', val)
-        console.log(val)
-       
-        }
-      },
-      deep: true,
-      inmediate:false
+    if (this.partida.temporizador) {
+      this.temporizador_partida = true
+      this.temps_total = setInterval(() => {
+        this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+      }, 1000)
+    } else {
+      this.actualizar_durada()
     }
-  } */
-  
+    
+  },
+
 
 }
 </script>

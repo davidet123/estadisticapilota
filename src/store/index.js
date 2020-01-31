@@ -74,13 +74,16 @@ export default new Vuex.Store({
       let lista = context.partides.find(partida => {
         return partida.id == payload.id
       })
-      //console.log(lista)
+      /* console.log(lista.hora_final) */
       lista.marcador = payload.marcador
       lista.parcials = payload.parcials
       lista.travesses = payload.travesses
       lista.durades = payload.durades
       lista.equip_roig = payload.equip_roig
       lista.equip_blau = payload.equip_blau
+      lista.hora_inici = payload.hora_inici
+      lista.hora_final = payload.hora_final
+      lista.rotulo = payload.rotulo
     },
     eliminarPartida: (context, payload) => {
       context.partides = context.partides.filter(partida => {

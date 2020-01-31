@@ -1,14 +1,16 @@
 <template>
-  <v-app class="clearBg">
+  <v-app class="clearBg bgCol">
     <Navbar/>
     <v-content>
       <router-view/>
     </v-content>
+    <Footer />
   </v-app>
 </template>
 
 <script>
 import Navbar from './components/navbar/Navbar.vue';
+import Footer from './components/footer/Footer.vue';
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
@@ -18,6 +20,7 @@ export default {
 
   components: {
     Navbar,
+    Footer
   },
 
   data: () => ({
@@ -40,6 +43,9 @@ export default {
 <style>
   .clearBg {
     background: none;
+  }
+  .bgCol {
+    background-color: #072840 !important;
   }
 
 </style>

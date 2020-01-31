@@ -3,15 +3,16 @@
   <v-container fluid>
 <!--     <v-parallax src="@/assets/imagenes/pilota_valenciana.jpg"> -->
     <div v-if="cargando" class="text-center mt-5">
+      <h3 class="white--text">Carregant partides...</h3>
       <v-progress-circular
         indeterminate
-        color="primary"
+        color="white"
       ></v-progress-circular>
     </div>
     <div v-if="!cargando">
         <v-row>
           <v-col>
-            <h2 class="text-center">ESTADÍSTICA PILOTA</h2>
+            <h2 class="text-center white--text">ESTADÍSTICA PILOTA</h2>
           </v-col>
         </v-row>
       <div v-if="partidaCargada">
@@ -23,7 +24,7 @@
         </p> -->      
         <v-row>
           <v-col cols="12" align="center">
-            <v-btn @click="goto('/resum/' + partidaCargada.id)">ESTADÍSTICA FINAL</v-btn>
+            <v-btn color="#317f5c" dark @click="goto('/resum/' + partidaCargada.id)">ESTADÍSTICA FINAL</v-btn>
           </v-col>
         </v-row>
            
@@ -32,7 +33,7 @@
         <v-row>
           <v-col align="center">
             <h3>Has de carregar una partida</h3>
-            <v-btn @click="goto('/cargarpartida')">Carregar Partida</v-btn>
+            <v-btn color="#317f5c" dark @click="goto('/cargarpartida')">Carregar Partida</v-btn>
           </v-col>
         </v-row>
 

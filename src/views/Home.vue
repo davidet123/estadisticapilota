@@ -1,30 +1,31 @@
 <template>
 
-  <v-container fluid>
+  <v-container fluid class=" my-0">
 <!--     <v-parallax src="@/assets/imagenes/pilota_valenciana.jpg"> -->
     <div v-if="cargando" class="text-center mt-5">
+      <h3 class="white--text">Carregant partides...</h3>
       <v-progress-circular
         indeterminate
-        color="primary"
+        color="white"
       ></v-progress-circular>
     </div>
     <div v-if="!cargando">
       <div class="botones_inicio" v-if="user">
-        <v-sheet elevation="4" width="500px" class="mx-auto">
+        <v-sheet elevation="4" width="100%" class="mx-auto px-2" color="#f3f4f5">
           <v-row>
-            <v-col cols="12" class="text-center">
-              <h3 v-if="partidaCargada">PARTIDA CARREGADA</h3>
+            <v-col cols="12" class="text-center py-0 my-0">
+              <h4 v-if="partidaCargada">PARTIDA CARREGADA</h4>
               <h3 v-if="!partidaCargada">CAP PARTIDA CARREGADA</h3>
             </v-col>
             <v-divider></v-divider>
-            <v-col v-if="partidaCargada" cols="4" offset="2" align="center">
+            <v-col v-if="partidaCargada" cols="6" sm="4" offset-sm="2" align="center">
               <h4>{{ partidaCargada.equip_roig.nom_equip }} vs {{ partidaCargada.equip_blau.nom_equip }}</h4>
             </v-col>
-            <v-col v-if="partidaCargada" cols="4" align="center">
-              <v-btn small color="success" @click="goto('/estadistica')">ESTADISTICA</v-btn>
+            <v-col v-if="partidaCargada" cols="6" sm="4" align="center">
+              <v-btn small color="#317f5c" dark @click="goto('/estadistica')">ESTADISTICA</v-btn>
             </v-col>
             <v-col v-if="!partidaCargada" cols="12" align="center">
-              <v-btn small color="success" @click="goto('/cargarpartida')">CARREGAR PARTIDA</v-btn>
+              <v-btn small color="#317f5c" dark @click="goto('/cargarpartida')">CARREGAR PARTIDA</v-btn>
             </v-col>
           </v-row>
         </v-sheet>
@@ -33,8 +34,8 @@
         <LlistaPartides />    
         <v-row>
           <v-col align="center">
-            <v-btn v-if="!user" @click="goto('/login')">Log in</v-btn>
-            <v-btn v-if="user" @click="goto('/cargarpartida')">Carregar Partida</v-btn>
+            <v-btn v-if="!user" color="#317f5c" dark @click="goto('/login')">Log in</v-btn>
+            <v-btn v-if="user" color="#317f5c" dark @click="goto('/cargarpartida')">Carregar Partida</v-btn>
           </v-col>
         </v-row>
            
@@ -111,10 +112,10 @@ export default {
 }
 </script>
 <style>
-  .bg {
-    background-image: url(https://verlanga.com/wp-content/uploads/pilota.jpg);
+  .bg1 {
+    /* background-image: url(~../assets/imagenes/manos.jpg); */
+    background-color: #072840;
     background-size: cover;
     width: 100%
   }
-
 </style>

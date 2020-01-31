@@ -2,20 +2,24 @@
   <v-container fluid>
     <v-form
     ref="form">
+    <v-sheet elevation="4" widht="100%" class="px-4">
       <v-row>
         <v-col>
           <h2 class="text-center">Afegir Partida</h2>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="text-center" cols="12" >
+        <v-col class="text-center" cols="6" offset="3">
           <v-select
           :items="lista"
           dense
           solo
+          outlined
           v-model="tipo"
           label="Tipus de partida"></v-select>
         </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="3">
           <!-- <v-text-field
           label="Data"
@@ -33,6 +37,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
+                dense
                 v-model="date"
                 label="Picker in menu"
                 readonly
@@ -48,6 +53,7 @@
         </v-col>
         <v-col cols="3">
           <v-text-field
+          dense
           label="Lloc"
           placeholder="Lloc de la partida"
           v-model="lloc"
@@ -57,6 +63,7 @@
           <v-text-field
           label="Partida a"
           placeholder="Partida a..."
+          dense
           v-model="partidaa"
           outlined></v-text-field>
         </v-col>
@@ -64,6 +71,7 @@
           <v-text-field
           label="Tanteig inicial"
           placeholder="tanteig inicial"
+          dense
           v-model="tanteig_inicial"
           outlined></v-text-field>
         </v-col>
@@ -77,6 +85,7 @@
           <v-text-field
           label="Nom equip"
           placeholder="Nom equip roig"
+          dense
           v-model="nom_rojos"
           outlined></v-text-field>
         </v-col>
@@ -84,6 +93,7 @@
           <v-text-field
           label="Rest"
           placeholder="Rest roig"
+          dense
           v-model="equip_roig[0]"
           outlined></v-text-field>
         </v-col>
@@ -91,6 +101,7 @@
           <v-text-field
           label="Mitger"
           placeholder="Mitger roig"
+          dense
           v-model="equip_roig[1]"
           outlined></v-text-field>
         </v-col>
@@ -98,6 +109,7 @@
           <v-text-field
           label="Punter"
           placeholder="Punter roig"
+          dense
           v-model="equip_roig[2]"
           outlined></v-text-field>
         </v-col>
@@ -105,6 +117,7 @@
           <v-text-field
           label="Treta"
           placeholder="Treta roig"
+          dense
           v-model="equip_roig[3]"
           outlined></v-text-field>
         </v-col>
@@ -118,6 +131,7 @@
           <v-text-field
           label="Nom equip"
           placeholder="Nom equip blau"
+          dense
           v-model="nom_blaus"
           outlined></v-text-field>
         </v-col>
@@ -125,6 +139,7 @@
           <v-text-field
           label="Rest"
           placeholder="Rest blau"
+          dense
           v-model="equip_blau[0]"
           outlined></v-text-field>
         </v-col>
@@ -132,6 +147,7 @@
           <v-text-field
           label="Mitger"
           placeholder="Mitger blau"
+          dense
           v-model="equip_blau[1]"
           outlined></v-text-field>
         </v-col>
@@ -139,6 +155,7 @@
           <v-text-field
           label="Punter"
           placeholder="Punter blau"
+          dense
           v-model="equip_blau[2]"
           outlined></v-text-field>
         </v-col>
@@ -146,19 +163,19 @@
           <v-text-field
           label="Treta"
           placeholder="Treta blau"
+          dense
           v-model="equip_blau[3]"
           outlined></v-text-field>
         </v-col>
       </v-row>
       <v-row >
-        <v-col cols="4" class="mx-auto" align="center">
-          <v-btn @click="validar" color="success" class="mr-2 mb-2">Acceptar</v-btn>
+        <v-col cols="6" class="mx-auto" align="center">
+          <v-btn @click="validar" color="#317f5c" dark class="mr-2 mb-2">Acceptar</v-btn>
           <v-btn @click="reset" color="error" class="ml-2 mb-2">Netejar</v-btn>
         </v-col>
       </v-row>
-    </v-form>
-    {{ date }}
-    
+      </v-sheet>
+    </v-form>    
   </v-container>
 </template>
 
@@ -187,9 +204,13 @@ export default {
     },
     validar() {
       let partida = {
+        rotulo: {
+          titulo: null,
+          subtitulo: null
+        },
         feedback: '',
         partidaa: this.partidaa,
-        marcador: {punts_rojos: 0, jocs_rojos: this.tanteig_inicial, punts_blaus: 0, jocs_blaus: this.tanteig_inicial},
+        marcador: {punts_rojos: 0, jocs_rojos: this.tanteig_inicial / 5, punts_blaus: 0, jocs_blaus: this.tanteig_inicial / 5},
         parcials: {
           jocs: [],
           punts: {joc1:[]},

@@ -1,5 +1,5 @@
 <template>
-<v-container fluid>
+<v-container fluid class="pb-0">
   <v-row>
     <v-col cols="12">
       <v-sheet elevation="4" width="300px" class="mx-auto">
@@ -33,20 +33,36 @@
         </v-col>
       </v-sheet>
     </v-col>
-    <v-col cols="6" align="center" class="mx-auto">
-      <h3>PARCIALS JOCS</h3>
-      <h5>{{ parcial_jocs.length }} a 0 per als {{ parcial_jocs[0]}}</h5>
-    </v-col>  
-    <v-col cols="6" align="center" class="mx-auto">
-      <h3>PARCIAL PUNTS</h3>
-      <h5 class="mb-1">{{ parcial_punts_actual }}</h5>
-      <v-divider class="my-1"></v-divider>
-      <span v-for="i in joc_actual   " :key="i">
-        <v-btn x-small rounded @click="parcialPerJocs(i)">{{ i  }}</v-btn>
-      </span>
-      <h5 class="mb-1">{{ parcial_punts_total_jocs }}</h5>
+    <v-col cols="3" align="center" class="mx-auto pb-0 px-0">
+      <h3 class="white--text">PARCIALS JOCS</h3>
+      <v-divider dark></v-divider>
+      <h5 class="white--text mt-2">{{ parcial_jocs.length }} a 0 per als {{ parcial_jocs[0]}}</h5>
+    </v-col> 
+    <v-divider
+    dark
+      vertical
+    ></v-divider>
+    
+    <v-col cols="8" align="center" class="mx-auto pb-0 px-0">
+      <h3 class="white--text">PARCIAL PUNTS</h3>
+      <v-divider dark></v-divider>
+      <v-row>
+        <v-col cols="4" align="center" class="mx-auto pb-0">
+          <h4 class="white--text">Parcial actual</h4>
+          <h5 class="mb-1 white--text">{{ parcial_punts_actual }}</h5>
+        </v-col>
+        <v-col cols="8" class="mx-auto pb-0">
+          <h4 class="white--text">Parcial per jocs</h4>
+          <h5 class="mb-1 white--text">{{ parcial_punts_total_jocs }}</h5>
+          <span v-for="i in joc_actual   " :key="i">
+            <v-btn x-small rounded @click="parcialPerJocs(i)">{{ i  }}</v-btn>
+          </span>
+        </v-col>
+      </v-row>
+      
     </v-col>  
   </v-row>
+  <v-divider dark class="mt-4"></v-divider>
   
 </v-container>
 
@@ -221,7 +237,7 @@ export default {
           }
       })
       let equip = roig == blau ? ' ' : roig > blau ? 'per als rojos' : 'per als blaus'
-      this.parcial_punts_total = 'Parcial de ' + roig + ' a ' + blau + ' ' + equip
+      this.parcial_punts_total = roig + ' a ' + blau + ' ' + equip
       this.parcial_punts_total_jocs = '--'
     },
     parcialPerJocs(joc) {

@@ -33,7 +33,7 @@
         </v-radio-group>
         <v-btn
           :disabled="!valid"
-          color="success"
+          color="#317f5c" dark
           class="mr-4"
           @click="validate"
           v-if="rol == 'admin'"
@@ -94,7 +94,7 @@ export default {
         })
           //this.$store.dispatch('logIn', {email:this.email, password: this.password})
           this.$store.dispatch('signIn', {user: this.slug, email:this.email, password: this.password, nombre: this.name, rol: this.rolUser})
-          console.log(this.slug)
+          
         }
       }
     },

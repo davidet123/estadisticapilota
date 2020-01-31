@@ -1,11 +1,11 @@
 <template>
   <div class="nav">
-    <v-toolbar color="deep-purple accent-4" dark>
+    <v-toolbar color="#1d428a" dark>
       <v-app-bar-nav-icon @click="drawer = !drawer" ></v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to='/' tag='span' style='cursor: pointer'>
-          <span>ESTADÍSTICA</span>
-          <span class="font-weight-light"> PILOTA</span>
+          <span>PILOTA</span>
+          <span class="font-weight-light"> VALENCIANA</span>
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -24,10 +24,10 @@
       v-model="drawer"
       absolute
       temporary
-      color="deep-purple accent-4"
+      color="#1d428a"
       dark
     >
-      <p class="font-weight-black white--text mx-auto px-2 pt-2">Estadistica pilota</p>
+      <p class="font-weight-black white--text mx-auto px-2 pt-2">Pilota Valenciana</p>
       <v-divider color="white"></v-divider>
       <!-- <h4 class="pa-4 white--text">{{ userCargado.user }}</h4> -->
       <v-list>
@@ -78,13 +78,13 @@ data() {
     },
     links() {
       let menuItems = [{icon: 'mdi-lock-open-variant', titulo: 'LOG IN', link: '/login'},
-      {icon: 'mdi-cloud-download', titulo: 'CARREGAR PARTIDA', link: '/cargarpartida'}]
+      /* {icon: 'mdi-cloud-download', titulo: 'CARREGAR PARTIDA', link: '/cargarpartida'} */]
       if(this.user) {
         menuItems = [
         {icon: 'mdi-tennis-ball', titulo: 'Afegir partida', link: '/afegirpartida'},
         {icon: 'mdi-cloud-download', titulo: 'Carregar partida', link: '/cargarpartida'},
-        {icon: 'mdi-account-group', titulo: 'Resum', link: '/resum'},
-        {icon: 'mdi-logout', titulo: 'LOG OUT', link: 'logout'}]
+        /* {icon: 'mdi-account-group', titulo: 'Resum', link: '/resum'}, */
+        {icon: 'mdi-logout', titulo: 'Log out', link: 'logout'}]
         if(this.rolUser === 'admin') {
           menuItems.push({icon: 'mdi-account-plus', titulo: 'Crear Usuario', link: '/signin'})
         }

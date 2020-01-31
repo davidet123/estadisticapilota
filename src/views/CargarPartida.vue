@@ -1,39 +1,28 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <h2 class="text-center">Cargar Partida</h2>
-      </v-col>
-    </v-row>
-    <!-- <v-row>
-      <v-list subheader width="100%">
-        <v-subheader>Llistat de partides</v-subheader>
-        <v-list-item  v-for="partida in partides" :key="partida.id"> 
-          <v-list-item-content>
-            <v-list-item-title v-text="partida.id"></v-list-item-title>
-          </v-list-item-content>
-
-        </v-list-item>
-
-      </v-list>
-    </v-row> -->
     <div v-if="cargando" class="text-center mt-5">
+      <h3 class="white--text">Carregant partides...</h3>
       <v-progress-circular
         indeterminate
-        color="primary"
+        color="white"
       ></v-progress-circular>
     </div>
     <div v-if="!cargando">
+      <v-row>
+      <v-col>
+        <h2 class="text-center white--text">Cargar Partida</h2>
+      </v-col>
+    </v-row>
       <div v-for="partida in partides" :key="partida.id">
-        <v-sheet elevation="4" class="my-2 pa-2">
+        <v-sheet elevation="4" class="my-2 pa-0">
           <v-row class="pl-2">
             <v-col cols="6" sm="8">
               <h4>{{ partida.data }}</h4>
               <h3>{{ partida.equip_roig.nom_equip }} vs {{ partida.equip_blau.nom_equip }}</h3>
-              <p>{{ partida.tipo }}</p>
+              <h5>{{ partida.tipo }}</h5>
             </v-col>
             <v-col cols="6" sm="4" align-self="center">
-              <v-btn small class="mb-2" color="success" @click="cargarPartida(partida.id)">CARREGAR</v-btn>
+              <v-btn small class="mb-2"  color="#317f5c" dark @click="cargarPartida(partida.id)">CARREGAR</v-btn>
               <br>
               <v-btn small class="mb-2" color="error" @click="abrirDialog(partida.id)">ELIMINAR</v-btn>
             </v-col>

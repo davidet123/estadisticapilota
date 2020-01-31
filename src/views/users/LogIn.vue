@@ -21,7 +21,8 @@
         ></v-text-field>
         <v-btn
           :disabled="!valid"
-          color="success"
+          color="#317f5c" 
+          dark
           class="mr-4"
           @click="validate"
         >
