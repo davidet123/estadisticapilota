@@ -203,27 +203,33 @@ export default {
       this.$refs.form.reset()
     },
     validar() {
-      let partida = {
-        rotulo: {
-          titulo: null,
-          subtitulo: null
-        },
-        feedback: '',
-        partidaa: this.partidaa,
-        marcador: {punts_rojos: 0, jocs_rojos: this.tanteig_inicial / 5, punts_blaus: 0, jocs_blaus: this.tanteig_inicial / 5},
+      let marcador = {
+        marcador: 
+          {punts_rojos: 0, 
+          jocs_rojos: this.tanteig_inicial / 5, 
+          punts_blaus: 0, 
+          jocs_blaus: this.tanteig_inicial / 5},
         parcials: {
           jocs: [],
           punts: {joc1:[]},
           joc_actual: 1,
           parcial_actual:[]
-        },
+        }
+      }
+      let partida = {
+        partidaa: this.partidaa,        
         tipo: this.tipo,
         data: this.date,
         lloc: this.lloc,
         hora_inici: null,
         hora_final: null,
+        durada_inici: null,
+        durada_final: null,
         travesses: null,
         temporizador: false,
+        temporizador_durada: false,
+        punts_per_joc: {joc1:[]},
+        errades_per_joc: {joc1:[]},
         durades: [],
         equip_roig: {
           nom_equip: this.nom_rojos || this.equip_roig[0],
@@ -329,7 +335,7 @@ export default {
       }
       if(partida.equip_roig.jugadors[0].nom != null && partida.equip_blau.jugadors[0].nom != null && partida.equip_roig.jugadors[0].nom != '' && partida.equip_blau.jugadors[0].nom != '' ) {
         this.$store.commit('carregant', true)
-        this.$store.dispatch('addPartida', partida)
+        this.$store.dispatch('addPartida', {partida, marcador})
         this.$router.push('/')  
       }
             

@@ -1,13 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import users from './users.js'
+import marcador from './marcador.js'
+import feedback from './feedback.js'
 import db from '@/firebase/init.js'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    users
+    users,
+    marcador,
+    feedback
   },
   state: {
     carregant: false,
@@ -38,9 +42,6 @@ export default new Vuex.Store({
     },
     marcador: state => {
       return state.partida.marcador
-    },
-    getFeedback: state => {
-      return state.partida.feedback
     }
 
   },
@@ -75,7 +76,6 @@ export default new Vuex.Store({
         return partida.id == payload.id
       })
       /* console.log(lista.hora_final) */
-      lista.marcador = payload.marcador
       lista.parcials = payload.parcials
       lista.travesses = payload.travesses
       lista.durades = payload.durades
@@ -89,6 +89,9 @@ export default new Vuex.Store({
       context.partides = context.partides.filter(partida => {
         return partida.id !== payload
       })
+      if(payload === context.partida.id) {
+        context.partida = null
+      }
     },
     partidaCargada: (context, payload) => {
       //console.log(payload)
@@ -96,20 +99,26 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    addPartida: ({commit}, payload) => {
-      db.collection('partides_ok').add(payload)
+    addPartida: ({dispatch}, payload) => {
+      // Añade nueva partida a la base de datos
+      
+      db.collection('partides_ok1').add(payload.partida)
       .then((data) => {
         let id = data._key.path.segments[1]
-        payload.id = id
+        console.log(id)
+        
+        // Crea un nuevo marcador con la id de la partida creada
+        payload.marcador.id_partida = id
+        dispatch('addMarcador', payload.marcador)
         //console.log(data._key.path.segments[1])
         /* commit('addPartidas', payload) */
-        commit('carregant', false) 
+        //commit('carregant', false) 
       })
     },
     cargarListado: ({commit}) => {
-      //console.log('cargando...')
+      // Carga lista de partidas al iniciar la app
       commit('carregant', true)
-      db.collection('partides_ok').get()
+      db.collection('partides_ok1').get()
       .then (data => {
         data.forEach(doc=> {
           let partida = doc.data()
@@ -123,60 +132,76 @@ export default new Vuex.Store({
       })
     },
     updatePartida: ({commit}, payload) => {
+      // Actualiza la base de datos directamente
       commit('carregant', true)
-      const part = db.collection('partides_ok').doc(payload.id)
+      const part = db.collection('partides_ok1').doc(payload.id)
       //console.log('update')
       part.update(payload)
       commit('carregant', false)
     },
-    actualizarListado: ({commit, state}) => {
-      db.collection('partides_ok').onSnapshot(snapshot=> {
+    actualizarListado: ({commit}) => {
+      // Detecta los cambios en la base de datos
+      db.collection('partides_ok1').onSnapshot(snapshot=> {
         snapshot.docChanges().forEach(change => {
           let partida = change.doc.data()
           partida.id = change.doc.id
           if (change.type === 'modified') {
             commit('actualizarPartida', partida)
-          } else if(change.type === 'added' && state.carregant) {
-            //console.log('addPartida')
+            /* commit('carregant', false) */
+          } else if(change.type === 'added') {
+            let partida = change.doc.data()
+            partida.id = change.doc.id
+            commit('addLista', partida.id)
             commit('addPartidas', partida)
+            //console.log('addPartida')
+          } else if(change.type === 'removed') {
+            commit('eliminarPartida', partida.id)
           }
         })
       })
     },
     actualizarPartidaCargada: ({commit}) => {
+      //Actualiza la partida que se ha cargado y el marcador 
+
       db.collection('partida_cargada').onSnapshot(snapshot=> {
         snapshot.docChanges().forEach(change => {
           let partida = change.doc.data()
           if (change.type === 'modified') {
             commit('cargarPartida', partida.id)
+            commit('cargarMarcador', partida.id)
           }
         })
       })
     },
-    eliminarPartida: ({commit}, payload) => {
-      db.collection('partides_ok').doc(payload).delete()
+    eliminarPartida: ({dispatch}, payload) => {
+      // elimina una partida
+      db.collection('partides_ok1').doc(payload).delete() 
       .then(() => {
-        commit('eliminarPartida', payload)
+        dispatch('eliminarMarcador', payload)
       })
     },
     cargarPartida: ({commit}, payload) => {
+      // Actualiza la base de datos para la partida en activo
       commit('carregant', true)
       db.collection('partida_cargada').doc('UzBxIXYsndS4Ze3DizHd').update({id:payload})
       .then(() => {
-          commit('partidaCargada', payload)
+          //commit('partidaCargada', payload)
           commit('cargarPartida', payload)
+          commit('cargarMarcador', payload)
           commit('carregant', false)
       })
         
     },
     partidaCargada: ({commit}) => {
+      // Carga la id de la partida activa desde la base de datos
       commit('carregant', true)
       db.collection('partida_cargada').doc('UzBxIXYsndS4Ze3DizHd').get()
       .then(doc => {
-        commit('partidaCargada', doc.data().id)
+        //commit('partidaCargada', doc.data().id)
         commit('cargarPartida', doc.data().id)
+        commit('cargarMarcador', doc.data().id)
         commit('carregant', false)
-        //console.log(doc.data().id)
+        
       })
       .catch(err => {
         console.log(err)

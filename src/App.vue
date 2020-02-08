@@ -27,10 +27,20 @@ export default {
     //
   }),
   created() {
-    this.$store.dispatch('cargarListado')
-    this.$store.dispatch('partidaCargada')
+    //this.$store.dispatch('cargarMarcador')
+    this.$store.dispatch('actualizarMarcador')
+    this.$store.dispatch('actualizarFeedback')
+    //this.$store.dispatch('cargarListado')
     this.$store.dispatch('actualizarListado')
-    this.$store.dispatch('actualizarPartidaCargada')
+    this.$store.dispatch('partidaCargada')
+
+    
+    
+    
+    
+    //this.$store.dispatch('actualizarPartidaCargada')
+    //this.$store.dispatch('actualizarMarcadorCargado')
+    
     
 
     let user = firebase.auth().currentUser

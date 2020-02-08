@@ -12,16 +12,23 @@
     <v-row> 
       <v-col cols="4" align="center">
         <h5 class="white--text">TEMPS TOTAL</h5>
-        <h4 class="white--text">{{ durada_total_str }}</h4>
-        <v-btn x-small v-if="user == 'admin' || user == 'editor'" :disabled="temporizador_partida" @click="iniciPartida(true)">INICI PARTIDA</v-btn>
-        <v-btn x-small v-if="user == 'admin' || user == 'editor'" @click="iniciPartida(false)">FINAL PARTIDA</v-btn>
-        <v-btn x-small v-if="user == 'admin' || user == 'editor'" :disabled="temporizador_partida" @click="resetPartidaTemps()">RESET</v-btn>
+        <h4 class="white--text">{{ temps_total_str }}</h4>
+        <v-btn x-small v-if="user && mostrar" :disabled="temporizador_partida" @click="iniciPartida(true)">INICI PARTIDA</v-btn>
+        <v-btn x-small v-if="user && mostrar" @click="iniciPartida(false)">FINAL PARTIDA</v-btn>
+        <v-btn x-small v-if="user && mostrar" :disabled="temporizador_partida" @click="resetPartidaTemps()">RESET</v-btn>
         
       </v-col>
-      <v-col v-if="mostrar" cols="4" class="mx-auto" align="center">
+      <!-- <v-col v-if="mostrar" cols="4" class="mx-auto" align="center">
         <h5 class="white--text">{{ duradaMin }} min : {{ duradaSec }} seg</h5>
         <v-btn x-small @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
         <v-btn x-small @click="reset" :disabled="temporizador">Reset crono</v-btn> 
+      </v-col> -->
+      <v-col cols="4" class="mx-auto" align="center">
+        <h5 class="white--text">DURADA DEL JOC</h5>
+        <h5 class="white--text">{{ durada_total_str }}</h5>
+        <v-btn v-if="mostrar" x-small @click="duradaJoc(true)">Iniciar crono</v-btn>
+        <v-btn v-if="mostrar" x-small @click="duradaJoc(false)">Parar crono</v-btn>
+        <v-btn v-if="mostrar" x-small @click="reset" :disabled="temporizador">Reset crono</v-btn> 
       </v-col>
       <v-col cols="4" align="center" class="mx-auto">
         <h5 class="white--text">DURADA ÚLTIM JOC: {{ temps }}</h5>
@@ -105,14 +112,14 @@
               <v-col cols="6" align="center">
                 <p>COLPS</p>
                 <p class="text-center">{{ jugador.est_ind.colps }}</p>
-                <v-btn v-if="mostrar" small @click="colps(1, jugador.est_ind)">+</v-btn>
-                <v-btn v-if="mostrar" small @click="colps(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(1, jugador.est_ind, jugador.nom)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(-1, jugador.est_ind, jugador.nom)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
                 <p class="text-center">{{ jugador.est_ind.errades }}</p>
-                <v-btn v-if="mostrar" small @click="errades(1, jugador.est_ind)">+</v-btn>
-                <v-btn v-if="mostrar" small @click="errades(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(1, jugador.est_ind, jugador.nom)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(-1, jugador.est_ind, jugador.nom)">-</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -129,15 +136,16 @@
               <v-col cols="6" align="center">
                 <p>DIRECTA</p>
                 <p class="text-center">{{ treta_roig.tretes.directes }}</p>
-                <v-btn v-if="mostrar" small @click="tretes(1, treta_roig.tretes)">+</v-btn>
-                <v-btn v-if="mostrar" small @click="tretes(-1, treta_roig.tretes)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="tretes(1, treta_roig.tretes, treta_roig.nom)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="tretes(-1, treta_roig.tretes, treta_roig.nom)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
                 <p class="text-center">{{ treta_roig.tretes.faltes }}</p>
-                <v-btn v-if="mostrar" small @click="erradaTreta(1, treta_roig.tretes)">+</v-btn>
-                <v-btn v-if="mostrar" small @click="erradaTreta(-1, treta_roig.tretes)">-</v-btn>
-              </v-col>
+                <v-btn v-if="mostrar" small @click="erradaTreta(1, treta_roig.tretes, treta_roig.nom)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="erradaTreta(-1, treta_roig.tretes, treta_roig.nom)">-</v-btn>
+              </v-col> 
+
             </v-row>
           </v-card-subtitle>
         </v-card>
@@ -159,14 +167,14 @@
               <v-col cols="6" align="center">
                 <p>COLPS</p>
                 <p class="text-center">{{ jugador.est_ind.colps }}</p>
-                <v-btn v-if="mostrar" small @click="colps(1, jugador.est_ind)">+</v-btn>
-                <v-btn v-if="mostrar" small @click="colps(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(1, jugador.est_ind, jugador.nom)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="colps(-1, jugador.est_ind, jugador.nom)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
                 <p class="text-center">{{ jugador.est_ind.errades }}</p>
-                <v-btn v-if="mostrar" small @click="errades(1, jugador.est_ind)">+</v-btn>
-                <v-btn v-if="mostrar" small @click="errades(-1, jugador.est_ind)">-</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(1, jugador.est_ind, jugador.nom)">+</v-btn>
+                <v-btn v-if="mostrar" small @click="errades(-1, jugador.est_ind, jugador.nom)">-</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -183,14 +191,14 @@
               <v-col cols="6" align="center">
                 <p>DIRECTA</p>
                 <p class="text-center">{{ treta_blau.tretes.directes }}</p>
-                <v-btn small v-if="mostrar" @click="tretes(1, treta_blau.tretes)">+</v-btn>
-                <v-btn small v-if="mostrar" @click="tretes(-1, treta_blau.tretes)">-</v-btn>
+                <v-btn small v-if="mostrar" @click="tretes(1, treta_blau.tretes, treta_blau.nom)">+</v-btn>
+                <v-btn small v-if="mostrar" @click="tretes(-1, treta_blau.tretes, treta_blau.nom)">-</v-btn>
               </v-col>
               <v-col cols="6" align="center">
                 <p>ERRADES</p>
                 <p class="text-center">{{ treta_blau.tretes.faltes }}</p>
-                <v-btn small v-if="mostrar" @click="erradaTreta(1, treta_blau.tretes)">+</v-btn>
-                <v-btn small v-if="mostrar" @click="erradaTreta(-1, treta_blau.tretes)">-</v-btn>
+                <v-btn small v-if="mostrar" @click="erradaTreta(1, treta_blau.tretes, treta_blau.nom)">+</v-btn>
+                <v-btn small v-if="mostrar" @click="erradaTreta(-1, treta_blau.tretes, treta_blau.nom)">-</v-btn>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -214,6 +222,7 @@
             </v-row>
           </v-card-subtitle>
         </v-card>
+        
       </v-col>
       <v-col class="pa-0" cols="6">
         <v-card class="caja">
@@ -273,6 +282,7 @@
                   <v-btn small dark color="red" @click="travesa('de 15 als rojos')">15</v-btn>
                   <v-btn small dark color="red" @click="travesa('de 20 als rojos')">20</v-btn>
                 </v-col>
+                
               </v-row>
               <v-row>
                 <v-col class="mt-0 pt-0" v-if="mostrar">
@@ -285,6 +295,7 @@
               </v-row>
             </v-col>
           </v-row>
+          
         </v-sheet>
 
       </v-col>
@@ -295,7 +306,7 @@
       :timeout="timeout"
       color="lime accent-2"
     >
-      <h4 class="black--text">{{ feedback }}</h4>
+      <h4 class="black--text">{{ feedback.feedbackStr }}</h4>
       <v-btn
         color="black"
         text
@@ -306,15 +317,17 @@
     </v-snackbar>
     
 <!--     <p>{{ partida }}</p> -->
-{{ timer }}
   </v-container>
 </template>
 
 <script>
+
+import Vue from 'vue'
 export default {
   data() {
     return {
       durada: 0,
+      durada_joc: null, 
       temporizador: false,
       interval: null,
       duradaMin: 0,
@@ -324,6 +337,8 @@ export default {
       user: null,
       temporizador_partida: false,
       temps_total: null,
+      temps_total_str: null,
+      durada_total: null,
       durada_total_str: null,
       hora_final_partida: null,
       hora_actual_partida: null,
@@ -338,6 +353,9 @@ export default {
       let user = this.$store.getters.rolUser
       this.setUser(user)
       return this.$store.getters.partida
+    },
+    ac() {
+      return this.partida.punts_per_joc
     },
     jugadors_rojos() {
       const jugadors = this.equip_roig.jugadors.filter(item => {
@@ -384,6 +402,9 @@ export default {
     temporizador_partida_flag() {
       return this.partida.temporizador
     },
+    temporizador_joc_flag() {
+      return this.partida.temporizador_durada
+    },
     travessaStr() {
       return this.partida.travesses == null ? '--' : this.partida.travesses
     },
@@ -392,6 +413,10 @@ export default {
     },
     canviPilotaRoig() {
       return this.partida.equip_roig.canvi_pilota
+    },
+    numJoc() {
+      //let num = this.$store.getters.getMarcadorActivo.parcials.joc_actual.toString
+      return this.$store.getters.getMarcadorActivo.parcials.joc_actual
     }
 
   },
@@ -403,19 +428,23 @@ export default {
       this.partida.durades.splice(item, 1)
       this.update()
     },
-    colps(i, est) {
+    colps(i, est, nom) {
+      this.puntsPerJoc(i, nom)
       est.colps += i
       this.update()
     },
-    errades(i, est) {
+    errades(i, est, nom) {
+      this.erradesPerJoc(i, nom)
       est.errades += i
       this.update()
     },
     tretes(i, est) {
+      //this.puntsPerJoc(i, nom)
       est.directes += i
       this.update()
     },
     erradaTreta(i, est) {
+      //this.erradesPerJoc(i, nom)
       est.faltes += i
       this.update()
     },
@@ -423,6 +452,34 @@ export default {
       est.total += 1
       est.quinzes += i
       this.update()
+    },
+    puntsPerJoc(val, nom) {
+      const joc = 'joc' + this.numJoc
+      const part = {...this.partida.punts_per_joc}
+      //console.log(temp)
+      //const part = this.partida.punts_per_joc
+      
+      if (val > 0) {
+        /* temp.push(nom) */
+        part[joc].push(nom)
+      } else if (val < 0) {
+        const index = part[joc].indexOf(nom)
+        part[joc].splice(index, 1)
+      }
+      Vue.set(this.partida, 'punts_per_joc', part)
+      //this.partida.punts_per_joc = part
+      //this.update()
+    },
+    erradesPerJoc(val, nom) {
+      const part = this.partida.errades_per_joc
+      const joc = 'joc' + this.numJoc
+      if (val > 0) {
+        part[joc].push(nom)
+      } else if (val < 0) {
+        const index = part[joc].indexOf(nom)
+        part[joc].splice(index, 1)
+      }
+      //this.update()
     },
     canviPilota(equip) {
       let str = ''
@@ -433,52 +490,79 @@ export default {
         this.equip_blau.canvi_pilota += 1
         str = 'CANVI PILOTA BLAUS: ' + this.equip_blau.canvi_pilota + ' CANVIS'
       }
-      this.partida.feedback = str
-      this.update()      
+      this.feedback.feedbackStr = str
+      this.updateFb()      
 
     },
     travesa(str) {
       this.partida.travesses = 'DONEN ' + str.toUpperCase()
-      this.partida.feedback = this.partida.travesses
-      this.update()
+      this.feedback.feedbackStr = this.partida.travesses
+      this.updateFb()
     },
     borrarTravessa() {
       this.partida.travesses = null
-      this.partida.feedback = 'NO HI HA TRAVESSA'
-      this.update()
+      this.feedback.feedbackStr = 'NO HI HA TRAVESSA'
+      this.updateFb()
     },
-    tiempo() {
+    /* tiempo() {
       this.temporizador = !this.temporizador
       if(this.temporizador) {
         if(this.partida.durades.length > 0 && this.durada != 0) {
           this.partida.durades.pop()
           this.update()
         }
+          this.partida.durada_inici = Date.now()
           this.interval = setInterval(() => {
-          this.durada += 1
-          this.duradaMin = Math.floor(this.durada / 60)
-          this.duradaSec = this.durada - this.duradaMin * 60
-        }, 1000)
+            this.durada += 1
+            this.duradaMin = Math.floor(this.durada / 60)
+            this.duradaSec = this.durada - this.duradaMin * 60
+          }, 1000)
+          this.update()
       } else {
+        this.partida.durada_final = Date.now()
         this.partida.durades.push(this.durada)
-        this.partida.feedback = 'Durada del joc ' + this.formatDurada(this.durada)
+        this.feedback.feedbackStr = 'Durada del joc ' + this.formatDurada(this.durada)
         this.update()
         clearInterval(this.interval)
         }
+    }, */
+    duradaJoc(activo) {
+      if(this.partida.durada_inici == null) {
+        this.partida.durada_inici = Date.now()
+      }
+      this.partida.temporizador_durada = activo
+      this.temporizador = activo
+      if(activo) {
+        this.partida.durada_final = null
+        this.durada_total = setInterval(() => {
+          this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.durada_inici)
+        }, 1000)
+      } else if (!activo) {
+          this.partida.durada_final = Date.now()
+          this.partida.durades.push((this.partida.durada_final - this.partida.durada_inici) / 1000)
+          this.feedback.feedbackStr = 'Durada del joc ' + this.durada_total_str
+          this.updateFb()
+          clearInterval(this.durada_total)
+      }
+      this.update()
     },
     netejarDurades() {
       this.partida.durades = []
       this.update
     },
     reset() {
-      this.durada = 0
+      /* this.durada = 0
       this.duradaMin = 0
-      this.duradaSec = 0
+      this.duradaSec = 0 */
+      this.partida.durada_inici = null
+      this.partida.durada_final = null
+      this.durada_total_str = '--'
+      this.update()
     },
     resetPartidaTemps() {
       this.partida.hora_inici = null
       this.partida.hora_final = null
-      this.durada_total_str = '--'
+      this.temps_total_str = '--'
       this.update()
     },
     formatDurada(item) {
@@ -503,24 +587,34 @@ export default {
       if(activo) {
         this.partida.hora_final = null
         this.temps_total = setInterval(() => {
-          this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+          this.temps_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
         }, 1000)
       } else if (!activo) {
           this.partida.hora_final = Date.now()
           this.partida.travesses = ''
-          this.partida.feedback = 'Durada de la partida ' + this.durada_total_str
+          this.feedback.feedbackStr = 'Durada de la partida ' + this.temps_total_str
+          this.updateFb()
           clearInterval(this.temps_total)
       }
       this.update()
       
     },
     actualizar_durada() {
+      let actual = this.partida.durada_final == null ? Date.now() : this.partida.durada_final
+      
+      if (this.partida.durada_inici) {
+        this.durada_total_str = this.calcular_tiempo(actual, this.partida.durada_inici)
+      } else {
+        this.durada_total_str = '--'
+      }
+    },
+    actualizar_temps() {
       let actual = this.partida.hora_final == null ? Date.now() : this.partida.hora_final
       
       if (this.partida.hora_inici) {
-        this.durada_total_str = this.calcular_tiempo(actual, this.partida.hora_inici)
+        this.temps_total_str = this.calcular_tiempo(actual, this.partida.hora_inici)
       } else {
-        this.furada_total_str = '--'
+        this.temps_total_str = '--'
       }
     },
     calcular_tiempo(actual, inicio) {
@@ -535,17 +629,16 @@ export default {
     update() {
       this.$store.dispatch('updatePartida', this.partida)
     },
+    updateFb() {
+      this.$store.dispatch('updateFeedback', this.feedback)
+    },
     setUser(user) {
       this.user = user
-      if(this.user == null) {
-        if(user == 'admin') {
-          this.mostrar = true
-        }
-      }      
-      if(user == 'editor') {
+      if(user == 'admin') {
         this.mostrar = true
-      }
-      if (user == null || user == 'miembro') {
+      } else if(user == 'editor') {
+        this.mostrar = true
+      } else if (user == null || user == 'miembro') {
         this.mostrar = false
       }
     },
@@ -556,7 +649,7 @@ export default {
       this.partida.temporizador = false
       this.temps_total = setInterval(() => {
           //this.hora_final_partida = null
-          this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+          this.temps_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
         }, 1000)
     } */
   },
@@ -567,41 +660,67 @@ export default {
           this.temporizador_partida = val
           this.temps_total = setInterval(() => {
             this.partida.hora_final = null
-            this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+            this.temps_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
           }, 1000)
         }
       } else {
         if(this.temporizador_partida) {
           this.temporizador_partida = val
           clearInterval(this.temps_total)
-          console.log('stop')
         }
       }
     },
+    temporizador_joc_flag(val) {
+      if (val) {
+        if (!this.temporizador) {
+          this.temporizador = val
+          this.durada_total = setInterval(() => {
+            this.partida.durada_final = null
+            this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.durada_inici)
+          }, 1000)
+        }
+      } else {
+        if(this.temporizador) {
+          this.temporizador = val
+          clearInterval(this.durada_total)
+        }
+      }
+    },
+
     feedback: function() {
       //console.log('feedback')
-      if (this.partida.feedback != null) {
+      if (this.feedback.feedbackStr != null) {
         this.snackbar = false
         clearTimeout(this.timer)
         this.snackbar = true
         this.timer = setTimeout( () => {
-          this.partida.feedback = null
-          this.update()
+          this.feedback.feedbackStr = null
+          this.updateFb()
         }, 10000)
       } else {
         this.snackbar = false
+      }
+    },
+    numJoc: function(actual, anterior) {
+      if(actual > anterior) {
+        //let srt = 'joc' + actual
+        this.partida.punts_per_joc = { ...this.partida.punts_per_joc,
+            ['joc' + actual]: []
+          }
+        this.partida.errades_per_joc = { ...this.partida.errades_per_joc,
+            ['joc' + actual]: []
+          }
+        this.update()
       } 
-
-      
     }
   },
     /* travessaStr: function() {
-      this.partida.feedback = this.travessaStr
+      this.feedback.feedbackStr = this.travessaStr
       this.snackbar = true
     },
     canviPilotaRoig: function(val) {
-      this.partida.feedback = 'Canvi pilota roig: ' + val + ' canvis'
-      console.log(this.partida.feedback)
+      this.feedback.feedbackStr = 'Canvi pilota roig: ' + val + ' canvis'
+      console.log(this.feedback.feedbackStr)
       this.snackbar = true
     }, */
     
@@ -613,15 +732,21 @@ export default {
     if (this.partida.temporizador) {
       this.temporizador_partida = true
       this.temps_total = setInterval(() => {
-        this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+        this.temps_total_str =  this.calcular_tiempo(Date.now(), this.partida.hora_inici)
+      }, 1000)
+    } else {
+      this.actualizar_temps()
+    }
+    if (this.partida.temporizador_durada) {
+      this.temporizador = true
+      this.durada_total = setInterval(() => {
+        this.durada_total_str =  this.calcular_tiempo(Date.now(), this.partida.durada_inici)
       }, 1000)
     } else {
       this.actualizar_durada()
     }
     
-  },
-
-
+  }
 }
 </script>
 

@@ -99,9 +99,13 @@
           </v-card>
         </v-col>
       </v-row> -->
+      <v-col cols="12" class="ma-0 pa-0">
+          <EstadisticaPerJoc :id="partidaCargada.id" :key="componentKey" v-if="user" />
+        </v-col>
       <v-sheet width="100%">
         <v-row>
           <v-col cols="12">
+            <h2 class="pl-4">Estadistica de la partida</h2>
             <v-simple-table>
               <template v-slot:default>
                 <thead>
@@ -411,27 +415,39 @@
 </template>
 
 <script>
+import EstadisticaPerJoc from '@/components/estadistica/EstadisticaPerJoc'
+
+
 export default {
   props: [
     'id'
   ],
+  components: {
+    EstadisticaPerJoc
+  },
   data() {
     return {
       punto_str: ['NET', '15', '30', 'VAL'],
+      componentKey:0
     }
   },
   computed: {
     cargando() {
       return this.$store.getters.cargando
     },
+    aciertos() {
+      //console.log(this.partida.punts_per_joc)
+      return this.partida.punts_per_joc
+    },
     partidaCargada() {
       return this.$store.getters.buscarPartida(this.$route.params.id)
     },
     partida() {
       return this.$store.getters.buscarPartida(this.$route.params.id)
+      /* return this.$store.getters.partida */
     },
     marcador() {
-      return this.partida.marcador
+      return this.$store.getters.getMarcador(this.$route.params.id).marcador
     },
     equip_roig() {
       return this.partida.equip_roig
@@ -498,6 +514,12 @@ export default {
     goto(link) {
       this.$router.push(link)
     }
+  },
+  created() {
+    /* setInterval(() => {
+        this.componentKey += 1
+        //console.log(this.componentKey)
+      }, 1000) */
   }
 }
 

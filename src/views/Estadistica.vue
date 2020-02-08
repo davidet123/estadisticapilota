@@ -32,7 +32,7 @@
       <div v-if="!partidaCargada">  
         <v-row>
           <v-col align="center">
-            <h3>Has de carregar una partida</h3>
+            <h3 class="white--text mb-4">Has de carregar una partida</h3>
             <v-btn color="#317f5c" dark @click="goto('/cargarpartida')">Carregar Partida</v-btn>
           </v-col>
         </v-row>

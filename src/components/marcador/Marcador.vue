@@ -82,23 +82,29 @@ export default {
     }
   },
   computed: {
-    partida() {
+    /* partida() {
       return this.$store.getters.partida
+    }, */
+    marcador_total() {
+      return this.$store.getters.getMarcadorActivo
     },
     marcador() {
-      return this.partida.marcador
+      /* return this.partida.marcador */
+      /* return this.$store.getters.getMarcador[0].marcador */
+       return this.marcador_total.marcador
+      
     },
     parcial_jocs() {
-      return this.partida.parcials.jocs
+      return this.parcials.jocs
     },
     parcial_actual() {
-      return this.partida.parcials.parcial_actual
+      return this.parcials.parcial_actual
     },
     parcial_punts() {
-      return this.partida.parcials.punts
+      return this.parcials.punts
     },
     parcials() {
-      return this.partida.parcials
+      return this.marcador_total.parcials
     },
     joc_actual() {
       return this.parcials.joc_actual
@@ -108,6 +114,9 @@ export default {
     },
     user() {
       return this.$store.getters.rolUser
+    },
+    id() {
+      return this.marcador_total.id_partida
     }
 
   },
@@ -119,7 +128,7 @@ export default {
         marc.punts_rojos += valor
         if (valor > 0) { 
           if(this.parcial_actual[this.parcial_actual.length -1] == 'blaus') {
-            this.partida.parcials.parcial_actual = []
+            this.parcials.parcial_actual = []
           }
           this.parcial_actual.push('rojos')
           this.parcials.punts[numJoc].push('rojos')
@@ -145,7 +154,7 @@ export default {
         marc.punts_blaus += valor
         if (valor > 0) {
           if(this.parcial_actual[this.parcial_actual.length -1] == 'rojos') {
-            this.partida.parcials.parcial_actual = []
+            this.parcials.parcial_actual = []
           }
           this.parcial_actual.push('blaus')
           this.parcials.punts[numJoc].push('blaus')
@@ -168,7 +177,7 @@ export default {
         }
       }
 
-      this.update()
+      this.updateMarcador()
     },
     juego(equipo, valor) {
       let marc = this.marcador
@@ -193,6 +202,9 @@ export default {
           var str = 'joc'+this.joc_actual
           delete this.parcials.punts[str]
           this.parcials.joc_actual --
+          if(this.parcials.joc_actual == 0) {
+            this.parcials.joc_actual = 1
+          }
         }
         if(marc.jocs_rojos < 0) {
           marc.jocs_rojos = 0
@@ -217,13 +229,16 @@ export default {
           str = 'joc'+this.joc_actual 
           delete this.parcials.punts[str]
           this.parcials.joc_actual --
+          if(this.parcials.joc_actual == 0) {
+            this.parcials.joc_actual = 1
+          }
         }
         if(marc.jocs_blaus < 0) {
           marc.jocs_blaus = 0
         }
       }
       this.parcials.jocs = this.parcial_jocs_temp
-      this.update()
+      this.updateMarcador()
       
     },
     update_parcial_punts() {
@@ -264,8 +279,11 @@ export default {
         this.parcial_punts_total_jocs = 'Parcial de ' + roig + ' a ' + blau + ' ' + equip + joc_str
       }
     },
-    update() {
+    /* update() {
       this.$store.dispatch('updatePartida', this.partida)
+    }, */
+    updateMarcador() {
+      this.$store.dispatch('updateMarcador', this.marcador_total)
     }
   },
   mounted() {
