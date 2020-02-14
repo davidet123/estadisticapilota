@@ -1,7 +1,7 @@
 import db from '@/firebase/init.js'
 //import firebase from 'firebase/app'
 import 'firebase/auth'
-//import router from '@/router'
+import router from '@/router'
 
 
 export default {
@@ -72,11 +72,7 @@ export default {
         data.forEach(doc=> {
           let marc = doc.data()
           marc.id = doc.id
-          //console.log(doc.data())
           commit('addMarcador', marc)
-          //commit('addPartidas', partida)
-          //console.log(partida)
-
         })
         commit('carregant', false)
       })
@@ -84,12 +80,11 @@ export default {
     addMarcador: ({commit}, payload) => {
       // Añade un nuevo marcador a la base de datos
 
-      commit('carregant', true)
+      
       db.collection('marcadores').add(payload)
       .then(() => {
-        /* let id = data._key.path.segments[1]  
-        commit('addMarcador', payload) */
         commit('carregant', false)
+        router.push('/')
       })
     },
     actualizarMarcador: ({commit}) => {
@@ -99,38 +94,18 @@ export default {
         snapshot.docChanges().forEach(change => {
           let marc = change.doc.data()
           if (change.type === 'modified') {
-            //console.log(marc)
             commit('updateMarcador', marc)
           } else if(change.type === 'added' ) {
             marc.id = change.doc._key.path.segments[change.doc._key.path.segments.length - 1]
-            //console.log(marc.id)
             commit('addMarcador', marc)
           }
         })
       })
     },
-    /* cargarListado: ({commit}) => {
-      //console.log('cargando...')
-      commit('carregant', true)
-      db.collection('partides_ok').get()
-      .then (data => {
-        data.forEach(doc=> {
-          let partida = doc.data()
-          partida.id = doc.id
-          commit('addLista', partida.id)
-          commit('addPartidas', partida)
-          //console.log(partida)
-
-        })
-        commit('carregant', false)
-      })
-    }, */
     updateMarcador: ({commit}, payload) => {
       // Actualiza la base de datos directamente
       commit('carregant', true)
-      //console.log(payload)
       const marc = db.collection('marcadores').doc(payload.id)
-      //console.log('update')
       marc.update(payload)
       commit('carregant', false)
     },
@@ -141,23 +116,10 @@ export default {
           marc.id = change.doc.id
           if (change.type === 'modified') {
             commit('cargarMarcador', marc)
-          }/*  else if(change.type === 'added' && state.carregant) {
-            //console.log('addPartida')
-            commit('addPartidas', partida)
-          } */
-        })
-      })
-    },
-    /* actualizarMarcadorCargado: ({commit}) => {
-      db.collection('marcadores').onSnapshot(snapshot=> {
-        snapshot.docChanges().forEach(change => {
-          let marc = change.doc.data()
-          if (change.type === 'modified') {
-            commit('cargarPartida', marc.id)
           }
         })
       })
-    }, */
+    },
     eliminarMarcador: ({commit, state}, payload) => {
       const marc_id = state.marcadores.find(marc => {
         return marc.id_partida == payload
@@ -168,28 +130,5 @@ export default {
         commit('eliminarMarcador', payload)
       })
     },
-    /* cargarPartida: ({commit}, payload) => {
-      commit('carregant', true)
-      db.collection('partida_cargada').doc('UzBxIXYsndS4Ze3DizHd').update({id:payload})
-      .then(() => {
-          commit('partidaCargada', payload)
-          commit('cargarPartida', payload)
-          commit('carregant', false)
-      })
-        
-    }, */
-    /* partidaCargada: ({commit}) => {
-      commit('carregant', true)
-      db.collection('partida_cargada').doc('UzBxIXYsndS4Ze3DizHd').get()
-      .then(doc => {
-        commit('partidaCargada', doc.data().id)
-        commit('cargarPartida', doc.data().id)
-        commit('carregant', false)
-        //console.log(doc.data().id)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    }*/
   } 
 }

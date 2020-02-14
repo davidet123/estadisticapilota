@@ -22,9 +22,11 @@
               <h5>{{ partida.tipo }}</h5>
             </v-col>
             <v-col cols="6" sm="4" align-self="center">
-              <v-btn small class="mb-2"  color="#317f5c" dark @click="cargarPartida(partida.id)">CARREGAR</v-btn>
+              <v-btn x-small class="mb-2"  color="#317f5c" dark @click="cargarPartida(partida.id)">CARREGAR</v-btn>
               <br>
-              <v-btn small class="mb-2" color="error" @click="abrirDialog(partida.id)">ELIMINAR</v-btn>
+              <!-- <v-btn x-small class="mb-2 white--text" color="blue" @click="editarPartida(partida.id)">EDITAR</v-btn>
+              <br> -->
+              <v-btn x-small class="mb-2" color="error" @click="abrirDialog(partida.id)">ELIMINAR</v-btn>
             </v-col>
           </v-row>
         </v-sheet>
@@ -82,6 +84,9 @@ export default {
     cargarPartida(id) {
       this.$store.dispatch('cargarPartida', id)
       this.$router.push('/Estadistica')
+    },
+    editarPartida(id) {
+      this.$router.push('/editarpartida/'+ id)
     },
     eliminarPartida() {
       this.$store.dispatch('eliminarPartida', this.id)

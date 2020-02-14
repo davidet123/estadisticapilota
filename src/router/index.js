@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import AfegirPartida from '../views/AfegirPartida.vue'
+import EditarPartida from '../views/EditarPartida.vue'
 import CargarPartida from '../views/CargarPartida.vue'
 import Estadistica from '../views/Estadistica.vue'
 import Resum from '../views/Resum.vue'
@@ -39,7 +40,10 @@ const routes = [
   {
     path: '/cargarpartida',
     name: 'cargarpartida',
-    component: CargarPartida
+    component: CargarPartida,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/resum/:id',
@@ -61,6 +65,15 @@ const routes = [
     path: '/signin',
     name: 'signin',
     component: SignIn,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/editarpartida/:id',
+    name: 'editarpartida',
+    props:true,
+    component: EditarPartida,
     meta: {
       requiresAuth: true
     }

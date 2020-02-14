@@ -37,14 +37,13 @@
                   <v-col cols="5" align="center">
                     <h5>Títol</h5>
                     <v-divider></v-divider>
-                    <h4 class="py-2">{{ feedback.rotulo.titulo }}</h4>
+                    <h4 class="py-2">{{ entrevista.titulo }}</h4>
                     
                   
                     <h5 class="mt-4">Subtítol</h5>
                     <v-divider></v-divider>
-                    <h4 class="py-2">{{ feedback.rotulo.subtitulo }}</h4>
+                    <h4 class="py-2">{{ entrevista.subtitulo }}</h4>
                   </v-col>
-                
               </v-row>
               
             </v-form>
@@ -75,6 +74,9 @@ export default {
   computed: {
     feedback() {
       return this.$store.getters.getFeedback
+    },
+    entrevista() {
+      return this.$store.getters.getEntrevista
     }
   },  
 
@@ -82,16 +84,20 @@ export default {
     validate () {
       if (this.$refs.form.validate()) {
         const str = 'ENTREVISTA: ' + this.titulo
-        this.feedback.rotulo.titulo = this.titulo
-        this.feedback.rotulo.subtitulo = this.subtitulo
+        this.entrevista.titulo = this.titulo
+        this.entrevista.subtitulo = this.subtitulo
 
         this.feedback.feedbackStr = str
         this.updateFb()
+        this.updateEntrevista()
       }
     },
     updateFb() {
       this.$store.dispatch('updateFeedback', this.feedback)
     },
+    updateEntrevista() {
+      this.$store.dispatch('updateEntrevista', this.entrevista)
+    }
   }
 
 }

@@ -1,17 +1,17 @@
 <template>
   <v-container fluid class="pa-0">
     <v-row>
-      <v-col cols="1" class="mx-auto pa-0 my-0">
+      <v-col cols="1" class="mx-auto ma-0 pa-0">
         <v-switch
         v-model="mostrar"
         v-if="user == 'admin'"
+         class="ma-0 pa-0"
       ></v-switch>
       </v-col>
-      
     </v-row>
     <v-row> 
       <v-col cols="4" align="center">
-        <h5 class="white--text">TEMPS TOTAL</h5>
+        <h5 class="white--text mt-0 pt-0">TEMPS TOTAL</h5>
         <h4 class="white--text">{{ temps_total_str }}</h4>
         <v-btn x-small v-if="user && mostrar" :disabled="temporizador_partida" @click="iniciPartida(true)">INICI PARTIDA</v-btn>
         <v-btn x-small v-if="user && mostrar" @click="iniciPartida(false)">FINAL PARTIDA</v-btn>
@@ -26,9 +26,9 @@
       <v-col cols="4" class="mx-auto" align="center">
         <h5 class="white--text">DURADA DEL JOC</h5>
         <h5 class="white--text">{{ durada_total_str }}</h5>
-        <v-btn v-if="mostrar" x-small @click="duradaJoc(true)">Iniciar crono</v-btn>
-        <v-btn v-if="mostrar" x-small @click="duradaJoc(false)">Parar crono</v-btn>
-        <v-btn v-if="mostrar" x-small @click="reset" :disabled="temporizador">Reset crono</v-btn> 
+        <v-btn v-if="mostrar" x-small :disabled="temporizador || !temporizador_partida" @click="duradaJoc(true)">Iniciar crono</v-btn>
+        <v-btn v-if="mostrar" x-small :disabled="!temporizador || !temporizador_partida" @click="duradaJoc(false)">Parar crono</v-btn>
+        <v-btn v-if="mostrar" x-small :disabled="temporizador || !temporizador_partida" @click="reset" >Reset crono</v-btn> 
       </v-col>
       <v-col cols="4" align="center" class="mx-auto">
         <h5 class="white--text">DURADA ÚLTIM JOC: {{ temps }}</h5>
@@ -104,7 +104,7 @@
     
         <v-card class="caja">
           <div class="pa-1 overline red white--text">Estadistica Individual</div>
-          <v-card-title class="red">
+          <v-card-title class="red py-0" >
             <p class="text-center white--text">{{ jugador.nom }}</p>
           </v-card-title>
           <v-card-subtitle class="mt-1">
@@ -127,8 +127,8 @@
       </v-col>
       <v-col class="pa-0" cols="6" :sm="cajas">
         <v-card class="caja">
-          <div class="pa-1 overline red white--text">Tretes</div>
-          <v-card-title class="red">
+          <div class="pa-1 overline red white--text">Treta</div>
+          <v-card-title class="red py-0">
             <p class="text-center white--text">{{ treta_roig.nom}}</p>
           </v-card-title>
           <v-card-subtitle class="mt-1">
@@ -159,7 +159,7 @@
       v-for="jugador in jugadors_blaus" :key="jugador.num">
         <v-card class="caja">
           <div class="pa-1 overline blue white--text">Estadistica Individual</div>
-          <v-card-title class="blue">
+          <v-card-title class="blue py-0">
             <p class="text-center white--text">{{ jugador.nom }}</p>
           </v-card-title>
           <v-card-subtitle class="mt-1">
@@ -182,8 +182,8 @@
       </v-col>
       <v-col class="pa-0" cols="6" :sm="cajas">
         <v-card class="caja">
-          <div class="pa-1 overline blue white--text">Tretes</div>
-          <v-card-title class="blue">
+          <div class="pa-1 overline blue white--text">Treta</div>
+          <v-card-title class="blue py-0">
             <p class="text-center white--text">{{ treta_blau.nom}}</p>
           </v-card-title>
           <v-card-subtitle class="mt-1">
@@ -209,15 +209,25 @@
       <v-col class="pa-0" cols="6">
         <v-card class="caja">
           <div class="pa-1 overline red white--text">Caigudes d'escala</div>
-          <v-card-title class="red">
+          <v-card-title class="red py-0">
             <p class="text-center white--text">{{ jugadors_rojos[0].nom }}</p>
           </v-card-title>
           <v-card-subtitle class="mt-1">
             <v-row >
               <v-col cols="12" align="center">
-                <h3 class="text-center mb-3">{{ jugadors_rojos[0].caigudes.quinzes }}/{{ jugadors_rojos[0].caigudes.total }}</h3>
-                <v-btn v-if="mostrar" small @click="caigudes(0, jugadors_rojos[0].caigudes)">CAIGUDA</v-btn>
-                <v-btn v-if="mostrar" small @click="caigudes(1, jugadors_rojos[0].caigudes)">QUINZE</v-btn>
+                <h3 class="text-center mb-3">{{ jugadors_rojos[0].caigudes.quinzes }}/{{ jugadors_rojos[0].caigudes.total }} {{ calcPorcentaje(jugadors_rojos[0].caigudes.quinzes, jugadors_rojos[0].caigudes.total) }}</h3>
+                <v-row>
+                  <v-col cols="6" align="center">
+                    <h4>Caiguda</h4>
+                      <v-btn v-if="mostrar" small @click="caigudes(1,0, jugadors_rojos[0].caigudes)">+</v-btn>
+                      <v-btn v-if="mostrar" small @click="caigudes(-1,0, jugadors_rojos[0].caigudes)">-</v-btn>
+                  </v-col>
+                  <v-col cols="6" align="center">
+                    <h4>Quinze</h4>
+                      <v-btn v-if="mostrar" small @click="caigudes(1, 1, jugadors_rojos[0].caigudes)">+</v-btn>
+                      <v-btn v-if="mostrar" small @click="caigudes(-1, -1, jugadors_rojos[0].caigudes)">-</v-btn>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -227,15 +237,25 @@
       <v-col class="pa-0" cols="6">
         <v-card class="caja">
           <div class="pa-1 overline blue white--text">Caigudes d'escala</div>
-          <v-card-title class="blue">
+          <v-card-title class="blue py-0">
             <p class="text-center white--text">{{ jugadors_blaus[0].nom }}</p>
           </v-card-title>
           <v-card-subtitle class="mt-1">
             <v-row >
               <v-col cols="12" align="center">
-                <h3 class="text-center mb-3">{{ jugadors_blaus[0].caigudes.quinzes }}/{{ jugadors_blaus[0].caigudes.total }}</h3>
-                <v-btn v-if="mostrar" small @click="caigudes(0, jugadors_blaus[0].caigudes)">CAIGUDA</v-btn>
-                <v-btn v-if="mostrar" small @click="caigudes(1, jugadors_blaus[0].caigudes)">QUINZE</v-btn>
+                <h3 class="text-center mb-3">{{ jugadors_blaus[0].caigudes.quinzes }}/{{ jugadors_blaus[0].caigudes.total }} {{ calcPorcentaje(jugadors_blaus[0].caigudes.quinzes, jugadors_blaus[0].caigudes.total) }}</h3>
+                <v-row>
+                  <v-col cols="6" align="center">
+                    <h4>Caiguda</h4>
+                      <v-btn v-if="mostrar" small @click="caigudes(1,0, jugadors_blaus[0].caigudes)">+</v-btn>
+                      <v-btn v-if="mostrar" small @click="caigudes(-1,0, jugadors_blaus[0].caigudes)">-</v-btn>
+                  </v-col>
+                  <v-col cols="6" align="center">
+                    <h4>Quinze</h4>
+                      <v-btn v-if="mostrar" small @click="caigudes(1, 1, jugadors_blaus[0].caigudes)">+</v-btn>
+                      <v-btn v-if="mostrar" small @click="caigudes(-1, -1, jugadors_blaus[0].caigudes)">-</v-btn>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card-subtitle>
@@ -252,11 +272,13 @@
               <v-row>
                 <v-col cols="6" align="center">
                   <h3 class="red--text">EQUIP ROIG  {{ this.equip_roig.canvi_pilota }}</h3>
-                  <v-btn v-if="mostrar" small dark color="red" @click="canviPilota('roig')">CANVI PIL ROIG</v-btn>
+                  <v-btn v-if="mostrar" small dark color="red" @click="canviPilota('roig', 1)">+</v-btn>
+                  <v-btn v-if="mostrar" small dark color="red" @click="canviPilota('roig', -1)">-</v-btn>
                 </v-col>
                 <v-col cols="6" align="center">
                   <h3 class="blue--text">EQUIP BLAU {{ this.equip_blau.canvi_pilota }}</h3>
-                  <v-btn v-if="mostrar" small dark color="blue" @click="canviPilota('blau')">CANVI PIL BLAU</v-btn> 
+                  <v-btn v-if="mostrar" small dark color="blue" @click="canviPilota('blau', 1)">+</v-btn> 
+                  <v-btn v-if="mostrar" small dark color="blue" @click="canviPilota('blau', -1)">-</v-btn> 
                 </v-col>
               </v-row>
             </v-col>
@@ -297,9 +319,19 @@
           </v-row>
           
         </v-sheet>
+        
 
       </v-col>
-    </v-row>
+     </v-row>
+      <!--<v-row class="caja" v-show="user == 'admin'">
+        <v-col cols="12" class="ma-0 pa-0" align="center">
+          <v-sheet>
+            <h5>Live update</h5>
+          <LiveUpdate :datos="datos" />
+          </v-sheet>
+          
+        </v-col>
+      </v-row> -->
     <v-snackbar
       v-model="snackbar"
       top="top"
@@ -317,15 +349,28 @@
     </v-snackbar>
     
 <!--     <p>{{ partida }}</p> -->
+  
   </v-container>
 </template>
 
 <script>
 
 import Vue from 'vue'
+/* import LiveUpdate from '@/components/liveupdate/LiveUpdate' */
+
+
+
 export default {
+  components: {
+    /* LiveUpdate */
+  },
   data() {
     return {
+      datos: {
+        tipo: '',
+        nom: '', est:
+        {colps:0,
+        errades:0}},
       durada: 0,
       durada_joc: null, 
       temporizador: false,
@@ -417,12 +462,36 @@ export default {
     numJoc() {
       //let num = this.$store.getters.getMarcadorActivo.parcials.joc_actual.toString
       return this.$store.getters.getMarcadorActivo.parcials.joc_actual
+    },
+    status() {
+      return this.$store.getters.getStatus
     }
+    
 
   },
   methods: {
     cargarPartida() {
       this.partida = this.$store.getters.partida
+    },
+    updateMimo(nom, tipo) {
+      let est = ''
+      if(tipo == 'colps') {
+        let jugadors = this.equip_roig.jugadors.concat(this.equip_blau.jugadors)
+        let jug = jugadors.find(jugador => {
+          return jugador.nom == nom
+        })
+        est = {colps: jug.est_ind.colps,
+        errades: jug.est_ind.errades}
+      } else if (tipo == 'tretes') {
+        let jugadors = [this.treta_roig, this.treta_blau]
+        let jug = jugadors.find(jugador => {
+          return jugador.nom == nom
+        })
+        est = {colps: jug.tretes.directes,
+        errades: jug.tretes.faltes}
+      }
+      
+      this.datos = {nom: nom, tipo: tipo, est: est}
     },
     deleteDurada(item) {
       this.partida.durades.splice(item, 1)
@@ -431,27 +500,58 @@ export default {
     colps(i, est, nom) {
       this.puntsPerJoc(i, nom)
       est.colps += i
+      /* this.updateMimo(nom, 'colps') */
       this.update()
     },
     errades(i, est, nom) {
       this.erradesPerJoc(i, nom)
       est.errades += i
+      /* this.updateMimo(nom, 'colps') */
       this.update()
     },
-    tretes(i, est) {
-      //this.puntsPerJoc(i, nom)
+    tretes(i, est, nom) {
+      this.tretesPerJoc(i, nom)
       est.directes += i
+      /* this.updateMimo(nom, 'tretes') */
       this.update()
     },
-    erradaTreta(i, est) {
-      //this.erradesPerJoc(i, nom)
+    erradaTreta(i, est, nom) {
+      this.erradesTretaPerJoc(i, nom)
       est.faltes += i
+      /* this.updateMimo(nom, 'tretes') */
       this.update()
     },
-    caigudes(i, est) {
-      est.total += 1
+    caigudes(val, i, est) {
+      est.total += val
       est.quinzes += i
       this.update()
+    },
+    calcPorcentaje(a, b) {
+      return b != 0 ? Math.round(a/b*100) + '%' : ''
+    },
+    tretesPerJoc(val, nom) {
+      const joc = 'joc' + this.numJoc
+      const part = {...this.partida.tretes_per_joc}
+      if (val > 0) {
+        /* temp.push(nom) */
+        part[joc].push(nom)
+      } else if (val < 0) {
+        const index = part[joc].indexOf(nom)
+        part[joc].splice(index, 1)
+      }
+      Vue.set(this.partida, 'tretes_per_joc', part)
+    },
+    erradesTretaPerJoc(val, nom) {
+      const joc = 'joc' + this.numJoc
+      const part = {...this.partida.errades_treta_per_joc}
+      if (val > 0) {
+        /* temp.push(nom) */
+        part[joc].push(nom)
+      } else if (val < 0) {
+        const index = part[joc].indexOf(nom)
+        part[joc].splice(index, 1)
+      }
+      Vue.set(this.partida, 'errades_treta_per_joc', part)
     },
     puntsPerJoc(val, nom) {
       const joc = 'joc' + this.numJoc
@@ -481,51 +581,35 @@ export default {
       }
       //this.update()
     },
-    canviPilota(equip) {
+    canviPilota(equip, val) {
       let str = ''
       if(equip == 'roig') {
-        this.equip_roig.canvi_pilota += 1
+        this.equip_roig.canvi_pilota += val
         str = 'CANVI PILOTA ROJOS: ' + this.equip_roig.canvi_pilota + ' CANVIS'
       } else if (equip == 'blau') {
-        this.equip_blau.canvi_pilota += 1
+        this.equip_blau.canvi_pilota += val
         str = 'CANVI PILOTA BLAUS: ' + this.equip_blau.canvi_pilota + ' CANVIS'
       }
-      this.feedback.feedbackStr = str
-      this.updateFb()      
+      this.update()
+      if(val > 0) {
+        this.feedback.feedbackStr = str
+        this.updateFb() 
+      }
+            
 
     },
     travesa(str) {
       this.partida.travesses = 'DONEN ' + str.toUpperCase()
       this.feedback.feedbackStr = this.partida.travesses
+      this.update()
       this.updateFb()
     },
     borrarTravessa() {
       this.partida.travesses = null
       this.feedback.feedbackStr = 'NO HI HA TRAVESSA'
+      this.update()
       this.updateFb()
     },
-    /* tiempo() {
-      this.temporizador = !this.temporizador
-      if(this.temporizador) {
-        if(this.partida.durades.length > 0 && this.durada != 0) {
-          this.partida.durades.pop()
-          this.update()
-        }
-          this.partida.durada_inici = Date.now()
-          this.interval = setInterval(() => {
-            this.durada += 1
-            this.duradaMin = Math.floor(this.durada / 60)
-            this.duradaSec = this.durada - this.duradaMin * 60
-          }, 1000)
-          this.update()
-      } else {
-        this.partida.durada_final = Date.now()
-        this.partida.durades.push(this.durada)
-        this.feedback.feedbackStr = 'Durada del joc ' + this.formatDurada(this.durada)
-        this.update()
-        clearInterval(this.interval)
-        }
-    }, */
     duradaJoc(activo) {
       if(this.partida.durada_inici == null) {
         this.partida.durada_inici = Date.now()
@@ -643,6 +727,7 @@ export default {
       }
     },
     
+    
   },
   mounted() {
     /* if(this.hora_inici != null) {
@@ -710,8 +795,21 @@ export default {
         this.partida.errades_per_joc = { ...this.partida.errades_per_joc,
             ['joc' + actual]: []
           }
-        this.update()
+        this.partida.tretes_per_joc = { ...this.partida.tretes_per_joc,
+            ['joc' + actual]: []
+          }
+        this.partida.errades_treta_per_joc = { ...this.partida.errades_treta_per_joc,
+            ['joc' + actual]: []
+          }
+        //this.update()
       } 
+    },
+    status: function(val) {
+      //console.log('status')
+      if(val == 200) {
+        this.$store.dispatch('updateVariants')
+      }
+
     }
   },
     /* travessaStr: function() {

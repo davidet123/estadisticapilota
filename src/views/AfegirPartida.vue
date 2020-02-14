@@ -230,6 +230,8 @@ export default {
         temporizador_durada: false,
         punts_per_joc: {joc1:[]},
         errades_per_joc: {joc1:[]},
+        tretes_per_joc: {joc1:[]},
+        errades_treta_per_joc: {joc1:[]},
         durades: [],
         equip_roig: {
           nom_equip: this.nom_rojos || this.equip_roig[0],
@@ -336,7 +338,11 @@ export default {
       if(partida.equip_roig.jugadors[0].nom != null && partida.equip_blau.jugadors[0].nom != null && partida.equip_roig.jugadors[0].nom != '' && partida.equip_blau.jugadors[0].nom != '' ) {
         this.$store.commit('carregant', true)
         this.$store.dispatch('addPartida', {partida, marcador})
-        this.$router.push('/')  
+        this.$store.dispatch('updateEntrevista', {
+            titulo: null,
+            subtitulo: null
+        })
+        //this.$router.push('/')  
       }
             
     }

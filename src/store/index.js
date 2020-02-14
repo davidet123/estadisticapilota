@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import users from './users.js'
+import liveUpdate from './liveUpdate.js'
 import marcador from './marcador.js'
-import feedback from './feedback.js'
+import feedbackStore from './feedbackStore.js'
+import entrevistaStore from './entrevistaStore.js'
 import db from '@/firebase/init.js'
+import router from '@/router'
 
 Vue.use(Vuex)
 
@@ -11,7 +14,9 @@ export default new Vuex.Store({
   modules: {
     users,
     marcador,
-    feedback
+    feedbackStore,
+    entrevistaStore,
+    liveUpdate
   },
   state: {
     carregant: false,
@@ -84,6 +89,11 @@ export default new Vuex.Store({
       lista.hora_inici = payload.hora_inici
       lista.hora_final = payload.hora_final
       lista.rotulo = payload.rotulo
+      lista.errades_per_joc = payload.errades_per_joc
+      lista.punts_per_joc = payload.punts_per_joc
+      lista.tretes_per_joc = payload.tretes_per_joc
+      lista.errades_treta_per_joc = payload.errades_treta_per_joc
+
     },
     eliminarPartida: (context, payload) => {
       context.partides = context.partides.filter(partida => {
@@ -105,17 +115,13 @@ export default new Vuex.Store({
       db.collection('partides_ok1').add(payload.partida)
       .then((data) => {
         let id = data._key.path.segments[1]
-        console.log(id)
-        
         // Crea un nuevo marcador con la id de la partida creada
         payload.marcador.id_partida = id
-        dispatch('addMarcador', payload.marcador)
-        //console.log(data._key.path.segments[1])
-        /* commit('addPartidas', payload) */
-        //commit('carregant', false) 
+        dispatch('addMarcador', payload.marcador) 
+        
       })
     },
-    cargarListado: ({commit}) => {
+    /* cargarListado: ({commit}) => {
       // Carga lista de partidas al iniciar la app
       commit('carregant', true)
       db.collection('partides_ok1').get()
@@ -125,19 +131,28 @@ export default new Vuex.Store({
           partida.id = doc.id
           commit('addLista', partida.id)
           commit('addPartidas', partida)
-          //console.log(partida)
 
         })
         commit('carregant', false)
       })
-    },
+    }, */
     updatePartida: ({commit}, payload) => {
       // Actualiza la base de datos directamente
       commit('carregant', true)
       const part = db.collection('partides_ok1').doc(payload.id)
-      //console.log('update')
       part.update(payload)
       commit('carregant', false)
+    },
+    actualizaPartida: ({commit}, payload) => {
+      // Actualiza la partida desde editarpartida y actualiza la base de datos directamente
+      commit('carregant', true)
+      const part = db.collection('partides_ok1').doc(payload.id)
+      return part.update(payload)
+      .then(() => {
+        router.push('/')
+        commit('carregant', false)
+      })
+      
     },
     actualizarListado: ({commit}) => {
       // Detecta los cambios en la base de datos
@@ -147,18 +162,18 @@ export default new Vuex.Store({
           partida.id = change.doc.id
           if (change.type === 'modified') {
             commit('actualizarPartida', partida)
-            /* commit('carregant', false) */
           } else if(change.type === 'added') {
+            commit('carregant', true)
             let partida = change.doc.data()
             partida.id = change.doc.id
             commit('addLista', partida.id)
             commit('addPartidas', partida)
-            //console.log('addPartida')
           } else if(change.type === 'removed') {
             commit('eliminarPartida', partida.id)
           }
         })
       })
+      //commit('carregant', false)
     },
     actualizarPartidaCargada: ({commit}) => {
       //Actualiza la partida que se ha cargado y el marcador 
@@ -202,9 +217,6 @@ export default new Vuex.Store({
         commit('cargarMarcador', doc.data().id)
         commit('carregant', false)
         
-      })
-      .catch(err => {
-        console.log(err)
       })
     }
   }

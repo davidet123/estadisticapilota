@@ -3,7 +3,7 @@
     <v-row>
       <v-col v-if="partides_actiu.length != 0">
         <h3 class="ml-3 white--text">PARTIDES EN ACTIU</h3>
-        <v-sheet elevation="4" v-for="partida in partides_actiu" :key="partida.id" class="mb-1">
+        <v-sheet elevation="4" v-for="partida in partides_actiu" :key="partida.id" >
           <v-row class="mx-0 listado_actiu gris" @click="goto(partida.id)">
             <v-col cols="12" align="center" class="pb-0 d-sm-none" color="#f3f4f5">
               <h4>{{ partida.equip_roig.nom_equip }} vs {{ partida.equip_blau.nom_equip }}</h4>
@@ -45,7 +45,7 @@
     <v-row>
       <v-col v-if="partides_seguents.length != 0">
         <h3 class="ml-3 white--text">PARTIDES SEGUENTS</h3>
-        <v-sheet elevation="4" v-for="partida in partides_seguents" :key="partida.id" class="mb-1">
+        <v-sheet elevation="4" v-for="partida in partides_seguents" :key="partida.id" >
           <v-row class="mx-0 listado_seguents gris" @click="goto(partida.id)">
             <v-col cols="12" align="center" class="pb-0 d-sm-none" color="#f3f4f5">
               <h4>{{ partida.equip_roig.nom_equip }} vs {{ partida.equip_blau.nom_equip }}</h4>
@@ -85,7 +85,7 @@
     <v-row>
       <v-col v-if="partides_acabades.length != 0">
         <h3 class="ml-3 white--text">PARTIDES ACABADES</h3>
-        <v-sheet elevation="4" v-for="partida in partides_acabades" :key="partida.id" class="mb-1">
+        <v-sheet elevation="4" v-for="partida in partides_acabades" :key="partida.id">
           <v-row class="mx-0 listado_acabades gris" @click="goto(partida.id)">
             <v-col cols="12" align="center" class="pb-0 d-sm-none">
               <h4>{{ partida.equip_roig.nom_equip }} vs {{ partida.equip_blau.nom_equip }}</h4>

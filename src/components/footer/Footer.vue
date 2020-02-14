@@ -10,7 +10,7 @@
         cols="12"
         
       >
-        <span class="white--text">&copy;{{ new Date().getFullYear() }} — <strong>Va de Bo</strong>  v1.0</span> 
+        <span class="white--text">&copy;{{ new Date().getFullYear() }} — <strong>Va de Bo</strong>  v-0.3</span> 
 
         
       </v-col>

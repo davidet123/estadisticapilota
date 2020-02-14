@@ -13,16 +13,22 @@
       <div class="botones_inicio" v-if="user">
         <v-sheet elevation="4" width="100%" class="mx-auto px-2" color="#f3f4f5">
           <v-row>
+            
             <v-col cols="12" class="text-center py-0 my-0">
               <h4 v-if="partidaCargada">PARTIDA CARREGADA</h4>
               <h3 v-if="!partidaCargada">CAP PARTIDA CARREGADA</h3>
             </v-col>
+            
             <v-divider></v-divider>
+            
             <v-col v-if="partidaCargada" cols="6" sm="4" offset-sm="2" align="center">
               <h4>{{ partidaCargada.equip_roig.nom_equip }} vs {{ partidaCargada.equip_blau.nom_equip }}</h4>
             </v-col>
             <v-col v-if="partidaCargada" cols="6" sm="4" align="center">
-              <v-btn small color="#317f5c" dark @click="goto('/estadistica')">ESTADISTICA</v-btn>
+              <v-btn small color="error" dark @click="goto('/estadistica')">ESTADISTICA</v-btn>
+            </v-col>
+            <v-col cols="12" align="center">
+              <v-btn small v-if="user" color="#317f5c" dark @click="goto('/cargarpartida')">Llistat de partides</v-btn>
             </v-col>
             <v-col v-if="!partidaCargada" cols="12" align="center">
               <v-btn small color="#317f5c" dark @click="goto('/cargarpartida')">CARREGAR PARTIDA</v-btn>
@@ -34,8 +40,7 @@
         <LlistaPartides />    
         <v-row>
           <v-col align="center">
-            <v-btn v-if="!user" color="#317f5c" dark @click="goto('/login')">Log in</v-btn>
-            <v-btn v-if="user" color="#317f5c" dark @click="goto('/cargarpartida')">Carregar Partida</v-btn>
+            <v-btn small v-if="!user" color="#317f5c" dark @click="goto('/login')">Log in</v-btn>
           </v-col>
         </v-row>
            

@@ -92,7 +92,6 @@ export default {
       /* return this.partida.marcador */
       /* return this.$store.getters.getMarcador[0].marcador */
        return this.marcador_total.marcador
-      
     },
     parcial_jocs() {
       return this.parcials.jocs

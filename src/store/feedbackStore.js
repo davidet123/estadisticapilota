@@ -6,7 +6,8 @@ import 'firebase/auth'
 
 export default {
   state: {
-    feedback: ''
+    feedback: '',
+    rotulo: ''
    
   },
   getters: {
@@ -17,7 +18,7 @@ export default {
   },
   mutations: {
     updateFeedback: (context, payload) => {
-      console.log(payload)
+      //console.log(payload)
       context.feedback = payload
 
     }
@@ -40,12 +41,11 @@ export default {
     },
     updateFeedback: ({commit}, payload) => {
       // Actualiza la base de datos directamente
-      commit('carregant', true)
-      console.log(payload)
+      //commit('carregant', true)
       const fb = db.collection('feedback').doc('RfNH8myduItkH5hy6o2Y')
       //console.log('update')
       fb.update(payload)
-      commit('carregant', false)
+      commit('updateFeedback', payload)
     },
   } 
 }
