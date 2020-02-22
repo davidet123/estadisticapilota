@@ -18,7 +18,7 @@
       <div v-if="partidaCargada">
         <Marcador />
         <IntEstadistica />
-        <!-- <Rotulos /> -->
+        <Rotulos />
         <!-- <p>
           {{ partida }}
         </p> -->      
@@ -50,7 +50,7 @@
 // @ is an alias to /src
 import IntEstadistica from '@/components/estadistica/IntEstadistica'
 import Marcador from '@/components/marcador/Marcador'
-/* import Rotulos from '@/components/rotulos/Rotulos' */
+import Rotulos from '@/components/rotulos/Rotulos'
 
 
 
@@ -59,7 +59,7 @@ export default {
   components: {
     IntEstadistica,
     Marcador,
-    /* Rotulos */
+    Rotulos
   },
   data() {
     return{

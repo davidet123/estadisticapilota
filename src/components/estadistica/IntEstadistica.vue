@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0">
+  <v-container fluid class="pa-0 my-0">
     <v-row>
       <v-col cols="1" class="mx-auto ma-0 pa-0">
         <v-switch
@@ -7,6 +7,27 @@
         v-if="user == 'admin'"
          class="ma-0 pa-0"
       ></v-switch>
+      </v-col>
+    </v-row>
+    <v-row v-show="user == 'admin'">
+      <v-col cols="12" offset="2" class="ma-0 pa-0" align="center">
+        <v-sheet>
+          <h5>Live update</h5>
+          <v-row>
+            <v-col cols="2"  offset="4" align="center" class="my-0 py-0">
+              <InfoLiveUpdate />
+            </v-col>
+            <v-col cols="2">
+              <LiveUpdate :datos="datos" :canvis="canvis" :durada="duradaMimo" 
+              :travessa="travessaMimo" />
+            </v-col>
+          </v-row>
+        </v-sheet>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col align="center">
+        <h5 :class="live == true ? 'blinking' : 'white--text'" >{{ live ? 'LIVE UPDATE MIMO' : 'DESCONECTADO MIMO' }}</h5>
       </v-col>
     </v-row>
     <v-row> 
@@ -323,15 +344,7 @@
 
       </v-col>
      </v-row>
-      <!--<v-row class="caja" v-show="user == 'admin'">
-        <v-col cols="12" class="ma-0 pa-0" align="center">
-          <v-sheet>
-            <h5>Live update</h5>
-          <LiveUpdate :datos="datos" />
-          </v-sheet>
-          
-        </v-col>
-      </v-row> -->
+      
     <v-snackbar
       v-model="snackbar"
       top="top"
@@ -356,13 +369,16 @@
 <script>
 
 import Vue from 'vue'
-/* import LiveUpdate from '@/components/liveupdate/LiveUpdate' */
+import LiveUpdate from '@/components/liveupdate/LiveUpdate'
+import InfoLiveUpdate from '@/components/liveupdate/InfoLiveUpdate'
+
 
 
 
 export default {
   components: {
-    /* LiveUpdate */
+    LiveUpdate,
+    InfoLiveUpdate,
   },
   data() {
     return {
@@ -371,6 +387,9 @@ export default {
         nom: '', est:
         {colps:0,
         errades:0}},
+      canvis: 'Equip roig, 0 \nEquip blau, 0',
+      duradaMimo: '',
+      travessaMimo: '',
       durada: 0,
       durada_joc: null, 
       temporizador: false,
@@ -465,6 +484,12 @@ export default {
     },
     status() {
       return this.$store.getters.getStatus
+    },
+    getEntrevista() {
+      return this.$store.getters.getEntrevista
+    },
+    live() {
+      return this.$store.getters.getLive
     }
     
 
@@ -500,25 +525,25 @@ export default {
     colps(i, est, nom) {
       this.puntsPerJoc(i, nom)
       est.colps += i
-      /* this.updateMimo(nom, 'colps') */
+      this.updateMimo(nom, 'colps')
       this.update()
     },
     errades(i, est, nom) {
       this.erradesPerJoc(i, nom)
       est.errades += i
-      /* this.updateMimo(nom, 'colps') */
+      this.updateMimo(nom, 'colps')
       this.update()
     },
     tretes(i, est, nom) {
       this.tretesPerJoc(i, nom)
       est.directes += i
-      /* this.updateMimo(nom, 'tretes') */
+      this.updateMimo(nom, 'tretes')
       this.update()
     },
     erradaTreta(i, est, nom) {
       this.erradesTretaPerJoc(i, nom)
       est.faltes += i
-      /* this.updateMimo(nom, 'tretes') */
+      this.updateMimo(nom, 'tretes')
       this.update()
     },
     caigudes(val, i, est) {
@@ -595,14 +620,16 @@ export default {
         this.feedback.feedbackStr = str
         this.updateFb() 
       }
+      this.canvis = 'Equip roig, '+ this.equip_roig.canvi_pilota + ' \nEquip blau, ' + this.equip_blau.canvi_pilota
             
 
     },
     travesa(str) {
-      this.partida.travesses = 'DONEN ' + str.toUpperCase()
+      this.partida.travesses = 'Donen ' + str
       this.feedback.feedbackStr = this.partida.travesses
       this.update()
       this.updateFb()
+      this.travessaMimo = this.partida.travesses
     },
     borrarTravessa() {
       this.partida.travesses = null
@@ -627,8 +654,12 @@ export default {
           this.feedback.feedbackStr = 'Durada del joc ' + this.durada_total_str
           this.updateFb()
           clearInterval(this.durada_total)
+          
+          this.duradaMimo = 'Durada del joc' + this.durada_total_str
+          
       }
       this.update()
+      
     },
     netejarDurades() {
       this.partida.durades = []
@@ -655,11 +686,14 @@ export default {
       let resto = (joc % 3600)
       let min = Math.floor(resto / 60)
       let sec = Math.floor(joc % 60)
+      if (sec < 10) {
+        sec = '0' + sec
+      }
       let str = ''
       if (hr > 0) {
-        str = hr.toString() + ' hores'
+        str = hr.toString() + 'h : '
       }
-      return str + ' ' + min.toString() + ' min ' + sec.toString() + ' seg'
+      return str + ' ' + min.toString() + ':' + sec.toString() + ' min'
     },
     iniciPartida(activo) {
 
@@ -804,13 +838,22 @@ export default {
         //this.update()
       } 
     },
-    status: function(val) {
+    live: function(val) {
+      if(val) {
+        this.$store.dispatch('conectar')
+      }
+      
+    }/* ,
+    getEntrevista: function(val) {
+      this.entrevista = val
+    } */
+    /* status: function(val) {
       //console.log('status')
       if(val == 200) {
         this.$store.dispatch('updateVariants')
       }
 
-    }
+    } */
   },
     /* travessaStr: function() {
       this.feedback.feedbackStr = this.travessaStr
@@ -852,6 +895,16 @@ export default {
 .caja {
   padding: 0 !important;
   margin: 0 !important;
+}
+.blinking{
+    animation:blinkingText 1.2s infinite;
+}
+@keyframes blinkingText{
+    0%{     color: #F00;    }
+    49%{    color: #F00; }
+    60%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: #F00;    }
 }
 
 

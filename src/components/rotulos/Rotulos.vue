@@ -54,12 +54,17 @@
         
       </v-sheet>
     </v-row>
-    
+    <LiveUpdate :entrevista="entrevistaMimo" v-show="false"/>
   </v-container>
 </template>
 
 <script>
+import LiveUpdate from '@/components/liveupdate/LiveUpdate'
+
 export default {
+  components: {
+    LiveUpdate
+  },
   data: () => ({
       valid: true,
       titulo: '',
@@ -77,6 +82,9 @@ export default {
     },
     entrevista() {
       return this.$store.getters.getEntrevista
+    },
+    entrevistaMimo() {
+      return {titulo: this.titulo, subtitulo: this.subtitulo}
     }
   },  
 

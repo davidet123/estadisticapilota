@@ -78,7 +78,7 @@ export default {
         /* res.data.data.forEach(item => {
           this.test.push(item.id)
         }) */
-        console.log(res.data.data)
+        //console.log(res.data.data)
       })
     },
     goLive() {
@@ -122,8 +122,8 @@ export default {
           headers: {'Content-Type': 'application/json'},
           data: cambio
         })
-        .then(res => console.log(res))
-        .catch(err=> console.error(err))
+        /* .then(res => console.log(res))
+        .catch(err=> console.error(err)) */
       }
       
     }

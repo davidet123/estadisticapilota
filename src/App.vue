@@ -28,12 +28,14 @@ export default {
   }),
   created() {
     //this.$store.dispatch('cargarMarcador')
+    this.$store.dispatch('updateDbMimo')
     this.$store.dispatch('actualizarMarcador')
     this.$store.dispatch('actualizarFeedback')
     this.$store.dispatch('actualizarEntrevista')
     //this.$store.dispatch('cargarListado')
     this.$store.dispatch('actualizarListado')
     this.$store.dispatch('partidaCargada')
+    
 
     
     

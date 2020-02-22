@@ -34,6 +34,7 @@
               <v-btn small color="#317f5c" dark @click="goto('/cargarpartida')">CARREGAR PARTIDA</v-btn>
             </v-col>
           </v-row>
+          
         </v-sheet>
       </div>
       <div>

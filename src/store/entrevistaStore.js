@@ -17,7 +17,7 @@ export default {
   },
   mutations: {
     updateEntrevista: (context, payload) => {
-      
+      //console.log(payload)
       context.entrevista = payload
     }
     
