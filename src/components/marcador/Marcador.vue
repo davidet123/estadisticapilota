@@ -6,7 +6,7 @@
         <v-col cols="12" align="center">
           <v-row>
             <v-col cols="3" class="pa-0">
-              <h3 class="red--text py-1"> {{  marcador.jocs_rojos * 5 }}</h3>
+              <h3 class="red--text py-1"> {{  marcadorRojos }}</h3>
             </v-col>
             <v-col cols="3" class="pa-0">
               <h3 class="red white--text py-1"> {{ punto_str[marcador.punts_rojos] }}</h3>
@@ -15,7 +15,7 @@
               <h3 class="blue white--text py-1"> {{ punto_str[marcador.punts_blaus] }}</h3>
             </v-col>
             <v-col cols="3" class="pa-0">
-              <h3 class="blue--text py-1"> {{  marcador.jocs_blaus * 5 }}</h3>
+              <h3 class="blue--text py-1"> {{  marcadorBlaus }}</h3>
             </v-col>
           </v-row>
         </v-col>
@@ -82,9 +82,9 @@ export default {
     }
   },
   computed: {
-    /* partida() {
+    partida() {
       return this.$store.getters.partida
-    }, */
+    },
     marcador_total() {
       return this.$store.getters.getMarcadorActivo
     },
@@ -92,6 +92,20 @@ export default {
       /* return this.partida.marcador */
       /* return this.$store.getters.getMarcador[0].marcador */
        return this.marcador_total.marcador
+    },
+    marcadorRojos() {
+      let inc = 5
+      if (this.partida.tipo == 'Palma' || this.partida.tipo == 'Llargues') {
+        inc = 1
+      }
+      return this.marcador.jocs_rojos * inc
+    },
+    marcadorBlaus() {
+      let inc = 5
+      if (this.partida.tipo == 'Palma' || this.partida.tipo == 'Llargues') {
+        inc = 1
+      }
+      return this.marcador.jocs_blaus * inc
     },
     parcial_jocs() {
       return this.parcials.jocs

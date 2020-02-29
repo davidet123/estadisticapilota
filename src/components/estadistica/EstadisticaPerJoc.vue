@@ -5,7 +5,9 @@
         <v-sheet elevation="4" width="100%" class="mx-auto pb-4 pl-4 pt-2">
           <v-expansion-panels>
             <v-expansion-panel>
-              <v-expansion-panel-header><h2>Estadistica per joc</h2></v-expansion-panel-header>
+              <v-expansion-panel-header
+                ><h2>Estadistica per joc</h2></v-expansion-panel-header
+              >
               <v-expansion-panel-content>
                 <h4 class="mt-2">Encerts</h4>
                 <v-data-table
@@ -13,7 +15,10 @@
                   hide-default-footer
                   :headers="headers"
                   :items="itemsEncerts"
-                  item-key="nom">
+                  item-key="nom"
+                  :items-per-page="items_per_page"
+                  class="lista"
+                >
                 </v-data-table>
                 <v-divider class="my-2"></v-divider>
                 <h4 class="my-1">Errades</h4>
@@ -22,7 +27,10 @@
                   hide-default-footer
                   :headers="headers"
                   :items="itemsErrades"
-                  item-key="nom">
+                  item-key="nom"
+                  :items-per-page="items_per_page"
+                  class="lista"
+                >
                 </v-data-table>
                 <h4 class="my-1">Tretes</h4>
                 <v-data-table
@@ -30,7 +38,9 @@
                   hide-default-footer
                   :headers="headers"
                   :items="itemsTretes"
-                  item-key="nom">
+                  item-key="nom"
+                  class="lista"
+                >
                 </v-data-table>
                 <h4 class="my-1">Errades de treta</h4>
                 <v-data-table
@@ -38,19 +48,15 @@
                   hide-default-footer
                   :headers="headers"
                   :items="itemsErradesTreta"
-                  item-key="nom">
+                  item-key="nom"
+                  class="lista"
+                >
                 </v-data-table>
-
-
-
               </v-expansion-panel-content>
             </v-expansion-panel>
-
           </v-expansion-panels>
-          
+
           <!-- <h4>{{ aciertos }}</h4>-->
-          
-            
         </v-sheet>
       </v-col>
     </v-row>
@@ -63,7 +69,7 @@
 export default {
   data() {
     return {
-
+      items_per_page: 12
     }
   },
 
@@ -76,31 +82,33 @@ export default {
       return this.partida.equip_roig.treta.tretes.directes
     },
     aciertos() {
-      //console.log(this.partida.punts_per_joc)
       return this.partida.punts_per_joc
     },
     errades() {
       return this.partida.errades_per_joc
     },
-    rojos() { 
+    rojos() {
       return this.partida.equip_roig.jugadors.filter(item => {
-        return item.nom != null 
+        return item.nom != null
       })
     },
-    blaus() { 
+    blaus() {
       return this.partida.equip_blau.jugadors.filter(item => {
-        return item.nom != null 
+        return item.nom != null
       })
     },
     jugadors() {
       let obj = this.rojos.concat(this.blaus)
-      //console.log(obj.length)
       return obj
     },
     jugadorsTreta() {
       let obj = []
-      obj.push(this.partida.equip_roig.treta)
-      obj.push(this.partida.equip_blau.treta)
+      this.partida.equip_roig.treta.forEach(jug => {
+        obj.push(jug)
+      })
+      this.partida.equip_blau.treta.forEach(jug => {
+        obj.push(jug)
+      })
       return obj
     },
     tretes() {
@@ -111,21 +119,22 @@ export default {
     },
 
     headers() {
-      
       let keys = Object.keys(this.aciertos)
       //let values = Object.values(this.aciertos)
-      //console.log(keys, values)
       var j = 1
-      let obj = [{
-        text: '',
-        value: 'nom'
-      }]
+      let obj = [
+        {
+          text: "",
+          value: "nom"
+        }
+      ]
       keys.forEach(val => {
-        let str = ''
-        j < 10 ?  str = 'Joc 0' + j : str = 'Joc ' + j
+        let str = ""
+        j < 10 ? (str = "Joc 0" + j) : (str = "Joc " + j)
         let temp = {
-        text: str,
-        value: val}
+          text: str,
+          value: val
+        }
         obj.push(temp)
         j++
       })
@@ -201,20 +210,17 @@ export default {
       return obj
     },
     test() {
-      return this.buscaEncerts(this.rojos[1].nom, this.tretes['joc1'])
+      return this.buscaEncerts(this.rojos[1].nom, this.tretes["joc1"])
     }
-      
-
-
   },
   methods: {
     buscaEncerts(jugador, arr) {
       let i = 0
       arr.forEach(element => {
         //console.log(element, jugador)
-        if (element == jugador) i++ 
-      });
-      return i == 0 ? '-' : i
+        if (element == jugador) i++
+      })
+      return i == 0 ? "-" : i
     },
     jugadorEncerts(jugador) {
       let jug = {
@@ -223,21 +229,17 @@ export default {
         joc2: 4,
         joc3: 4,
         joc4: 4,
-        joc5: 4,
+        joc5: 4
       }
       return jug
     }
-
-  },
+  }
   /* watch: {
     punts: function(val) {
       console.log(val)
     }
   } */
-
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

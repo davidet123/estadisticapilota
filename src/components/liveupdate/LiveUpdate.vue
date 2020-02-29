@@ -185,7 +185,7 @@ methods: {
     .catch(err=> console.error(err)) */
   }
 },
-watch: {
+/* watch: {
   datos: function() {
     this.liveUpdateColp('est')
   },
@@ -202,7 +202,7 @@ watch: {
     this.liveUpdateColp('entrevista')
   }
 
-}
+} */
 
 }
 </script>

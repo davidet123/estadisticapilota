@@ -112,7 +112,7 @@ export default new Vuex.Store({
     addPartida: ({dispatch}, payload) => {
       // Añade nueva partida a la base de datos
       
-      db.collection('partides_ok1').add(payload.partida)
+      db.collection('partides_ok2').add(payload.partida)
       .then((data) => {
         let id = data._key.path.segments[1]
         // Crea un nuevo marcador con la id de la partida creada
@@ -124,7 +124,7 @@ export default new Vuex.Store({
     /* cargarListado: ({commit}) => {
       // Carga lista de partidas al iniciar la app
       commit('carregant', true)
-      db.collection('partides_ok1').get()
+      db.collection('partides_ok2').get()
       .then (data => {
         data.forEach(doc=> {
           let partida = doc.data()
@@ -139,14 +139,14 @@ export default new Vuex.Store({
     updatePartida: ({commit}, payload) => {
       // Actualiza la base de datos directamente
       commit('carregant', true)
-      const part = db.collection('partides_ok1').doc(payload.id)
+      const part = db.collection('partides_ok2').doc(payload.id)
       part.update(payload)
       commit('carregant', false)
     },
     actualizaPartida: ({commit}, payload) => {
       // Actualiza la partida desde editarpartida y actualiza la base de datos directamente
       commit('carregant', true)
-      const part = db.collection('partides_ok1').doc(payload.id)
+      const part = db.collection('partides_ok2').doc(payload.id)
       return part.update(payload)
       .then(() => {
         router.push('/')
@@ -156,7 +156,7 @@ export default new Vuex.Store({
     },
     actualizarListado: ({commit}) => {
       // Detecta los cambios en la base de datos
-      db.collection('partides_ok1').onSnapshot(snapshot=> {
+      db.collection('partides_ok2').onSnapshot(snapshot=> {
         snapshot.docChanges().forEach(change => {
           let partida = change.doc.data()
           partida.id = change.doc.id
@@ -190,7 +190,7 @@ export default new Vuex.Store({
     },
     eliminarPartida: ({dispatch}, payload) => {
       // elimina una partida
-      db.collection('partides_ok1').doc(payload).delete() 
+      db.collection('partides_ok2').doc(payload).delete() 
       .then(() => {
         dispatch('eliminarMarcador', payload)
       })
