@@ -33,7 +33,7 @@
       <v-col align="center">
         <h5 :class="live == true ? 'blinking' : 'white--text'" >{{ live ? 'LIVE UPDATE MIMO' : 'DESCONECTADO MIMO' }}</h5>
       </v-col>
-    </v-row> -->
+    </v-row>-->
     <v-row>
       <v-col cols="4" align="center">
         <h5 class="white--text mt-0 pt-0">TEMPS TOTAL</h5>
@@ -60,7 +60,7 @@
         <h5 class="white--text">{{ duradaMin }} min : {{ duradaSec }} seg</h5>
         <v-btn x-small @click="tiempo">{{ temporizador ? 'Stop' : 'Start'}} crono</v-btn>
         <v-btn x-small @click="reset" :disabled="temporizador">Reset crono</v-btn> 
-      </v-col> -->
+      </v-col>-->
       <v-col cols="4" class="mx-auto" align="center">
         <h5 class="white--text">DURADA DEL JOC</h5>
         <h5 class="white--text">{{ durada_total_str }}</h5>
@@ -95,9 +95,9 @@
     <v-dialog v-model="dialog" max-width="490">
       <v-card>
         <v-card-title class="headline">DURADES DELS JOCS</v-card-title>
-        <v-card-subtitle class="mt-1">
-          Llistat de todes les durades de la partida
-        </v-card-subtitle>
+        <v-card-subtitle class="mt-1"
+          >Llistat de todes les durades de la partida</v-card-subtitle
+        >
         <v-card-text>
           <v-simple-table>
             <div align="center">
@@ -142,17 +142,16 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="dialog = false">
-            Tancar
-          </v-btn>
+          <v-btn color="green darken-1" text @click="dialog = false"
+            >Tancar</v-btn
+          >
           <v-btn
             v-if="user == 'admin'"
             color="green darken-1"
             text
             @click="netejarDurades"
+            >Netejar</v-btn
           >
-            Netejar
-          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -168,10 +167,18 @@
           <div class="pa-1 overline red white--text">
             Estadistica Individual
           </div>
-          <v-card-title class="red py-0">
+          <v-card-title class="red py-0" @click="addColp(1, jugador.est_ind)">
             <v-row>
-              <v-col cols="10" align="left" class="pl-1">
-                <h6 class="text-left white--text">{{ jugador.nom }}</h6>
+              <v-col cols="6" align="left" class="pl-1">
+                <h6 class="text-left white--text text-uppercase">
+                  {{ jugador.nom }}
+                </h6>
+              </v-col>
+              <v-col cols="6" align="center">
+                <div class="pa-1 overline red white--text">
+                  COLPS TOTALS
+                </div>
+                <h5 class="white--text">{{ jugador.est_ind.colps_totals }}</h5>
               </v-col>
               <v-col
                 cols="1"
@@ -242,10 +249,18 @@
           <div class="pa-1 overline blue white--text">
             Estadistica Individual
           </div>
-          <v-card-title class="blue py-0">
+          <v-card-title class="blue py-0" @click="addColp(1, jugador.est_ind)">
             <v-row>
-              <v-col cols="10" align="left" class="pl-1">
-                <h6 class="text-left white--text">{{ jugador.nom }}</h6>
+              <v-col cols="6" align="left" class="pl-1">
+                <h6 class="text-left white--text text-uppercase">
+                  {{ jugador.nom }}
+                </h6>
+              </v-col>
+              <v-col cols="6" align="center">
+                <div class="pa-1 overline blue white--text">
+                  COLPS TOTALS
+                </div>
+                <h5 class="white--text">{{ jugador.est_ind.colps_totals }}</h5>
               </v-col>
               <v-col
                 cols="1"
@@ -263,7 +278,7 @@
               </v-col>
             </v-row>
           </v-card-title>
-          <v-card-subtitle class="mt-1  px-0">
+          <v-card-subtitle class="mt-1 px-0">
             <v-row>
               <v-col cols="6" align="center">
                 <p>COLPS</p>
@@ -311,7 +326,9 @@
           <v-card-title class="red py-0">
             <v-row>
               <v-col cols="10" align="left" class="pl-1">
-                <h6 class="text-left white--text">{{ treta_roig.nom }}</h6>
+                <h6 class="text-left white--text text-uppercase">
+                  {{ treta_roig.nom }}
+                </h6>
               </v-col>
               <v-col
                 cols="1"
@@ -372,7 +389,9 @@
           <v-card-title class="blue py-0">
             <v-row>
               <v-col cols="10" align="left" class="pl-1">
-                <h6 class="text-left white--text">{{ treta_blau.nom }}</h6>
+                <h6 class="text-left white--text text-uppercase">
+                  {{ treta_blau.nom }}
+                </h6>
               </v-col>
               <v-col
                 cols="1"
@@ -432,7 +451,9 @@
         <v-card class="caja">
           <div class="pa-1 overline red white--text">Caigudes d'escala</div>
           <v-card-title class="red py-0">
-            <p class="text-center white--text">{{ jugadors_rojos[0].nom }}</p>
+            <h6 class="text-center white--text text-uppercase">
+              {{ jugadors_rojos[0].nom }}
+            </h6>
           </v-card-title>
           <v-card-subtitle class="mt-1">
             <v-row>
@@ -489,7 +510,9 @@
         <v-card class="caja">
           <div class="pa-1 overline blue white--text">Caigudes d'escala</div>
           <v-card-title class="blue py-0">
-            <p class="text-center white--text">{{ jugadors_blaus[0].nom }}</p>
+            <h6 class="text-center white--text text-uppercase">
+              {{ jugadors_blaus[0].nom }}
+            </h6>
           </v-card-title>
           <v-card-subtitle class="mt-1">
             <v-row>
@@ -605,16 +628,16 @@
               <h3>TRAVESSES</h3>
               <v-row>
                 <v-col cols="12" class="mb-0 pb-0">
-                  <P
-                    >{{ this.travessaStr }}
+                  <P>
+                    {{ this.travessaStr }}
                     <span v-if="partida.travesses != null">
                       <v-icon
                         v-if="user == 'admin' || user == 'editor'"
                         @click="borrarTravessa()"
                         >mdi-close-circle-outline</v-icon
                       >
-                    </span></P
-                  >
+                    </span>
+                  </P>
                 </v-col>
                 <v-col class="mb-0 pb-0" v-if="mostrar">
                   <v-btn small dark color="red" @click="travesa('als rojos')"
@@ -697,9 +720,7 @@
       color="lime accent-2"
     >
       <h4 class="black--text">{{ feedback.feedbackStr }}</h4>
-      <v-btn color="black" text @click="snackbar = false">
-        X
-      </v-btn>
+      <v-btn color="black" text @click="snackbar = false">X</v-btn>
     </v-snackbar>
 
     <!--     <p>{{ partida }}</p> -->
@@ -870,6 +891,12 @@ export default {
     deleteDurada(item) {
       this.partida.durades.splice(item, 1)
       this.update()
+    },
+    addColp(i, colps) {
+      if (this.user == "admin" || this.user == "editor") {
+        colps.colps_totals += i
+        this.update()
+      }
     },
     colps(i, est, nom) {
       this.puntsPerJoc(i, nom)

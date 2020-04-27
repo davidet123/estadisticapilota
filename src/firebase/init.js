@@ -1,17 +1,16 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore'
-
+import firebase from "firebase/app"
+import "firebase/firestore"
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
-  apiKey: "AIzaSyBh8fgbsZIl5Ag514GyX1-8zPfi5L2LW6o",
-  authDomain: "estadisticapilota.firebaseapp.com",
-  databaseURL: "https://estadisticapilota.firebaseio.com",
+  apiKey: process.env.VUE_APP_FIREBASE_KEY,
+  authDomain: process.env.VUE_APP_FB_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FB_DATABASE_URL,
   projectId: "estadisticapilota",
-  storageBucket: "estadisticapilota.appspot.com",
-  messagingSenderId: "691783153705",
-  appId: "1:691783153705:web:7b7f5a4b10a167f7370438"
-};
+  storageBucket: process.env.VUE_APP_FB_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FB_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FB_APP_ID,
+}
 // Initialize Firebase
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig)
 export default firebaseApp.firestore()

@@ -8,7 +8,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="text-center" cols="6" offset="3">
+          <v-col class="text-center" cols="5">
             <v-select
               :items="lista"
               dense
@@ -18,14 +18,23 @@
               label="Tipus de partida"
             ></v-select>
           </v-col>
+          <v-col class="text-center" cols="7">
+            <v-text-field
+              dense
+              label="Nom de la competició"
+              placeholder="Nom de la competició"
+              v-model="competicion"
+              outlined
+            ></v-text-field>
+          </v-col>
         </v-row>
         <v-row>
-          <v-col cols="3">
+          <v-col cols="2">
             <!-- <v-text-field
           label="Data"
           placeholder="Data de la partida"
           v-model="data"
-          outlined></v-text-field> -->
+            outlined></v-text-field>-->
             <v-menu
               ref="menu"
               v-model="menu"
@@ -53,16 +62,16 @@
               </v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="6">
             <v-text-field
               dense
               label="Lloc"
-              placeholder="Lloc de la partida"
+              placeholder="Lloc de la partida i trinquet"
               v-model="lloc"
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="2">
             <v-text-field
               label="Partida a"
               placeholder="Partida a..."
@@ -71,7 +80,7 @@
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="2">
             <v-text-field
               label="Tanteig inicial"
               placeholder="tanteig inicial"
@@ -102,20 +111,28 @@
               :key="index"
               class="my-0 py-0"
             >
-              <v-text-field
+              <!-- <v-text-field
                 :label="posicion[index]"
                 :placeholder="jug.nom"
                 dense
                 v-model="equip_roig[index].nom"
                 outlined
                 class="my-0 py-0"
-              ></v-text-field>
+              ></v-text-field> -->
+              <v-select
+                :items="listaJugadores"
+                :label="posicion[index]"
+                item-text="nom_esportiu"
+                dense
+                solo
+                outlined
+                v-model="equip_roig[index].nom"
+              >
+              </v-select>
             </v-col>
             <v-col cols="12" align="left" class="mt-0 mb-2 py-0">
               <v-btn fab dark color="red" x-small @click="addJugador('roig')">
-                <v-icon>
-                  mdi-account-plus
-                </v-icon>
+                <v-icon>mdi-account-plus</v-icon>
               </v-btn>
             </v-col>
             <v-col
@@ -124,13 +141,16 @@
               :key="index + 100"
               class="my-0 py-0"
             >
-              <v-text-field
+              <v-select
+                :items="listaTretes"
                 :label="lista_treta[index]"
-                :placeholder="jug.nom"
+                item-text="nom_esportiu"
                 dense
-                v-model="lista_treta_roig[index].nom"
+                solo
                 outlined
-              ></v-text-field>
+                v-model="lista_treta_roig[index].nom"
+              >
+              </v-select>
             </v-col>
             <v-col cols="12" align="left" class="my-0 py-0">
               <v-btn fab dark color="red" x-small @click="addFeridor('roig')">
@@ -157,20 +177,20 @@
               :key="index"
               class="my-0 py-0"
             >
-              <v-text-field
+              <v-select
+                :items="listaJugadores"
                 :label="posicion[index]"
-                :placeholder="jug.nom"
+                item-text="nom_esportiu"
                 dense
-                v-model="equip_blau[index].nom"
+                solo
                 outlined
-                class="my-0 py-0"
-              ></v-text-field>
+                v-model="equip_blau[index].nom"
+              >
+              </v-select>
             </v-col>
             <v-col cols="12" align="right" class="mt-0 mb-2 py-0">
               <v-btn dark color="blue" fab x-small @click="addJugador('blau')">
-                <v-icon>
-                  mdi-account-plus
-                </v-icon>
+                <v-icon>mdi-account-plus</v-icon>
               </v-btn>
             </v-col>
             <v-col
@@ -179,13 +199,23 @@
               :key="index + 200"
               class="my-0 py-0"
             >
-              <v-text-field
+              <!-- <v-text-field
                 :label="lista_treta[index]"
                 :placeholder="jug.nom"
                 dense
                 v-model="lista_treta_blau[index].nom"
                 outlined
-              ></v-text-field>
+              ></v-text-field> -->
+              <v-select
+                :items="listaTretes"
+                :label="lista_treta[index]"
+                item-text="nom_esportiu"
+                dense
+                solo
+                outlined
+                v-model="lista_treta_blau[index].nom"
+              >
+              </v-select>
             </v-col>
             <v-col cols="12" align="right" class="mt-0 py-0">
               <v-btn fab dark color="blue" x-small @click="addFeridor('blau')">
@@ -195,11 +225,14 @@
           </v-col>
         </v-row>
         <v-divider></v-divider>
-        <v-row> </v-row>
+        <v-row></v-row>
         <v-row>
           <v-col cols="6" class="mx-auto" align="center">
-            <v-btn @click="validar" color="#317f5c" dark class="mr-2 mb-2"
+            <v-btn @click="crearPartida" color="#317f5c" dark class="mr-2 mb-2"
               >Acceptar</v-btn
+            >
+            <v-btn @click="crearGraella" color="#317f5c" dark class="mr-2 mb-2"
+              >Crear Graella</v-btn
             >
             <v-btn @click="reset" color="error" class="ml-2 mb-2"
               >Netejar</v-btn
@@ -215,6 +248,7 @@
 export default {
   data() {
     return {
+      graella: true,
       posicion: [
         "Jugador 1",
         "Jugador 2",
@@ -225,6 +259,7 @@ export default {
         "Jugador 7",
         "Jugador 8"
       ],
+      competicion: null,
       lista_treta: ["Feridor 1", "Feridor 2"],
       lista: ["Raspall", "Escala i corda", "Galotxa", "Palma", "Llargues"],
       num_roig: 2,
@@ -241,7 +276,8 @@ export default {
           nom: null,
           est_ind: {
             colps: 0,
-            errades: 0
+            errades: 0,
+            colps_totals: 0
           },
           caigudes: {
             total: 0,
@@ -267,7 +303,8 @@ export default {
           nom: null,
           est_ind: {
             colps: 0,
-            errades: 0
+            errades: 0,
+            colps_totals: 0
           },
           caigudes: {
             total: 0,
@@ -302,9 +339,7 @@ export default {
           quinzes: 0
         },
         titular: true
-      },
-      treta_roig_nom: null,
-      treta_blau_nom: null
+      }
     }
   },
   computed: {
@@ -317,7 +352,7 @@ export default {
     treta_roig() {
       let item = {
         num: this.equipRoigLen + 1,
-        nom: this.treta_roig_nom || this.equip_roig[0].nom,
+        nom: null,
         tretes: {
           directes: 0,
           faltes: 0
@@ -328,13 +363,26 @@ export default {
     treta_blau() {
       let item = {
         num: 10 + this.equipBlauLen,
-        nom: this.treta_blau_nom || this.equip_blau[0].nom,
+        nom: null,
         tretes: {
           directes: 0,
           faltes: 0
         }
       }
       return item
+    },
+    jugadores() {
+      return this.$store.getters.listaJugadores
+    },
+    listaJugadores() {
+      return this.jugadores.filter(jug => {
+        return jug.disciplina.includes(this.tipo) && jug.posicion != "Treta"
+      })
+    },
+    listaTretes() {
+      return this.jugadores.filter(jug => {
+        return jug.disciplina.includes(this.tipo) && jug.posicion == "Treta"
+      })
     }
   },
   methods: {
@@ -375,7 +423,8 @@ export default {
         nom: null,
         est_ind: {
           colps: 0,
-          errades: 0
+          errades: 0,
+          colps_totals: 0
         },
         caigudes: {
           total: 0,
@@ -403,28 +452,18 @@ export default {
       }
       return item
     },
-    validar() {
-      let inc = 5
-      if (this.tipo == "Palma" || this.tipo == "Llargues") {
-        inc = 1
+    nuevaPartida() {
+      if (!this.lista_treta_roig[0].nom) {
+        this.lista_treta_roig[0].nom = this.equip_roig[0].nom
       }
-      let marcador = {
-        marcador: {
-          punts_rojos: 0,
-          jocs_rojos: this.tanteig_inicial / inc,
-          punts_blaus: 0,
-          jocs_blaus: this.tanteig_inicial / inc
-        },
-        parcials: {
-          jocs: [],
-          punts: { joc1: [] },
-          joc_actual: 1,
-          parcial_actual: []
-        }
+      if (!this.lista_treta_blau[0].nom) {
+        this.lista_treta_blau[0].nom = this.equip_blau[0].nom
       }
       let partida = {
+        graella: this.graella,
         partidaa: this.partidaa,
         tipo: this.tipo,
+        competicion: this.competicion,
         data: this.date,
         lloc: this.lloc,
         hora_inici: null,
@@ -456,6 +495,33 @@ export default {
           substitucions: 0
         }
       }
+      return partida
+    },
+    nuevoMarcador() {
+      let inc = 5
+      if (this.tipo == "Palma" || this.tipo == "Llargues") {
+        inc = 1
+      }
+      let marcador = {
+        marcador: {
+          punts_rojos: 0,
+          jocs_rojos: this.tanteig_inicial / inc,
+          punts_blaus: 0,
+          jocs_blaus: this.tanteig_inicial / inc
+        },
+        parcials: {
+          jocs: [],
+          punts: { joc1: [] },
+          joc_actual: 1,
+          parcial_actual: []
+        }
+      }
+
+      return marcador
+    },
+    validar() {
+      let partida = this.nuevaPartida()
+      let marcador = this.nuevoMarcador()
       if (
         partida.equip_roig.jugadors[0].nom != null &&
         partida.equip_blau.jugadors[0].nom != null &&
@@ -469,13 +535,14 @@ export default {
           subtitulo: null
         })
       }
-      /* partida.equip_roig.jugadors.forEach(jug => {
-        console.log(jug.nom + ' - ' + jug.titular)
-      })
-      partida.equip_blau.jugadors.forEach(jug => {
-        console.log(jug.nom + ' ' + jug.titular)
-      }) */
-      //console.log(partida);
+    },
+    crearPartida() {
+      this.graella = false
+      this.validar()
+    },
+    crearGraella() {
+      this.graella = true
+      this.validar()
     }
   }
 }

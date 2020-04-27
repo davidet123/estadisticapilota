@@ -76,18 +76,12 @@
                     <td class="text-center">{{ faltesTreta_rojos }}</td>
                     <td class="text-center">{{ faltesTreta_blaus }}</td>
                   </tr>
-                  <tr
-                    v-if="partida.tipo != 'Palma' && partida.tipo != 'Llargues'"
-                  >
+                  <tr v-if="partida.tipo != 'Palma' && partida.tipo != 'Llargues'">
                     <td>CANVIS DE PILOTA</td>
                     <td class="text-center">{{ canvis_rojos }}</td>
                     <td class="text-center">{{ canvis_blaus }}</td>
                   </tr>
-                  <tr
-                    v-show="
-                      partida.tipo == 'Palma' || partida.tipo == 'Llargues'
-                    "
-                  >
+                  <tr v-show="partida.tipo == 'Palma' || partida.tipo == 'Llargues'">
                     <td>CANVIS</td>
                     <td class="text-center">{{ substitucions_rojos }}</td>
                     <td class="text-center">{{ substitucions_blaus }}</td>
@@ -97,272 +91,315 @@
             </v-simple-table>
             <v-divider></v-divider>
           </v-col>
-          <v-col cols="12" sm="6">
-            <h5 class="text-center">EQUIP ROIG</h5>
+
+          <!-- EQUIP ROIG ---------------------------------------------------------------->
+
+          <v-col cols="12">
+            <h3 class="text-center red--text">EQUIP ROIG</h3>
             <v-divider></v-divider>
             <v-simple-table dense>
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th width="160px" class="text-center">Jugador</th>
-                    <th width="80px" class="text-center">Colps</th>
-                    <th width="20px" class="text-center">%</th>
-                    <th width="80px" class="text-center">Errades</th>
-                    <th width="20px" class="text-center">%</th>
+                    <th width="160px" class="text-center" style="border-left:1px solid #c4c4c4">
+                      Jugador
+                    </th>
+                    <th width="80px" class="text-center" style="border-left:1px solid #c4c4c4">Colps totals</th>
+                    <th width="20px" class="text-center">% total</th>
+                    <th width="80px" class="text-center" style="border-left:1px solid #c4c4c4">
+                      Guanyadors
+                    </th>
+                    <th width="20px" class="text-center">% equip</th>
+                    <th width="20px" class="text-center">% encerts</th>
+                    <th width="80px" class="text-center" style="border-left:1px solid #c4c4c4">
+                      Errades
+                    </th>
+                    <th width="20px" class="text-center">% equip</th>
+                    <th width="20px" class="text-center">% errors</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="lista"
-                    v-for="jugador in partida.equip_roig.jugadors"
-                    :key="jugador.nom"
-                  >
-                    <td v-if="jugador.nom != null || jugador.nom == ''">
+                  <tr class="lista" v-for="jugador in partida.equip_roig.jugadors" :key="jugador.nom">
+                    <td v-if="jugador.nom != null || jugador.nom == ''" class="text-left">
                       {{ jugador.nom }}
                     </td>
                     <td
                       class="text-center"
+                      style="border-left:1px solid #c4c4c4"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ jugador.est_ind.colps_totals }}/{{ colps_totals_rojos }}
+                    </td>
+                    <td
+                      class="text-center"
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.colps_totals, colps_totals_rojos), 0)"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ calcPorcentaje(jugador.est_ind.colps_totals, colps_totals_rojos) }}
+                    </td>
+                    <td
+                      class="text-center"
+                      style="border-left:1px solid #c4c4c4"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
                       {{ jugador.est_ind.colps }}/{{ colps_rojos }}
                     </td>
                     <td
                       class="text-center"
-                      :class="
-                        colorClass(
-                          calcPorcentaje(jugador.est_ind.colps, colps_rojos),
-                          0
-                        )
-                      "
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.colps, colps_rojos), 0)"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
                       {{ calcPorcentaje(jugador.est_ind.colps, colps_rojos) }}
                     </td>
                     <td
                       class="text-center"
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.colps, colps_rojos), 0)"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ calcPorcentaje(jugador.est_ind.colps, colps_totals_rojos) }}
+                    </td>
+                    <td
+                      class="text-center"
+                      style="border-left:1px solid #c4c4c4"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
                       {{ jugador.est_ind.errades }}/{{ errades_rojos }}
                     </td>
                     <td
                       class="text-center"
-                      :class="
-                        colorClass(
-                          calcPorcentaje(
-                            jugador.est_ind.errades,
-                            errades_rojos
-                          ),
-                          1
-                        )
-                      "
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.errades, errades_rojos), 1)"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
-                      {{
-                        calcPorcentaje(jugador.est_ind.errades, errades_rojos)
-                      }}
+                      {{ calcPorcentaje(jugador.est_ind.errades, errades_rojos) }}
+                    </td>
+                    <td
+                      class="text-center"
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.errades, errades_rojos), 1)"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ calcPorcentaje(jugador.est_ind.errades, jugador.est_ind.colps_totals) }}
                     </td>
                   </tr>
                 </tbody>
               </template>
             </v-simple-table>
-            <h5 class="text-center py-1 mt-2">TRETES</h5>
-            <v-divider></v-divider>
-            <v-simple-table dense>
-              <template v-slot:default>
-                <thead>
-                  <tr>
-                    <th width="280px" class="text-center">Jugador</th>
-                    <th width="80px" class="text-center">Directes</th>
-                    <th width="80px" class="text-center">Faltes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="jugador in partida.equip_roig.treta"
-                    :key="jugador.nom"
-                  >
-                    <td class="text-left">
-                      {{ jugador.nom }}
-                    </td>
-                    <td class="text-center">
-                      {{ jugador.tretes.directes }}
-                    </td>
-                    <td class="text-center">
-                      {{ jugador.tretes.faltes }}
-                    </td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-            <div v-if="partida.tipo == 'Escala i corda'">
-              <h5 class="text-center py-1 mt-2">CAIGUDES D'ESCALA</h5>
-              <v-divider></v-divider>
-              <v-simple-table dense>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-center">Jugador</th>
-                      <th class="text-center">Quinzes/Total</th>
-                      <th class="text-center">%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ partida.equip_roig.jugadors[0].nom }}</td>
-                      <td class="text-center">
-                        {{ partida.equip_roig.jugadors[0].caigudes.quinzes }} /
-                        {{ partida.equip_roig.jugadors[0].caigudes.total }}
-                      </td>
-                      <td class="text-center">
-                        {{
-                          calcPorcentaje(
-                            partida.equip_roig.jugadors[0].caigudes.quinzes,
-                            partida.equip_roig.jugadors[0].caigudes.total
-                          )
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </div>
+            <v-row>
+              <v-col cols="6">
+                <h5 class="text-center py-1 mt-2">TRETES</h5>
+                <v-divider></v-divider>
+                <v-simple-table dense>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th width="280px" class="text-center">Jugador</th>
+                        <th width="80px" class="text-center">Directes</th>
+                        <th width="80px" class="text-center">Faltes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="jugador in partida.equip_roig.treta" :key="jugador.nom">
+                        <td class="text-left">{{ jugador.nom }}</td>
+                        <td class="text-center">
+                          {{ jugador.tretes.directes }}
+                        </td>
+                        <td class="text-center">{{ jugador.tretes.faltes }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-col>
+              <v-col cols="6">
+                <div v-if="partida.tipo == 'Escala i corda'">
+                  <h5 class="text-center py-1 mt-2">CAIGUDES D'ESCALA</h5>
+                  <v-divider></v-divider>
+                  <v-simple-table dense>
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <th class="text-center">Jugador</th>
+                          <th class="text-center">Quinzes/Total</th>
+                          <th class="text-center">%</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ partida.equip_roig.jugadors[0].nom }}</td>
+                          <td class="text-center">
+                            {{ partida.equip_roig.jugadors[0].caigudes.quinzes }}
+                            /
+                            {{ partida.equip_roig.jugadors[0].caigudes.total }}
+                          </td>
+                          <td class="text-center">
+                            {{
+                              calcPorcentaje(
+                                partida.equip_roig.jugadors[0].caigudes.quinzes,
+                                partida.equip_roig.jugadors[0].caigudes.total
+                              )
+                            }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                </div>
+              </v-col>
+            </v-row>
           </v-col>
-          <v-col cols="12" sm="6">
-            <h5 class="text-center">EQUIP BLAU</h5>
+
+          <!-- EQUIP BLAU ---------------------------------------------------------------->
+
+          <v-col cols="12">
+            <h3 class="text-center blue--text mt-2">EQUIP BLAU</h3>
             <v-divider></v-divider>
             <v-simple-table dense>
               <template v-slot:default>
                 <thead>
                   <tr>
                     <th width="160px" class="text-center">Jugador</th>
-                    <th width="80px" class="text-center">Colps</th>
-                    <th width="20px" class="text-center">%</th>
-                    <th width="80px" class="text-center">Errades</th>
-                    <th width="20px" class="text-center">%</th>
+                    <th width="80px" class="text-center" style="border-left:1px solid #c4c4c4">Colps totals</th>
+                    <th width="20px" class="text-center">% total</th>
+                    <th width="80px" class="text-center" style="border-left:1px solid #c4c4c4">Colps guanyadors</th>
+                    <th width="20px" class="text-center">% equip</th>
+                    <th width="20px" class="text-center">% encerts</th>
+                    <th width="80px" class="text-center" style="border-left:1px solid #c4c4c4">Errades</th>
+                    <th width="20px" class="text-center">% equip</th>
+                    <th width="20px" class="text-center">% errors</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="jugador in partida.equip_blau.jugadors"
-                    :key="jugador.nom"
-                  >
-                    <td v-if="jugador.nom != null || jugador.nom == ''">
+                  <tr class="lista" v-for="jugador in partida.equip_blau.jugadors" :key="jugador.nom">
+                    <td v-if="jugador.nom != null || jugador.nom == ''" class="text-left">
                       {{ jugador.nom }}
                     </td>
                     <td
                       class="text-center"
+                      style="border-left:1px solid #c4c4c4"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ jugador.est_ind.colps_totals }}/{{ colps_totals_blaus }}
+                    </td>
+                    <td
+                      class="text-center"
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.colps_totals, colps_totals_blaus), 0)"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ calcPorcentaje(jugador.est_ind.colps_totals, colps_totals_blaus) }}
+                    </td>
+                    <td
+                      class="text-center"
+                      style="border-left:1px solid #c4c4c4"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
                       {{ jugador.est_ind.colps }}/{{ colps_blaus }}
                     </td>
                     <td
                       class="text-center"
-                      :class="
-                        colorClass(
-                          calcPorcentaje(jugador.est_ind.colps, colps_blaus),
-                          0
-                        )
-                      "
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.colps, colps_blaus), 0)"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
                       {{ calcPorcentaje(jugador.est_ind.colps, colps_blaus) }}
                     </td>
                     <td
                       class="text-center"
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.colps, colps_totals_blaus), 0)"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ calcPorcentaje(jugador.est_ind.colps, colps_totals_blaus) }}
+                    </td>
+                    <td
+                      class="text-center"
+                      style="border-left:1px solid #c4c4c4"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
                       {{ jugador.est_ind.errades }}/{{ errades_blaus }}
                     </td>
                     <td
                       class="text-center"
-                      :class="
-                        colorClass(
-                          calcPorcentaje(
-                            jugador.est_ind.errades,
-                            errades_blaus
-                          ),
-                          1
-                        )
-                      "
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.errades, errades_blaus), 1)"
                       v-if="jugador.nom != null || jugador.nom == ''"
                     >
-                      {{
-                        calcPorcentaje(jugador.est_ind.errades, errades_blaus)
-                      }}
+                      {{ calcPorcentaje(jugador.est_ind.errades, errades_blaus) }}
+                    </td>
+                    <td
+                      class="text-center"
+                      :class="colorClass(calcPorcentaje(jugador.est_ind.errades, jugador.est_ind.colps_totals), 1)"
+                      v-if="jugador.nom != null || jugador.nom == ''"
+                    >
+                      {{ calcPorcentaje(jugador.est_ind.errades, jugador.est_ind.colps_totals) }}
                     </td>
                   </tr>
                 </tbody>
               </template>
             </v-simple-table>
-            <h5 class="text-center py-1 mt-2">TRETES</h5>
-            <v-divider></v-divider>
-            <v-simple-table dense>
-              <template v-slot:default>
-                <thead>
-                  <tr>
-                    <th width="280px" class="text-center">Jugador</th>
-                    <th width="80px" class="text-center">Directes</th>
-                    <th width="80px" class="text-center">Faltes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="jugador in partida.equip_blau.treta"
-                    :key="jugador.nom"
-                  >
-                    <td class="text-left">{{ jugador.nom }}</td>
-                    <td class="text-center">{{ jugador.tretes.directes }}</td>
-                    <td class="text-center">{{ jugador.tretes.faltes }}</td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-            <div v-if="partida.tipo == 'Escala i corda'">
-              <h5 class="text-center py-1 mt-2">CAIGUDES D'ESCALA</h5>
-              <v-divider></v-divider>
-              <v-simple-table dense>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-center">Jugador</th>
-                      <th class="text-center">Quinzes/Total</th>
-                      <th class="text-center">%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ partida.equip_blau.jugadors[0].nom }}</td>
-                      <td class="text-center">
-                        {{ partida.equip_blau.jugadors[0].caigudes.quinzes }} /
-                        {{ partida.equip_blau.jugadors[0].caigudes.total }}
-                      </td>
-                      <td class="text-center">
-                        {{
-                          calcPorcentaje(
-                            partida.equip_blau.jugadors[0].caigudes.quinzes,
-                            partida.equip_blau.jugadors[0].caigudes.total
-                          )
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </div>
+            <v-row>
+              <v-col cols="6">
+                <h5 class="text-center py-1 mt-2">TRETES</h5>
+                <v-divider></v-divider>
+                <v-simple-table dense>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th width="280px" class="text-center">Jugador</th>
+                        <th width="80px" class="text-center">Directes</th>
+                        <th width="80px" class="text-center">Faltes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="jugador in partida.equip_blau.treta" :key="jugador.nom">
+                        <td class="text-left">{{ jugador.nom }}</td>
+                        <td class="text-center">
+                          {{ jugador.tretes.directes }}
+                        </td>
+                        <td class="text-center">{{ jugador.tretes.faltes }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-col>
+              <v-col cols="6">
+                <div v-if="partida.tipo == 'Escala i corda'">
+                  <h5 class="text-center py-1 mt-2">CAIGUDES D'ESCALA</h5>
+                  <v-divider></v-divider>
+                  <v-simple-table dense>
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <th class="text-center">Jugador</th>
+                          <th class="text-center">Quinzes/Total</th>
+                          <th class="text-center">%</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ partida.equip_blau.jugadors[0].nom }}</td>
+                          <td class="text-center">
+                            {{ partida.equip_blau.jugadors[0].caigudes.quinzes }}
+                            /
+                            {{ partida.equip_blau.jugadors[0].caigudes.total }}
+                          </td>
+                          <td class="text-center">
+                            {{
+                              calcPorcentaje(
+                                partida.equip_blau.jugadors[0].caigudes.quinzes,
+                                partida.equip_blau.jugadors[0].caigudes.total
+                              )
+                            }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                </div>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-sheet>
       <v-row>
         <v-col align="center">
-          <v-btn v-if="this.user == 'admin'" @click="netejar()"
-            >Netejar cache partida</v-btn
-          >
-          <v-btn color="#317f5c" dark v-if="user" @click="goto('/estadistica')"
-            >Tornar a la partida</v-btn
-          >
-          <v-btn color="#317f5c" dark v-if="!user" @click="goto('/')"
-            >Tornar al inici</v-btn
-          >
+          <v-btn v-if="this.user == 'admin'" @click="netejar()">Netejar cache partida</v-btn>
+          <v-btn color="#317f5c" dark v-if="user" @click="goto('/estadistica')">Tornar a la partida</v-btn>
+          <v-btn color="#317f5c" dark v-if="!user" @click="goto('/')">Tornar al inici</v-btn>
         </v-col>
       </v-row>
     </div>
@@ -404,9 +441,30 @@ export default {
     equip_roig() {
       return this.partida.equip_roig
     },
+    colps_totals_rojos() {
+      let total = 0
+      this.equip_roig.jugadors.forEach(item => {
+        total += item.est_ind.colps_totals
+      })
+      return total
+    },
     colps_rojos() {
       let total = 0
       this.equip_roig.jugadors.forEach(item => {
+        total += item.est_ind.colps
+      })
+      return total
+    },
+    colps_totals_blaus() {
+      let total = 0
+      this.equip_blau.jugadors.forEach(item => {
+        total += item.est_ind.colps_totals
+      })
+      return total
+    },
+    colps_blaus() {
+      let total = 0
+      this.equip_blau.jugadors.forEach(item => {
         total += item.est_ind.colps
       })
       return total
@@ -437,13 +495,6 @@ export default {
     },
     equip_blau() {
       return this.partida.equip_blau
-    },
-    colps_blaus() {
-      let total = 0
-      this.equip_blau.jugadors.forEach(item => {
-        total += item.est_ind.colps
-      })
-      return total
     },
     errades_blaus() {
       let total = 0
@@ -481,6 +532,8 @@ export default {
   },
   methods: {
     calcPorcentaje(a, b) {
+      /* var val = (a / b) * 100
+      return b != 0 ? val.toFixed(2) + "%" : "" */
       return b != 0 ? Math.round((a / b) * 100) + "%" : ""
     },
     netejar() {
@@ -493,9 +546,9 @@ export default {
     colorClass(val, est) {
       let newVal = parseInt(val.slice(0, -1))
       if (est == 1) {
-        return newVal <= 35 ? "black--text" : "red--text"
+        return newVal <= 35 ? "#c4c4c4--text" : "red--text"
       } else {
-        return newVal <= 32 ? "red--text" : "black--text"
+        return newVal <= 32 ? "red--text" : "#c4c4c4--text"
       }
     }
   },

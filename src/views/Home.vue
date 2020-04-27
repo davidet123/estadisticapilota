@@ -15,7 +15,7 @@
         >
           <v-row>
             <v-divider></v-divider>
-            <v-col cols="12" align="center">
+            <!-- <v-col cols="12" align="center">
               <v-btn
                 small
                 v-if="user"
@@ -24,7 +24,7 @@
                 @click="goto('/cargarpartida')"
                 >Llistat de partides</v-btn
               >
-            </v-col>
+            </v-col> -->
             <v-col cols="12" class="text-center py-0 my-0">
               <v-divider class="py-2"></v-divider>
               <h4 v-if="partidaCargada">PARTIDA CARREGADA</h4>
@@ -42,9 +42,17 @@
                 {{ partidaCargada.equip_blau.nom_equip }}
               </h4>
             </v-col>
-            <v-col v-if="partidaCargada" cols="6" sm="4" align="center">
-              <v-btn small color="error" dark @click="goto('/estadistica')"
+            <v-col v-if="partidaCargada" cols="6" sm="6" align="center">
+              <v-btn
+                small
+                color="#317f5c"
+                dark
+                @click="goto('/estadistica')"
+                class="mr-2"
                 >ESTADISTICA</v-btn
+              >
+              <v-btn small color="error" dark @click="goto('/cargarpartida')"
+                >CARREGAR ALTRA PARTIDA</v-btn
               >
             </v-col>
 

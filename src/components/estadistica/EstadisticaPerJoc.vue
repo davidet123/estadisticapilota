@@ -138,6 +138,7 @@ export default {
         obj.push(temp)
         j++
       })
+      //console.log(obj)
       return obj
     },
     itemsEncerts() {

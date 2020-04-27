@@ -1,21 +1,19 @@
-import db from '@/firebase/init.js'
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import router from '@/router'
-
+import db from "@/firebase/init.js"
+import firebase from "firebase/app"
+import "firebase/auth"
+import router from "@/router"
 
 export default {
   state: {
     user: null,
     feedback_user: null,
-    roles: ['admin', 'editor', 'miembro'],
-   
+    roles: ["admin", "editor", "miembro", "federacion"]
   },
   getters: {
-    feedback_user: state=> {
+    feedback_user: state => {
       return state.feedback_user
     },
-    roles: state=> {
+    roles: state => {
       return state.roles
     },
     getUser() {
@@ -31,19 +29,17 @@ export default {
     userStatus: state => {
       return state.user
     }
-    
   },
   mutations: {
     feedback_user: (context, payload) => {
       let err = payload
       let error
-      if (err == 'auth/invalid-email') {
-        error = 'Direcció de email invalida'
-      } else if (err == 'auth/user-not-found') {
-        error = 'El usuari no existeix'
-      } else if (err == 'auth/wrong-password') {
-        error = 'Password incorrecte'
-      
+      if (err == "auth/invalid-email") {
+        error = "Direcció de email invalida"
+      } else if (err == "auth/user-not-found") {
+        error = "El usuari no existeix"
+      } else if (err == "auth/wrong-password") {
+        error = "Password incorrecte"
       } else {
         error = payload
       }
@@ -55,75 +51,90 @@ export default {
     setUser: (context, payload) => {
       /*   */
       context.user = payload
-
     }
   },
   actions: {
-    signIn: ({commit}, payload) => {
-      commit('carregant', true)
-      let ref = db.collection('users').doc(payload.user)
-      ref.get().then(doc=> {
-        if(doc.exists) {
-          commit('feedback_user', 'El usuari ja existeix')
+    signIn: ({ commit }, payload) => {
+      commit("carregant", true)
+      let ref = db.collection("users").doc(payload.user)
+      ref.get().then(doc => {
+        if (doc.exists) {
+          commit("feedback_user", "El usuari ja existeix")
         } else {
-          firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-          .then(cred=> {
-            ref.set({
-              user: payload.nombre,
-              rol: payload.rol,
-              user_id: cred.user.uid
-            }
-            ).then(() => {
-              commit('carregant', false)
-              //console.log(doc)
-              //router.push({name: 'home'})
+          firebase
+            .auth()
+            .createUserWithEmailAndPassword(payload.email, payload.password)
+            .then(cred => {
+              ref
+                .set({
+                  user: payload.nombre,
+                  rol: payload.rol,
+                  user_id: cred.user.uid
+                })
+                .then(() => {
+                  commit("carregant", false)
+                  //console.log(doc)
+                  //router.push({name: 'home'})
+                })
             })
-          })
-          .catch(err=> {
-            commit('feedback_user', err.code)
-          })
+            .catch(err => {
+              commit("feedback_user", err.code)
+            })
           //console.log(doc)
           //commit('feedback_user', 'Nom de usuari valid')
         }
       })
     },
-    logIn: ({commit}, payload) => {
-      commit('carregant', true)
-      firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-      .then(cred=> {
-        db.collection('users').where('user_id', "==", cred.user.uid).get()
-        .then(snapshot=> {
-          snapshot.forEach(doc=> {
-            db.collection('users').doc(doc.id).get()
-            .then(user=> {
-              commit('setUser', user.data())
-              commit('carregant', false)
-              router.push({name: 'home'})
+    logIn: ({ commit }, payload) => {
+      commit("carregant", true)
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(cred => {
+          db.collection("users")
+            .where("user_id", "==", cred.user.uid)
+            .get()
+            .then(snapshot => {
+              snapshot.forEach(doc => {
+                db.collection("users")
+                  .doc(doc.id)
+                  .get()
+                  .then(user => {
+                    commit("setUser", user.data())
+                    commit("carregant", false)
+                    router.push({ name: "home" })
+                  })
+              })
             })
+        })
+        .catch(err => {
+          commit("feedback_user", err.code)
+        })
+    },
+    logOut({ commit }) {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          commit("logOut")
+        })
+    },
+    setUser: ({ commit }, payload) => {
+      commit("carregant", true)
+      db.collection("users")
+        .where("user_id", "==", payload)
+        .get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            db.collection("users")
+              .doc(doc.id)
+              .get()
+              .then(user => {
+                commit("setUser", user.data())
+                commit("carregant", false)
+              })
           })
         })
-      })
-      .catch(err => {
-        commit('feedback_user', err.code)
-      })
-    },
-    logOut({commit}) {
-      firebase.auth().signOut().then(() => {
-        commit('logOut')
-      })
-    },
-    setUser: ({commit}, payload) => {
-      commit('carregant', true)
-      db.collection('users').where('user_id', "==", payload).get()
-      .then(snapshot=> {
-        snapshot.forEach(doc=> {
-          db.collection('users').doc(doc.id).get()
-          .then(user=> {
-            commit('setUser', user.data())
-            commit('carregant', false)
-          })
-        })
-      })
     }
   }
 }
