@@ -1,26 +1,11 @@
 <template>
   <v-container>
-    <v-sheet
-      max-width="500px"
-      class="mx-auto pa-5 "
-      align="center"
-      elevation="5"
-    >
+    <v-sheet max-width="500px" class="mx-auto pa-5" align="center" elevation="5">
       <h3>Crear Conter</h3>
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field
-          v-model="name"
-          :rules="nameRules"
-          label="Name"
-          required
-        ></v-text-field>
+        <v-text-field v-model="name" :rules="nameRules" label="Name" required></v-text-field>
 
-        <v-text-field
-          v-model="email"
-          :rules="emailRules"
-          label="E-mail"
-          required
-        ></v-text-field>
+        <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
         <v-text-field
           v-model="password"
           :rules="passRules"
@@ -32,7 +17,7 @@
           <v-radio label="Administrador" value="admin"></v-radio>
           <v-radio label="Editor" value="editor"></v-radio>
           <v-radio label="Miembro" value="miembro"></v-radio>
-          <v-radio label="Federación" value="federacion"></v-radio>
+          <v-radio label="Externo" value="externo"></v-radio>
         </v-radio-group>
         <v-btn
           :disabled="!valid"
@@ -41,9 +26,7 @@
           class="mr-4"
           @click="validate"
           v-if="rol == 'admin'"
-        >
-          Acceptar
-        </v-btn>
+        >Acceptar</v-btn>
         <p class="red--text mt-2">{{ feedback_user }}</p>
       </v-form>
     </v-sheet>
@@ -51,7 +34,7 @@
 </template>
 
 <script>
-import slugify from "slugify"
+import slugify from "slugify";
 
 export default {
   data: () => ({
@@ -77,21 +60,21 @@ export default {
   }),
   computed: {
     feedback_user() {
-      return this.$store.getters.feedback_user
+      return this.$store.getters.feedback_user;
     },
     rol() {
-      return this.$store.getters.rolUser
+      return this.$store.getters.rolUser;
     }
   },
   methods: {
     validate() {
       if (this.$refs.form.validate()) {
-        this.snackbar = true
+        this.snackbar = true;
         this.slug = slugify(this.name, {
           replacement: "-",
           remove: /[*+~.()'"!:@]/g,
           lower: true
-        })
+        });
         //this.$store.dispatch('logIn', {email:this.email, password: this.password})
         this.$store.dispatch("signIn", {
           user: this.slug,
@@ -99,11 +82,11 @@ export default {
           password: this.password,
           nombre: this.name,
           rol: this.rolUser
-        })
+        });
       }
     }
   }
-}
+};
 </script>
 
 <style></style>

@@ -1,86 +1,80 @@
 <template>
-
   <v-container fluid>
-<!--     <v-parallax src="@/assets/imagenes/pilota_valenciana.jpg"> -->
+    <!--     <v-parallax src="@/assets/imagenes/pilota_valenciana.jpg"> -->
     <div v-if="cargando" class="text-center mt-5">
       <h3 class="white--text">Carregant partides...</h3>
-      <v-progress-circular
-        indeterminate
-        color="white"
-      ></v-progress-circular>
+      <v-progress-circular indeterminate color="white"></v-progress-circular>
     </div>
     <div v-if="!cargando">
-        <!-- <v-row>
+      <!-- <v-row>
           <v-col>
             <h2 class="text-center white--text">ESTADÍSTICA PILOTA</h2>
           </v-col>
-        </v-row> -->
+      </v-row>-->
       <div v-if="partidaCargada">
         <Marcador />
         <IntEstadistica />
-        <Rotulos />
+        <!-- <Rotulos /> -->
         <!-- <p>
           {{ partida }}
-        </p> -->      
+        </p>-->
         <v-row>
           <v-col cols="12" align="center">
-            <v-btn color="#317f5c" dark @click="goto('/resum/' + partidaCargada.id)">ESTADÍSTICA FINAL</v-btn>
+            <v-btn
+              color="#317f5c"
+              dark
+              @click="goto('/resum/' + partidaCargada.id)"
+            >ESTADÍSTICA FINAL</v-btn>
           </v-col>
         </v-row>
-           
       </div>
-      <div v-if="!partidaCargada">  
+      <div v-if="!partidaCargada">
         <v-row>
           <v-col align="center">
             <h3 class="white--text mb-4">Has de carregar una partida</h3>
             <v-btn color="#317f5c" dark @click="goto('/cargarpartida')">Carregar Partida</v-btn>
           </v-col>
         </v-row>
-
       </div>
     </div>
-    
-<!--     </v-parallax> -->
-    
+
+    <!--     </v-parallax> -->
   </v-container>
-  
 </template>
 
 <script>
 // @ is an alias to /src
-import IntEstadistica from '@/components/estadistica/IntEstadistica'
-import Marcador from '@/components/marcador/Marcador'
-import Rotulos from '@/components/rotulos/Rotulos'
-
-
+import IntEstadistica from "@/components/estadistica/IntEstadistica";
+import Marcador from "@/components/marcador/Marcador";
+/* import Rotulos from '@/components/rotulos/Rotulos' */
 
 export default {
-  name: 'home',
+  name: "home",
   components: {
     IntEstadistica,
     Marcador,
-    Rotulos
+    /* Rotulos */
   },
   data() {
-    return{
+    return {
       durada: 0,
       temporizador: false,
       interval: null,
       duradaMin: 0,
       duradaSec: 0,
       snackbar: false,
-      top: true
-    }
+      top: true,
+    };
   },
   computed: {
     cargando() {
-      return this.$store.getters.cargando
+      return this.$store.getters.cargando;
     },
     partidaCargada() {
-      return this.$store.getters.partida
+      return this.$store.getters.partida;
     },
     user() {
-      return this.$store.getters.userStatus
+      return this.$store.getters.userStatus;
     },
     /* feedback() {
       return this.$store.getters.getFeedback
@@ -88,39 +82,38 @@ export default {
   },
   methods: {
     goto(link) {
-      this.$router.push(link)
+      this.$router.push(link);
     },
     tiempo() {
-      this.temporizador = !this.temporizador
-      if(this.temporizador) {
-          this.interval = setInterval(() => {
-          this.durada += 1
-          this.duradaMin = Math.floor(this.durada / 60)
-          this.duradaSec = this.durada - this.duradaMin * 60
-        }, 1000)
+      this.temporizador = !this.temporizador;
+      if (this.temporizador) {
+        this.interval = setInterval(() => {
+          this.durada += 1;
+          this.duradaMin = Math.floor(this.durada / 60);
+          this.duradaSec = this.durada - this.duradaMin * 60;
+        }, 1000);
       } else {
-        clearInterval(this.interval)
-      }     
+        clearInterval(this.interval);
+      }
     },
     reset() {
-      this.durada = 0
-      this.duradaMin = 0
-      this.duradaSec = 0
-    }
+      this.durada = 0;
+      this.duradaMin = 0;
+      this.duradaSec = 0;
+    },
   },
   watch: {
     /* feedback: function(val) {
       console.log(val)
       this.snackbar = true
     } */
-  }
-}
+  },
+};
 </script>
 <style>
-  .bg {
-    background-image: url(https://verlanga.com/wp-content/uploads/pilota.jpg);
-    background-size: cover;
-    width: 100%
-  }
-
+.bg {
+  background-image: url(https://verlanga.com/wp-content/uploads/pilota.jpg);
+  background-size: cover;
+  width: 100%;
+}
 </style>

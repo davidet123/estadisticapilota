@@ -18,38 +18,38 @@ export default new Vuex.Store({
     feedbackStore,
     entrevistaStore,
     liveUpdate,
-    jugadores
+    jugadores,
   },
   state: {
     carregant: false,
     partidaMemoria: null,
     listado_id: [],
     partides: [],
-    partida: null
+    partida: null,
   },
   getters: {
-    cargando: state => {
+    cargando: (state) => {
       return state.carregant
     },
-    partida: state => {
+    partida: (state) => {
       return state.partida
     },
-    partidaCargada: state => {
+    partidaCargada: (state) => {
       return state.partidaMemoria
     },
-    partides: state => {
+    partides: (state) => {
       return state.partides
     },
-    buscarPartida: state => {
-      return id => {
-        return state.partides.find(partida => {
+    buscarPartida: (state) => {
+      return (id) => {
+        return state.partides.find((partida) => {
           return partida.id === id
         })
       }
     },
-    marcador: state => {
+    marcador: (state) => {
       return state.partida.marcador
-    }
+    },
   },
   mutations: {
     /* feedback: (context, payload) => {
@@ -71,7 +71,7 @@ export default new Vuex.Store({
       if (payload == null) {
         context.partida = null
       } else {
-        const item = context.partides.find(partida => {
+        const item = context.partides.find((partida) => {
           return partida.id === payload
         })
         context.partida = item
@@ -79,7 +79,7 @@ export default new Vuex.Store({
     },
     actualizarPartida: (context, payload) => {
       context.partida = payload
-      let lista = context.partides.find(partida => {
+      let lista = context.partides.find((partida) => {
         return partida.id == payload.id
       })
       /* console.log(lista.hora_final) */
@@ -98,7 +98,7 @@ export default new Vuex.Store({
       lista.errades_treta_per_joc = payload.errades_treta_per_joc
     },
     eliminarPartida: (context, payload) => {
-      context.partides = context.partides.filter(partida => {
+      context.partides = context.partides.filter((partida) => {
         return partida.id !== payload
       })
       if (payload === context.partida.id) {
@@ -108,7 +108,7 @@ export default new Vuex.Store({
     partidaCargada: (context, payload) => {
       //console.log(payload)
       context.partida = payload
-    }
+    },
   },
   actions: {
     addPartida: ({ dispatch }, payload) => {
@@ -116,7 +116,7 @@ export default new Vuex.Store({
 
       db.collection("partides_final")
         .add(payload.partida)
-        .then(data => {
+        .then((data) => {
           let id = data._key.path.segments[1]
           // Crea un nuevo marcador con la id de la partida creada
           payload.marcador.id_partida = id
@@ -157,8 +157,8 @@ export default new Vuex.Store({
     },
     actualizarListado: ({ commit }) => {
       // Detecta los cambios en la base de datos
-      db.collection("partides_final").onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
+      db.collection("partides_final").onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
           let partida = change.doc.data()
           partida.id = change.doc.id
           if (change.type === "modified") {
@@ -179,8 +179,8 @@ export default new Vuex.Store({
     actualizarPartidaCargada: ({ commit }) => {
       //Actualiza la partida que se ha cargado y el marcador
 
-      db.collection("partida_cargada").onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
+      db.collection("partida_cargada").onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
           let partida = change.doc.data()
           if (change.type === "modified") {
             commit("cargarPartida", partida.id)
@@ -218,12 +218,12 @@ export default new Vuex.Store({
       db.collection("partida_cargada")
         .doc("UzBxIXYsndS4Ze3DizHd")
         .get()
-        .then(doc => {
+        .then((doc) => {
           //commit('partidaCargada', doc.data().id)
           commit("cargarPartida", doc.data().id)
           commit("cargarMarcador", doc.data().id)
           commit("carregant", false)
         })
-    }
-  }
+    },
+  },
 })

@@ -22,7 +22,7 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: Home
+    component: Home,
   },
   {
     path: "/afegirpartida",
@@ -30,8 +30,8 @@ const routes = [
     component: AfegirPartida,
     meta: {
       requiresAuth: true,
-      roles: ["admin"]
-    }
+      roles: ["admin"],
+    },
   },
   {
     path: "/estadistica",
@@ -39,8 +39,8 @@ const routes = [
     component: Estadistica,
     meta: {
       requiresAuth: true,
-      roles: ["admin"]
-    }
+      roles: ["admin"],
+    },
   },
   {
     path: "/jugadores",
@@ -48,8 +48,8 @@ const routes = [
     component: Jugadores,
     meta: {
       requiresAuth: true,
-      roles: ["admin", "federacion"]
-    }
+      roles: ["admin", "federacion"],
+    },
   },
   {
     path: "/cargarpartida",
@@ -57,8 +57,8 @@ const routes = [
     component: CargarPartida,
     meta: {
       requiresAuth: true,
-      roles: ["admin"]
-    }
+      roles: ["admin"],
+    },
   },
   {
     path: "/graella",
@@ -66,24 +66,24 @@ const routes = [
     component: Graella,
     meta: {
       requiresAuth: true,
-      roles: ["admin"]
-    }
+      roles: ["admin"],
+    },
   },
   {
     path: "/resum/:id",
     name: "resum",
     props: true,
-    component: Resum
+    component: Resum,
   },
   {
     path: "/login",
     name: "login",
-    component: LogIn
+    component: LogIn,
   },
   {
     path: "/test",
     name: "test",
-    component: Test
+    component: Test,
   },
   {
     path: "/signin",
@@ -91,8 +91,8 @@ const routes = [
     component: SignIn,
     meta: {
       requiresAuth: true,
-      roles: ["admin"]
-    }
+      roles: ["admin"],
+    },
   },
   {
     path: "/editarpartida/:id",
@@ -101,8 +101,8 @@ const routes = [
     component: EditarPartida,
     meta: {
       requiresAuth: true,
-      roles: ["admin"]
-    }
+      roles: ["admin"],
+    },
   },
   {
     path: "/about",
@@ -110,19 +110,18 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
-  }
+    component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
 ]
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(rec => rec.meta.requiresAuth)) {
+  if (to.matched.some((rec) => rec.meta.requiresAuth)) {
     let user = firebase.auth().currentUser
     if (user) {
       next()
