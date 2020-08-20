@@ -82,7 +82,7 @@ export default {
                 .then(() => {
                   commit("carregant_usuari", false)
                   //console.log(doc)
-                  //router.push({name: 'home'})
+                  router.push({ name: "home" })
                 })
             })
             .catch((err) => {

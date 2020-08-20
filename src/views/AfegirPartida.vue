@@ -79,7 +79,16 @@
         <v-row>
           <v-col cols="6">
             <v-col cols="12">
-              <h3 class="text-center">Equip Roig</h3>
+              <h3 class="text-center">Equip Roig {{ titularesRoig }}</h3>
+            </v-col>
+            <v-col cols="12" align="center" class="my-0 py-0">
+              <!-- <v-btn x-small v-for="(index, numero) in maxJugadors" :key="index">{{ numero + 1 }}</v-btn> -->
+              <v-radio-group v-model="titularesRoig" row class="my-0 py-0">
+                <h4>Titulars:</h4>
+                <span v-for="(index, numero) in maxJugadors" :key="index">
+                  <v-radio :label="(numero + 1).toString()" color="red" :value="numero + 1"></v-radio>
+                </span>
+              </v-radio-group>
             </v-col>
             <v-col cols="12">
               <v-text-field
@@ -145,7 +154,16 @@
           </v-col>
           <v-col cols="6">
             <v-col cols="12">
-              <h3 class="text-center">Equip Blau</h3>
+              <h3 class="text-center">Equip Blau {{titularesBlau}}</h3>
+            </v-col>
+            <v-col cols="12" align="center" class="my-0 py-0">
+              <!-- <v-btn x-small v-for="(index, numero) in maxJugadors" :key="index">{{ numero + 1 }}</v-btn> -->
+              <v-radio-group v-model="titularesBlau" row class="my-0 py-0">
+                <h4>Titulars:</h4>
+                <span v-for="(index, numero) in maxJugadors" :key="index">
+                  <v-radio :label="(numero + 1).toString()" color="blue" :value="numero + 1"></v-radio>
+                </span>
+              </v-radio-group>
             </v-col>
             <v-col cols="12">
               <v-text-field
@@ -237,7 +255,7 @@ export default {
         "Jugador 5",
         "Jugador 6",
         "Jugador 7",
-        "Jugador 8"
+        "Jugador 8",
       ],
       competicion: null,
       lista_treta: ["Feridor 1", "Feridor 2"],
@@ -257,14 +275,14 @@ export default {
           est_ind: {
             colps: 0,
             errades: 0,
-            colps_totals: 0
+            colps_totals: 0,
           },
           caigudes: {
             total: 0,
-            quinzes: 0
+            quinzes: 0,
           },
-          titular: true
-        }
+          titular: true,
+        },
       ],
       lista_treta_roig: [
         {
@@ -272,10 +290,10 @@ export default {
           nom: null,
           tretes: {
             directes: 0,
-            faltes: 0
+            faltes: 0,
           },
-          titular: true
-        }
+          titular: true,
+        },
       ],
       equip_blau: [
         {
@@ -284,14 +302,14 @@ export default {
           est_ind: {
             colps: 0,
             errades: 0,
-            colps_totals: 0
+            colps_totals: 0,
           },
           caigudes: {
             total: 0,
-            quinzes: 0
+            quinzes: 0,
           },
-          titular: true
-        }
+          titular: true,
+        },
       ],
       lista_treta_blau: [
         {
@@ -299,10 +317,10 @@ export default {
           nom: null,
           tretes: {
             directes: 0,
-            faltes: 0
+            faltes: 0,
           },
-          titular: true
-        }
+          titular: true,
+        },
       ],
       tanteig_inicial: 0,
       menu: false,
@@ -312,14 +330,16 @@ export default {
         nom: null,
         est_ind: {
           colps: 0,
-          errades: 0
+          errades: 0,
         },
         caigudes: {
           total: 0,
-          quinzes: 0
+          quinzes: 0,
         },
-        titular: true
-      }
+        titular: true,
+      },
+      titularesRoig: null,
+      titularesBlau: null,
     };
   },
   computed: {
@@ -335,8 +355,8 @@ export default {
         nom: null,
         tretes: {
           directes: 0,
-          faltes: 0
-        }
+          faltes: 0,
+        },
       };
       return item;
     },
@@ -346,8 +366,8 @@ export default {
         nom: null,
         tretes: {
           directes: 0,
-          faltes: 0
-        }
+          faltes: 0,
+        },
       };
       return item;
     },
@@ -355,13 +375,13 @@ export default {
       return this.$store.getters.listaJugadores;
     },
     listaJugadores() {
-      return this.jugadores.filter(jug => {
+      return this.jugadores.filter((jug) => {
         return jug.disciplina.includes(this.tipo) && jug.posicion != "Treta";
       });
     },
     listaTretes() {
       //console.log(this.jugadores);
-      let feridors = this.jugadores.filter(jug => {
+      let feridors = this.jugadores.filter((jug) => {
         return jug.disciplina.includes(this.tipo) && jug.posicion == "Treta";
       });
       /* for (let jug in this.jugadores) {
@@ -370,7 +390,10 @@ export default {
       feridors = [...feridors, ...this.equip_roig]; */
       //console.log(feridors);
       return feridors;
-    }
+    },
+    maxJugadors() {
+      return this.tipo == "Palma" || this.tipo == "Llargues" ? 5 : 3;
+    },
   },
   methods: {
     reset() {
@@ -395,14 +418,23 @@ export default {
     addJugadorInfo(equip) {
       let num = null;
       let tit = true;
-      let max = this.tipo == "Palma" || this.tipo == "Llargues" ? 5 : 3;
+      let maxRoig =
+        this.tipo == "Palma" || this.tipo == "Llargues"
+          ? 5
+          : this.titularesRoig;
+      let maxBlau =
+        this.tipo == "Palma" || this.tipo == "Llargues"
+          ? 5
+          : this.titularesBlau;
       if (equip == "roig") {
         num = this.num_roig;
-        num > max ? (tit = false) : (tit = true);
+        num > maxRoig ? (tit = false) : (tit = true);
+        /* console.log(num + " " + maxRoig); */
         this.num_roig++;
       } else if (equip == "blau") {
         num = this.num_blau;
-        num > max + 10 ? (tit = false) : (tit = true);
+        num > maxBlau + 10 ? (tit = false) : (tit = true);
+        /* console.log(num + " " + maxBlau); */
         this.num_blau++;
       }
       let item = {
@@ -411,13 +443,13 @@ export default {
         est_ind: {
           colps: 0,
           errades: 0,
-          colps_totals: 0
+          colps_totals: 0,
         },
         caigudes: {
           total: 0,
-          quinzes: 0
+          quinzes: 0,
         },
-        titular: tit
+        titular: tit,
       };
       return item;
     },
@@ -433,9 +465,9 @@ export default {
         nom: null,
         tretes: {
           directes: 0,
-          faltes: 0
+          faltes: 0,
         },
-        titular: false
+        titular: false,
       };
       return item;
     },
@@ -474,7 +506,7 @@ export default {
           treta: this.lista_treta_roig,
           punts: parseInt(this.tanteig_inicial),
           canvi_pilota: 0,
-          substitucions: 0
+          substitucions: 0,
         },
         equip_blau: {
           nom_equip: this.nom_blaus || this.equip_blau[0].nom,
@@ -482,8 +514,8 @@ export default {
           treta: this.lista_treta_blau,
           punts: parseInt(this.tanteig_inicial),
           canvi_pilota: 0,
-          substitucions: 0
-        }
+          substitucions: 0,
+        },
       };
       return partida;
     },
@@ -497,14 +529,14 @@ export default {
           punts_rojos: 0,
           jocs_rojos: this.tanteig_inicial / inc,
           punts_blaus: 0,
-          jocs_blaus: this.tanteig_inicial / inc
+          jocs_blaus: this.tanteig_inicial / inc,
         },
         parcials: {
           jocs: [],
           punts: { joc1: [] },
           joc_actual: 1,
-          parcial_actual: []
-        }
+          parcial_actual: [],
+        },
       };
 
       return marcador;
@@ -516,13 +548,15 @@ export default {
         partida.equip_roig.jugadors[0].nom != null &&
         partida.equip_blau.jugadors[0].nom != null &&
         partida.equip_roig.jugadors[0].nom != "" &&
-        partida.equip_blau.jugadors[0].nom != ""
+        partida.equip_blau.jugadors[0].nom != "" &&
+        this.titularesRoig != null &&
+        this.titularesBlau != null
       ) {
         //this.$store.commit('carregant', true)
         this.$store.dispatch("addPartida", { partida, marcador });
         this.$store.dispatch("updateEntrevista", {
           titulo: null,
-          subtitulo: null
+          subtitulo: null,
         });
       }
     },
@@ -533,13 +567,13 @@ export default {
     crearGraella() {
       this.graella = true;
       this.validar();
-    }
+    },
   },
   watch: {
-    equip_roig: function(val) {
+    /* equip_roig: function (val) {
       console.log(val);
-    }
-  }
+    }, */
+  },
 };
 </script>
 

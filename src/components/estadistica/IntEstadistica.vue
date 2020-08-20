@@ -128,13 +128,37 @@
       </v-card>
     </v-dialog>
 
-    <v-row
-      v-show="
+    <v-row wrap justify="center">
+      <v-col
+        v-show="
                     partida.equip_roig.jugadors.length != jugadors_rojos.length || partida.equip_blau.jugadors.length != jugadors_blaus.length
                   "
-    >
-      <v-col cols="3" class="flat mx-auto ma-0 pa-0" align="center">
-        <v-switch v-model="subs" label="SUBSTITUCIONS" class="mx-auto pa-0" dark></v-switch>
+        cols="6"
+        class="flat mx-auto my-0 py-0"
+        align="center"
+      >
+        <v-switch color="red" v-model="subs" label="SUBSTITUCIONS" class="mx-auto pa-0" dark></v-switch>
+      </v-col>
+      <v-col cols="6" class="flat mx-auto my-0 py-0" align="center">
+        <v-switch
+          v-model="manualColps"
+          color="red"
+          label="INTRODUCCIÓ MANUAL COLPS"
+          class="flat mx-auto pa-0"
+          dark
+        ></v-switch>
+      </v-col>
+    </v-row>
+    <v-row :justify="manualColps ? 'space-between' : 'center'" class="mb-2">
+      <v-col class="pa-0" cols="4" v-show="manualColps">
+        <v-btn block class="yellow pa-0 ma-0 sumaGolpe" height="80px" @click="colpManual()">
+          <h2 class="mx-auto">COLP</h2>
+        </v-btn>
+      </v-col>
+      <v-col class="pa-0" cols="4">
+        <v-btn block class="yellow pa-0 ma-0" height="80px" @click="acabarQuinze()">
+          <h2 class="mx-auto">ACABAR QUINZE</h2>
+        </v-btn>
       </v-col>
     </v-row>
     <!-- EQUIP ROIG -->
@@ -151,6 +175,7 @@
                 <v-col cols="6" align="center" class="py-0">
                   <div class="pa-1 overline red white--text">COLPS</div>
                   <h5
+                    v-if="!manualColps"
                     class="white red--text"
                     style="border-radius:6px"
                   >{{ jugador.est_ind.colps_totals }}</h5>
@@ -205,6 +230,7 @@
                     <h5
                       class="white blue--text"
                       style="border-radius:6px"
+                      v-if="!manualColps"
                     >{{ jugador.est_ind.colps_totals }}</h5>
                   </v-col>
                 </v-row>
@@ -519,7 +545,7 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <v-snackbar v-model="snackbar" top="top" :timeout="timeout" color="lime accent-2">
+    <v-snackbar v-model="snackbar" vertical bottom :timeout="timeout" color="lime accent-2">
       <h4 class="black--text">{{ feedback.feedbackStr }}</h4>
       <v-btn color="black" text @click="snackbar = false">X</v-btn>
     </v-snackbar>
@@ -574,6 +600,7 @@ export default {
       timer: null,
       reset_colps: false,
       subs: false,
+      manualColps: false,
     };
   },
   computed: {
@@ -699,25 +726,17 @@ export default {
       this.partida.durades.splice(item, 1);
       this.update();
     },
-    addColp(i, colps) {
-      // Golpes totales de cada jugador
-      if (this.user == "admin" || this.user == "editor") {
-        colps.colps_totals += i;
-        if (this.partida.durada_quinze == null) {
-          this.duradaQuinze(true);
-        }
-        if (this.reset_colps) {
-          this.partida.colps_ultim_quinze = 0;
-          this.reset_colps = false;
-        }
-        this.partida.colps_ultim_quinze++;
-        //this.update();
+    colpManual() {
+      if (this.partida.durada_quinze == null) {
+        this.duradaQuinze(true);
       }
+      if (this.reset_colps) {
+        this.partida.colps_ultim_quinze = 0;
+        this.reset_colps = false;
+      }
+      this.partida.colps_ultim_quinze++;
     },
-    colps(i, est, nom) {
-      this.puntsPerJoc(i, nom);
-      est.colps += i;
-      //this.updateMimo(nom, 'colps')
+    acabarQuinze() {
       this.reset_colps = true;
       if (this.partida.durada_quinze != null) {
         this.duradaQuinze(false);
@@ -728,8 +747,24 @@ export default {
           this.durada_quinze_str;
       }
       this.update();
-
       this.updateFb();
+    },
+    addColp(i, colps) {
+      // Golpes totales de cada jugador
+      if (!this.manualColps) {
+        if (this.user == "admin" || this.user == "editor") {
+          colps.colps_totals += i;
+          this.colpManual();
+          //this.update();
+        }
+      }
+    },
+    colps(i, est, nom) {
+      this.puntsPerJoc(i, nom);
+      est.colps += i;
+      //this.updateMimo(nom, 'colps')
+      this.reset_colps = true;
+      this.acabarQuinze();
     },
     errades(i, est, nom) {
       this.erradesPerJoc(i, nom);
@@ -870,7 +905,7 @@ export default {
       } else if (!activo) {
         clearInterval(this.durada_quinze);
         this.partida.durada_quinze_str = this.durada_quinze_str;
-        console.log(this.partida.durada_quinze_str);
+        /* console.log(this.partida.durada_quinze_str); */
         this.partida.durada_quinze = null;
       }
     },

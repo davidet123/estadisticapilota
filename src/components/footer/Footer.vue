@@ -4,7 +4,7 @@
       <v-col class="text-center" cols="12">
         <span class="white--text">
           &copy;{{ new Date().getFullYear() }} —
-          <strong>Va de Bo</strong> v-0.6
+          <strong>Va de Bo</strong> v-0.7
         </span>
       </v-col>
     </v-footer>

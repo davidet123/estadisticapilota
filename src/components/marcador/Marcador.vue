@@ -40,20 +40,20 @@
       </v-col>-->
       <v-col cols="12" md="8">
         <v-row>
-          <v-col cols="6" md="3" align="center" class="pb-0 px-0">
+          <v-col cols="3" align="center" class="pb-0 px-0">
             <h4 class="white--text">PARCIALS JOCS</h4>
             <h5 class="white--text">{{ parcial_jocs.length }} a 0 per als {{ parcial_jocs[0] }}</h5>
           </v-col>
 
-          <v-col cols="6" md="3" align="center" class="pb-0">
+          <v-col cols="3" align="center" class="pb-0">
             <h4 class="white--text">PARCIAL QUINZES</h4>
             <h5 class="mb-1 white--text">{{ parcial_punts_actual }}</h5>
           </v-col>
-          <v-col cols="6" md="3" align="center" class="pb-0">
+          <v-col cols="3" align="center" class="pb-0">
             <h4 class="white--text">ÚLTIM QUINZE</h4>
             <h5 class="mb-1 white--text">{{ ultim_quinze }}</h5>
           </v-col>
-          <v-col cols="6" md="3" align="center">
+          <v-col cols="3" align="center">
             <h4 class="white--text">Parcial per jocs</h4>
             <h5 class="mb-1 white--text">{{ parcial_punts_total_jocs }}</h5>
             <span v-for="i in parcial" :key="i">

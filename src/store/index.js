@@ -209,7 +209,7 @@ export default new Vuex.Store({
           commit("cargarPartida", payload)
           commit("cargarMarcador", payload)
           commit("carregant", false)
-          console.log(payload)
+          /* console.log(payload) */
         })
     },
     partidaCargada: ({ commit }) => {
